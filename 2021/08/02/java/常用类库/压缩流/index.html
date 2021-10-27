@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		在日常的使用中经常会使用到WinRAR或7-zip等压缩文件，通过这些软件可以把一个很大的文件进行压缩以方便运输。在java中为了减少传输时的数据量也提供了专门的压缩流，可以将文件或文件夹压缩成ZIP、JAP、GZIP等文件形式。在java中要实现ZIP的压缩需要导入java.util.zip包，该包中最经常使用的类有ZipEntry、ZipFile、ZipInputStream和ZipOu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="压缩流">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/02/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E5%8E%8B%E7%BC%A9%E6%B5%81/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		在日常的使用中经常会使用到WinRAR或7-zip等压缩文件，通过这些软件可以把一个很大的文件进行压缩以方便运输。在java中为了减少传输时的数据量也提供了专门的压缩流，可以将文件或文件夹压缩成ZIP、JAP、GZIP等文件形式。在java中要实现ZIP的压缩需要导入java.util.zip包，该包中最经常使用的类有ZipEntry、ZipFile、ZipInputStream和ZipOu">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-02T00:31:58.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:43:45.933Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/02/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E5%8E%8B%E7%BC%A9%E6%B5%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>压缩流 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/02/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E5%8E%8B%E7%BC%A9%E6%B5%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          压缩流
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-02 08:31:58" itemprop="dateCreated datePublished" datetime="2021-08-02T08:31:58+08:00">2021-08-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:43:45" itemprop="dateModified" datetime="2021-10-27T12:43:45+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/02/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E5%8E%8B%E7%BC%A9%E6%B5%81/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/02/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E5%8E%8B%E7%BC%A9%E6%B5%81/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		在日常的使用中经常会使用到WinRAR或7-zip等压缩文件，通过这些软件可以把一个很大的文件进行压缩以方便运输。在java中为了减少传输时的数据量也提供了专门的压缩流，可以将文件或文件夹压缩成ZIP、JAP、GZIP等文件形式。在java中要实现ZIP的压缩需要导入java.util.zip包，该包中最经常使用的类有ZipEntry、ZipFile、ZipInputStream和ZipOutputStream。</p>
+<span id="more"></span>
+<h3 id="zipentry类"><a class="markdownIt-Anchor" href="#zipentry类"></a> ZipEntry类</h3>
+<p>​		ZipEntry类的对象是用来表示ZIp文件条目，代表Zip文件内的进入点(entry)。ZipEntry类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public ZipEntry(String name)</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>使用指定名称创建新的ZipEntry对象</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public ZipEntry(ZipEntry e)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">建立一个实例内各字段皆由e参数指定的ZipEntry对象取得</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public Object clone()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此ZipEntry的副本</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public String getComment()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回条目的注释字符，如果没有，则返回null</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public long getCompressdSize()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回压缩条目数据的大小，如果未知，则返回-1</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public long getCrc()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此entry所指向的数在未压缩时的CRC-32校验和，如果未知，则返回-1</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public byte[] getExtra()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此entry的额外字段数据，如果没有，则返回null</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public int getMethod()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此entry的压缩方法，如果未指定，则返回-1</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public String getName()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此entry名称</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public long getSize()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此entry数据的未压缩大小，如果未知，则返回-1</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public long getTime()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此entry的修改时间，如果为指定，则返回-1</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public int hashCode()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回此entry的哈希码值</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public boolean isDirectory()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">判断此entry是否为目录，若是目录，则返回ture</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public void setComment(String comment)</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">设置此entry的注释字符</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public void setComment(long csize)</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">设置此entry所指的数据压缩后大小</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public void setCrc()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">设置此entry所指的数据在未压缩前的CRC-32校验和</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">public void setMethod(int method)</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">设置此entry的压缩方法</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">public void setTime()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">设置此entry的修改时间</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">public String toString()</td>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">返回一个能代表ZipEntry对象的字符串</td>
+</tr>
+</tbody>
+</table>
+<h3 id="zipoutputstream类"><a class="markdownIt-Anchor" href="#zipoutputstream类"></a> ZipOutputStream类</h3>
+<p>​		java.util.zip.ZipOutputStream类是FilterOutputStream的子类，用来写出zip文件，即可以将一个文件或文件夹压缩为一个zip文件，而且所支持的包括有压缩及未压缩的进入点(entry)。ZipOutputStream类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public ZipOutputStream(OutputStream out)</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>创建新的zip输出流</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public void close()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>关闭zip输出流和正在过滤的流</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>public void closeEntry() throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>关闭当前ZipEntry并让流内的内容指到适当的位置，以便定位写入下一个entry</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void finish()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">完成写入zip输出流的内容，但不关闭与其配合的OutputStream流</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:center"><strong>public void putNextEntry(ZipEntry e) throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>开始写入新的ZipEntry并将流定位到entry数据的开始处，弱现在的entry没有结束，它将会被关闭。若压缩方法为被指定，将会采用默认的压缩方法。而且新的entry的时间未指定，则采用现在的时间</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public void setComment(String comment)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>设置ZipEntry的注释文字</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public setLevel(int level)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设定其压缩方法为ZipEntry.DEFLATED的所有entry的压缩程度，压缩程度介于0~9之间</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public void setMethod(int Method)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置其后所有entry的默认压缩方法，为ZipInputStream.DEFLATED或ZipOutputStream.DEFLATED</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>9</strong></td>
+<td style="text-align:center"><strong>public void write(byte[] b,int off,int len) throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>将字节数组的某部分写入当前ZipEntry数据</strong></td>
+</tr>
+</tbody>
+</table>
+<h4 id="zipoutputstream压缩文件"><a class="markdownIt-Anchor" href="#zipoutputstream压缩文件"></a> ZipOutputStream压缩文件</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipEntry;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipOutputStream;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File f1=<span class="keyword">new</span> File(<span class="string">&quot;D:\\myjava\\123.txt&quot;</span>);</span><br><span class="line">        File f2=<span class="keyword">new</span> File(<span class="string">&quot;D:\\myjava\\111.zip&quot;</span>);</span><br><span class="line">        <span class="keyword">byte</span> b[]=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            FileInputStream fis=<span class="keyword">new</span> FileInputStream(f1);</span><br><span class="line">            FileOutputStream fout=<span class="keyword">new</span> FileOutputStream(f2);</span><br><span class="line">            ZipOutputStream zout=<span class="keyword">new</span> ZipOutputStream(fout);</span><br><span class="line">            zout.putNextEntry(<span class="keyword">new</span> ZipEntry(f1.getName()));		<span class="comment">//设置压缩条目的名字</span></span><br><span class="line">            zout.setComment(<span class="string">&quot;Use ZipOutputStream compression 123.txt&quot;</span>);		<span class="comment">//设置注释</span></span><br><span class="line">            <span class="keyword">while</span>((temp=fis.read(b))!=-<span class="number">1</span>)	<span class="comment">//读取内容</span></span><br><span class="line">            &#123;</span><br><span class="line">                zout.write(b,<span class="number">0</span>,temp);		<span class="comment">//输出压缩文件</span></span><br><span class="line">            &#125;</span><br><span class="line">            zout.close();</span><br><span class="line">            fout.close();</span><br><span class="line">            fis.close();</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩成功！&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩失败！&quot;</span>);</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="zipoutputstream压缩文件夹"><a class="markdownIt-Anchor" href="#zipoutputstream压缩文件夹"></a> ZipOutputStream压缩文件夹</h4>
+<p>​		ZipOutputStream类不仅可以压缩文件，还可以压缩文件夹，甚至可以方便地压缩多个文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipEntry;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipOutputStream;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File f1=<span class="keyword">new</span> File(<span class="string">&quot;D:\\myjava\\111&quot;</span>);</span><br><span class="line">        File f2=<span class="keyword">new</span> File(<span class="string">&quot;D:\\myjava\\zip111.zip&quot;</span>);</span><br><span class="line">        String fileName[]=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">byte</span> b[]=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            FileOutputStream fout=<span class="keyword">new</span> FileOutputStream(f2);</span><br><span class="line">            ZipOutputStream zout=<span class="keyword">new</span> ZipOutputStream(fout);</span><br><span class="line">            FileInputStream fis=<span class="keyword">null</span>;</span><br><span class="line">            zout.setComment(<span class="string">&quot;Use ZipOutputStream compression orgDirectory&quot;</span>);		<span class="comment">//设置注释</span></span><br><span class="line">            <span class="keyword">if</span>(f1.isDirectory())		<span class="comment">//判断是否为目录</span></span><br><span class="line">            &#123;</span><br><span class="line">                fileName=f1.list();		<span class="comment">//获取文件夹内所有文件或文件夹的名称</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;fileName.length;i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    fis=<span class="keyword">new</span> FileInputStream(fileName[i]);	<span class="comment">//在默认路径下读取文件</span></span><br><span class="line">                    zout.putNextEntry(<span class="keyword">new</span> ZipEntry(fileName[i]));</span><br><span class="line">                    System.out.println(<span class="string">&quot;正在压缩&quot;</span>+fileName[i]+<span class="string">&quot;.......&quot;</span>);</span><br><span class="line">                    <span class="keyword">while</span>((temp=fis.read(b))!=-<span class="number">1</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        zout.write(b,<span class="number">0</span>,temp);</span><br><span class="line">                    &#125;</span><br><span class="line">                    System.out.println(<span class="string">&quot;压缩&quot;</span>+fileName[i]+<span class="string">&quot;完成&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            zout.close();</span><br><span class="line">            fout.close();</span><br><span class="line">            fis.close();</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩成功！&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩失败！&quot;</span>);</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		以上程序，能且仅能压缩&quot;类路径&quot;下的文件(不包括文件夹)，若想要压缩类路径以外其他文件夹的文件或者压缩类路径下子目录的文件时，就会出现&quot;java.io.FileNotFoundException: XXX (系统找不到指定的文件。)&quot;的异常。原因是在创建读取文件流时，使用了文件名进行实例化，在读取文件时，系统在默认的“类路径”下寻找该文件并进行压缩，而当类路径中不存在该文件时，就会抛出异常。解决方法是在获取目录下的所有文件时，使用listFiles()返回文件的绝对路径名，由于listFiles()返回的是对象而不是字符串，所以接收数组类型也要更改为File。代码如下，注释部分为更改部分。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipEntry;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipOutputStream;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File f1=<span class="keyword">new</span> File(<span class="string">&quot;D:\\CloudMusic&quot;</span>);</span><br><span class="line">        File f2=<span class="keyword">new</span> File(<span class="string">&quot;D:\\myjava\\zip111.zip&quot;</span>);</span><br><span class="line">        File fileName[]=<span class="keyword">null</span>;				<span class="comment">//创建对象数组</span></span><br><span class="line">        <span class="keyword">byte</span> b[]=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            FileOutputStream fout=<span class="keyword">new</span> FileOutputStream(f2);</span><br><span class="line">            ZipOutputStream zout=<span class="keyword">new</span> ZipOutputStream(fout);</span><br><span class="line">            FileInputStream fis=<span class="keyword">null</span>;</span><br><span class="line">            zout.setComment(<span class="string">&quot;Use ZipOutputStream compression orgDirectory&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span>(f1.isDirectory())</span><br><span class="line">            &#123;</span><br><span class="line">                fileName=f1.listFiles();		<span class="comment">//获取文件夹内所有文件或文件夹的绝对路径</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;fileName.length;i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    fis=<span class="keyword">new</span> FileInputStream(fileName[i]);		<span class="comment">//在绝对路径中读取文件</span></span><br><span class="line">                    zout.putNextEntry(<span class="keyword">new</span> ZipEntry(fileName[i].getName()));	<span class="comment">//以该文件的名称设置为压缩后的文件条目名称</span></span><br><span class="line">                    System.out.println(<span class="string">&quot;正在压缩&quot;</span>+fileName[i]+<span class="string">&quot;.......&quot;</span>);</span><br><span class="line">                    <span class="keyword">while</span>((temp=fis.read(b))!=-<span class="number">1</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        zout.write(b,<span class="number">0</span>,temp);</span><br><span class="line">                    &#125;</span><br><span class="line">                    System.out.println(<span class="string">&quot;压缩&quot;</span>+fileName[i]+<span class="string">&quot;完成&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            zout.close();</span><br><span class="line">            fout.close();</span><br><span class="line">            fis.close();</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩成功！&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩失败！&quot;</span>);</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		以上程序，只能实现压缩目标文件夹内的文件，不能压缩子文件夹，那么如何把目标文件里的子文件夹也压缩了呢？代码如下所示。</p>
+<h4 id="zipoutputstream压缩多层嵌套文件夹"><a class="markdownIt-Anchor" href="#zipoutputstream压缩多层嵌套文件夹"></a> ZipOutputStream压缩多层嵌套文件夹</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipEntry;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipOutputStream;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SIZE=<span class="number">512</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">compression</span><span class="params">(File file,ZipOutputStream zos,String name)</span><span class="keyword">throws</span> IOException</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">	    <span class="keyword">if</span>(file.isDirectory())	<span class="comment">//如果路径为目录（文件夹）</span></span><br><span class="line">	    &#123;</span><br><span class="line">            File fileName[]=file.listFiles();	<span class="comment">//取出文件夹中的文件（或子文件夹）</span></span><br><span class="line">            <span class="keyword">if</span>(fileName==<span class="keyword">null</span>||fileName.length==<span class="number">0</span>)	<span class="comment">//如果文件夹为空，则只需在目的地zip文件中写入一个目录进入点</span></span><br><span class="line">         	&#123;</span><br><span class="line">                zos.putNextEntry(<span class="keyword">new</span> ZipEntry(name+<span class="string">&quot;/&quot;</span>));</span><br><span class="line">                zos.closeEntry();</span><br><span class="line">            &#125;<span class="keyword">else</span>	<span class="comment">//如果文件夹不为空，则递归调用compress，文件夹中的每一个文件（或文件夹）进行压缩</span></span><br><span class="line">      			&#123;</span><br><span class="line">          		    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;fileName.length;i++)</span><br><span class="line">                    &#123;</span><br><span class="line">                		compression(fileName[i],zos,name+<span class="string">&quot;/&quot;</span>+fileName[i].getName());</span><br><span class="line">            	    &#125;</span><br><span class="line">        	  	&#125;</span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">else</span>		<span class="comment">//如果不是目录（文件夹），即为文件，则先写入目录进入点，之后将文件写入zip文件中</span></span><br><span class="line">    	    &#123;</span><br><span class="line">    	        <span class="keyword">byte</span> b[]=<span class="keyword">new</span> <span class="keyword">byte</span>[SIZE];</span><br><span class="line">	         	<span class="keyword">int</span> temp;</span><br><span class="line">            	zos.putNextEntry(<span class="keyword">new</span> ZipEntry(name));</span><br><span class="line">            	FileInputStream fis=<span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">                System.out.println(<span class="string">&quot;正在压缩&quot;</span>+file+<span class="string">&quot;.......&quot;</span>);</span><br><span class="line">            	<span class="keyword">while</span>((temp=fis.read(b))!=-<span class="number">1</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    zos.write(b,<span class="number">0</span>,temp);</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">&quot;压缩&quot;</span>+file+<span class="string">&quot;完成&quot;</span>);</span><br><span class="line">            	zos.closeEntry();</span><br><span class="line">            	fis.close();</span><br><span class="line">        	&#125;</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            File f1=<span class="keyword">new</span> File(<span class="string">&quot;D:/myjava/org&quot;</span>);		<span class="comment">//源文件（带压缩的文件或文件夹）</span></span><br><span class="line">            File f2=<span class="keyword">new</span> File(<span class="string">&quot;D:/myjava/org.zip&quot;</span>);  <span class="comment">//目的地Zip文件</span></span><br><span class="line">            FileOutputStream fout=<span class="keyword">new</span> FileOutputStream(f2);</span><br><span class="line">            ZipOutputStream zos=<span class="keyword">new</span> ZipOutputStream(fout);		<span class="comment">//创建zip输出流</span></span><br><span class="line">            compression(f1,zos,f1.getName());	<span class="comment">//调用函数</span></span><br><span class="line">            zos.close();</span><br><span class="line">            fout.close();</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩成功！&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(IOException e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	System.out.println(<span class="string">&quot;压缩终止！&quot;</span>);</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="zipinputstream类"><a class="markdownIt-Anchor" href="#zipinputstream类"></a> ZipInputStream类</h3>
+<p>​		ZipInputStream类是FilterInputStream的子类，通过此类可以方便的读取zip压缩格式的文件，而且支持用压缩或没有压缩的进入点(entry)。ZipInputStream类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public ZipInputStream(InputStream in)</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>创建新的ZipInputStream输入流</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public int avaliable() throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断是否读完当前的entry所指的数据。若读取完毕(EOF)，则返回0，否则返回1</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>public close() throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>关闭zip输入流并释放与此流关联的所有系统资源</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void closeEntry() throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">关闭当前ZipEntry并定位流以备读取下一个entry</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public protected ZipEntry createZipEntry(String name)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">创建一个指定名称为name的新ZipEntry对象</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public ZipEntry  getNextEntry()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>读取下一个ZipEntry 并将流定位到该entry所指示数据的开始处</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>7</strong></td>
+<td style="text-align:center"><strong>public int read(byte[] ,int off,int len) throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>从当前ZipEntry 读入字节数据</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public long skip(long n) throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">跳过当前ZipEntry中指定的n个字节数</td>
+</tr>
+</tbody>
+</table>
+<p>​		使用ZipInputStream类可以将zip压缩格式的文件解压缩。需要注意的是，若需要解压缩的zip文件本身含有文件夹，在解压前，应根据zip文件中的文件夹的名称，在相应的磁盘位置创建一个对应的文件夹。</p>
+<h4 id="zipinputstream类解压缩"><a class="markdownIt-Anchor" href="#zipinputstream类解压缩"></a> ZipInputStream类解压缩</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipEntry;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipInputStream;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File dirf=<span class="keyword">new</span> File(<span class="string">&quot;D:/myjava&quot;</span>);		<span class="comment">//压缩文件存放的目录</span></span><br><span class="line">        File zipf=<span class="keyword">new</span> File(<span class="string">&quot;D:/myjava/org.zip&quot;</span>);	<span class="comment">//需要解压的zip文件</span></span><br><span class="line">        <span class="keyword">byte</span> b[]=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">512</span>];</span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        ZipEntry z=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            ZipInputStream zin=<span class="keyword">new</span> ZipInputStream(<span class="keyword">new</span> FileInputStream(zipf));</span><br><span class="line">            <span class="keyword">while</span>((z=zin.getNextEntry())!=<span class="keyword">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;正在解压缩&quot;</span>+z.getName()+<span class="string">&quot;......&quot;</span>);</span><br><span class="line">                File f=<span class="keyword">new</span> File(dirf+File.separator+z.getName());</span><br><span class="line">                <span class="keyword">if</span>(z.isDirectory())		<span class="comment">//判断该ZipEntry对象是否为目录</span></span><br><span class="line">                &#123;</span><br><span class="line">                    f.mkdirs();			<span class="comment">//每次都貌似从最底层开始遍历的</span></span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                	&#123;</span><br><span class="line">                    	<span class="keyword">if</span>(!f.getParentFile().exists())		<span class="comment">//检查父类路径是否存在</span></span><br><span class="line">                        &#123;</span><br><span class="line">                            f.getParentFile().mkdirs();		<span class="comment">//创建父类路径</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    	FileOutputStream fout=<span class="keyword">new</span> FileOutputStream(f);</span><br><span class="line">                    	<span class="keyword">while</span>((temp=zin.read(b))!=-<span class="number">1</span>)	<span class="comment">//读取内容</span></span><br><span class="line">                        &#123;</span><br><span class="line">                            fout.write(b,<span class="number">0</span>,temp);</span><br><span class="line">                        &#125;</span><br><span class="line">                    	fout.close();</span><br><span class="line">                	&#125;</span><br><span class="line">                System.out.println(<span class="string">&quot;解压缩&quot;</span>+z.getName()+<span class="string">&quot;完成！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            zin.close();</span><br><span class="line">            System.out.println(<span class="string">&quot;解压成功！&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;解压中止！&quot;</span>);</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		上面的程序中，只有在创建文件时才需检测存放解压文件的目录是否存在，仅有空目录时，若此目录的父目录不存在，mkdirs()会自动创建父目录。需要注意的是，实际上getNextEntry()似乎每次都是从底层开始读取的，所以在有文件的文件夹中，不会先检测到目录，而是先检测到目录中的文件，所以此时需先创建目录再进行读取，否则会出现系统找不到指定的路径的异常。</p>
+<h3 id="zipfile类"><a class="markdownIt-Anchor" href="#zipfile类"></a> ZipFile类</h3>
+<p>​		ZipFile类可以表示一个压缩文件，用来读取一个zip文件含有的文件的进入点，还可以取得某个进入点对应文件的输入流，ZipFile类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public ZipFile(File file)throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">在给定指定的File对象的情况下打开ZIP文件以进行读取</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public ZipFile(File file,int mode) throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">打开新的 ZipFile以从指定模式下的指定File对象读取</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public ZipFile(String name) throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">打开ZipFile进行阅读，由name参数指定的对象</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void close() throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">关闭ZipFile</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public Enumeration&lt;? extends ZipEntry&gt; entries()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回zip文件内所有的entry枚举对象</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public void finalize() throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">确保在没有对此ZipFile对象的引用时释放此ZipFile对象所拥有的系统资源。</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public ZipEntry getEntry(String name)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回指定名称的zip文件条目，如果未找到，则返回null</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public InputStream getInputStream(ZipEntry entry) throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回用于读取指定zip文件条目内容的输入流</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public String getName()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回ZIP文件的路径名</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public int size()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回ZIP文件中的条目(entry)数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="获取zip文件的属性"><a class="markdownIt-Anchor" href="#获取zip文件的属性"></a> 获取zip文件的属性</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipFile;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File f=<span class="keyword">new</span> File(<span class="string">&quot;D:/myjava/org.zip&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            ZipFile zip=<span class="keyword">new</span> ZipFile(f);</span><br><span class="line">            System.out.println(<span class="string">&quot;文件名称：&quot;</span>+zip.getName());</span><br><span class="line">            System.out.println(<span class="string">&quot;压缩文件内文件数：&quot;</span>+zip.size());</span><br><span class="line">            System.out.println(<span class="string">&quot;文件大小：&quot;</span>+f.length());</span><br><span class="line">            System.out.println(<span class="string">&quot;文件最后修改时间&quot;</span>+f.lastModified());</span><br><span class="line">            zip.close();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(IOException e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">文件名称：D:\myjava\org.zip</span><br><span class="line">压缩文件内文件数：<span class="number">3</span></span><br><span class="line">文件大小：<span class="number">5696834</span></span><br><span class="line">文件最后修改时间<span class="number">1628423124341</span></span><br></pre></td></tr></table></figure>
+<h4 id="zipfile类读取zip中指定文件"><a class="markdownIt-Anchor" href="#zipfile类读取zip中指定文件"></a> ZipFile类读取zip中指定文件</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipEntry;</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipFile;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File f=<span class="keyword">new</span> File(<span class="string">&quot;D:/myjava/z123.txt&quot;</span>);		<span class="comment">//自定义解压缩文件</span></span><br><span class="line">        File zipf=<span class="keyword">new</span> File(<span class="string">&quot;D:/myjava/org.zip&quot;</span>);	<span class="comment">//需要解压的zip文件</span></span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">byte</span> b[]=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">512</span>];</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            ZipFile zip=<span class="keyword">new</span> ZipFile(zipf);		<span class="comment">//zip对象表示该压缩文件</span></span><br><span class="line">            ZipEntry z=<span class="keyword">new</span> ZipEntry(<span class="string">&quot;org/123.txt&quot;</span>);		<span class="comment">//以zip文件内指定文件的进入点创建对象</span></span><br><span class="line">            InputStream in=zip.getInputStream(z);		<span class="comment">//从压缩文件中读取指定文件的进入点</span></span><br><span class="line">            FileOutputStream fout=<span class="keyword">new</span> FileOutputStream(f);		<span class="comment">//创建输出流</span></span><br><span class="line">            <span class="keyword">while</span>((temp=in.read(b))!=-<span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                fout.write(b,<span class="number">0</span>,temp);</span><br><span class="line">            &#125;</span><br><span class="line">            zip.close();</span><br><span class="line">            fout.close();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(IOException e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		以上程序，只能适用于给定ZipEntry对象的情况。如果文件中含有多个文件夹或多个ZipEntry时，实用性不强。但是与ZipInputStream相比，其用于读取zip文件中的某一个文件会更加合适。</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Ltp_zy/article/details/100035190">Zip条目_Ltp_zy的博客-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Ustinian0/article/details/109359455">java.io.FileNotFoundException: student.txt (系统找不到指定的文件。)_Ustinian0的博客-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zeng1994/p/7862288.html">Java实现将文件或者文件夹压缩成zip - zeng1994 - 博客园 (cnblogs.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/qingergege/p/5768376.html">Java Zip压缩实现 - 青儿哥哥 - 博客园 (cnblogs.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/iteye_2699/article/details/81816581?spm=3001.4430">java 解压缩ZIP文件方法_AresYM-CSDN博客</a></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/01/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%96%87%E4%BB%B6%E7%B1%BB%EF%BC%9ARandomAccessFile%E7%B1%BB/" rel="prev" title="随机访问文件类：RandomAccessFile类">
+      <i class="fa fa-chevron-left"></i> 随机访问文件类：RandomAccessFile类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/03/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96/" rel="next" title="对象序列化">
+      对象序列化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#zipentry%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text"> ZipEntry类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zipoutputstream%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text"> ZipOutputStream类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#zipoutputstream%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text"> ZipOutputStream压缩文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#zipoutputstream%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.2.</span> <span class="nav-text"> ZipOutputStream压缩文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#zipoutputstream%E5%8E%8B%E7%BC%A9%E5%A4%9A%E5%B1%82%E5%B5%8C%E5%A5%97%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.3.</span> <span class="nav-text"> ZipOutputStream压缩多层嵌套文件夹</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zipinputstream%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text"> ZipInputStream类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#zipinputstream%E7%B1%BB%E8%A7%A3%E5%8E%8B%E7%BC%A9"><span class="nav-number">3.1.</span> <span class="nav-text"> ZipInputStream类解压缩</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zipfile%E7%B1%BB"><span class="nav-number">4.</span> <span class="nav-text"> ZipFile类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96zip%E6%96%87%E4%BB%B6%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">4.1.</span> <span class="nav-text"> 获取zip文件的属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#zipfile%E7%B1%BB%E8%AF%BB%E5%8F%96zip%E4%B8%AD%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6"><span class="nav-number">4.2.</span> <span class="nav-text"> ZipFile类读取zip中指定文件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

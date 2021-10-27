@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		在程序开发中，经常会遇到日期类型的操作，日期处理是程序员必须具备的一种常用技能。在不同的程序设计语言中提供了不同的格式进行实现，在java中，对日期的处理提供了优秀的支持，主要用到了java.util包中的Date类、Calendar类，以及java.text包中的DateFormat类和SimpledataFormat类。下面将介绍讲解 Java 语言的时间和日期处理技术。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="日期操作类">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/09/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		在程序开发中，经常会遇到日期类型的操作，日期处理是程序员必须具备的一种常用技能。在不同的程序设计语言中提供了不同的格式进行实现，在java中，对日期的处理提供了优秀的支持，主要用到了java.util包中的Date类、Calendar类，以及java.text包中的DateFormat类和SimpledataFormat类。下面将介绍讲解 Java 语言的时间和日期处理技术。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB1.png">
+<meta property="article:published_time" content="2021-08-09T00:04:12.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:46:35.001Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB1.png">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/09/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>日期操作类 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/09/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          日期操作类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-09 08:04:12" itemprop="dateCreated datePublished" datetime="2021-08-09T08:04:12+08:00">2021-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:46:35" itemprop="dateModified" datetime="2021-10-27T12:46:35+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/09/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/09/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		在程序开发中，经常会遇到日期类型的操作，日期处理是程序员必须具备的一种常用技能。在不同的程序设计语言中提供了不同的格式进行实现，在java中，对日期的处理提供了优秀的支持，主要用到了java.util包中的Date类、Calendar类，以及java.text包中的DateFormat类和SimpledataFormat类。下面将介绍讲解 Java 语言的时间和日期处理技术。</p>
+<span id="more"></span>
+<h3 id="简单日期操作类date类"><a class="markdownIt-Anchor" href="#简单日期操作类date类"></a> 简单日期操作类：Date类</h3>
+<p>​		java.util.Date类是一个简单的日期处理类。在JDK1.0时，Date类是唯一的一个代表时间的类，它包含了一些关于时间和日期操作的方法，可将日期分为年、月、日、时、分、秒。Date类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public Date()</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>生成一个Date对象，以表示分配它的时间(精确到毫秒)。该构造方法调用 Systems.currentTimeMillis()方法获取当前时间。即new Date() 等价于new  Date(System.currentTimeMillis())</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public Date(long date)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">根据指定的 long 类型的值来生成一个Date对象，date表示自从标准基准时(也称历元，即1970年1月1日00:00:00GMT)以来的时间差，以 ms 为单位</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>public boolean after(Date when)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>测试此日期是否在指定日期之后</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>4</strong></td>
+<td style="text-align:center"><strong>public boolean before(Date when)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>测试此日期是否在指定日期之前</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:center"><strong>public int compareTo(Date anotherDate)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>比较两个日期的顺序，若早，则返回-1，相等则返回0，若晚，则返回1</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public boolean equals(Object obj)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">比较两个日期的相等性</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public long getTime()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回自1970年1月1日00:00:00GMT到指定Date对象的时间插，以ms为单位</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public setTime(long time)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置此Date对象，以表示1970年1月1日00:00:00GMT以后time毫秒的时间点</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public String toString()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">把此Date对象转换为以下字符串形式表现：dow mon  dd hh:mm:ss zzz yyyy 其中：dow 是一周中的某一天 (Sun，Mon，Tue，Wed，Thu，Fri，Sat)</td>
+</tr>
+</tbody>
+</table>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Date date1=<span class="keyword">new</span> Date();			<span class="comment">//获取当前时间</span></span><br><span class="line">        Date date2=<span class="keyword">new</span> Date(System.currentTimeMillis()+<span class="number">123</span>);		<span class="comment">//当前时间+123ms</span></span><br><span class="line">        System.out.println(<span class="string">&quot;时间：&quot;</span>+date1);</span><br><span class="line">        System.out.println(<span class="string">&quot;时间差：&quot;</span>+date2.getTime()+<span class="string">&quot;ms&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;date1与date2的比较：&quot;</span>+date1.compareTo(date2));</span><br><span class="line">        System.out.println(<span class="string">&quot;date2与date1的比较：&quot;</span>+date2.compareTo(date1));</span><br><span class="line">        System.out.println(<span class="string">&quot;date1是否比date2早&quot;</span>+date1.before(date2));</span><br><span class="line">        System.out.println(<span class="string">&quot;date1是否比date2晚&quot;</span>+date1.after(date2));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">时间：Mon Aug 09 08:<span class="number">33</span>:<span class="number">27</span> CST <span class="number">2021</span></span><br><span class="line">时间差：1628469207183ms</span><br><span class="line">date1与date2的比较：-<span class="number">1</span></span><br><span class="line">date2与date1的比较：<span class="number">1</span></span><br><span class="line">date1是否比date2早<span class="keyword">true</span></span><br><span class="line">date1是否比date2晚<span class="keyword">false</span></span><br></pre></td></tr></table></figure>
+<p>​		Date类中的很多方法已经不被推进使用了，功能大减。而且Date类不便于实现国际化，所以从JDK1.1开始，推荐使用Calendar类进行时间和日期处理。</p>
+<h3 id="日期抽象类calendar类"><a class="markdownIt-Anchor" href="#日期抽象类calendar类"></a> 日期抽象类：Calendar类</h3>
+<p>​		由于前面的Date类在设计上存在一些缺陷，为此java语言提供了更好的Calendar类。java.util.Calendar类可以取得时间精确度达到ms级别。该类的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Calender</span> <span class="keyword">extends</span> <span class="title">Object</span> <span class="keyword">implements</span> <span class="title">Serializable</span>,<span class="title">Cloneable</span>,<span class="title">Comparable</span>&lt;<span class="title">Calendar</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​		可以发现Calendar类是抽象类，所以不能使用new关键字为其实例化。创建Calendar类的实例有两种方式：</p>
+<p>1、通过Calendar的子类GregorianCalendar为其实例化。</p>
+<p>2、通过Calendar类中的getInstance()方法。</p>
+<p>​		通过Calendar的对象可以对日期时间进行一系列的处理，Calendar类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public abstract void add(int field,int amount)</td>
+<td style="text-align:center">抽象</td>
+<td style="text-align:center">根据日历的规则，为给定的日历字段field添加或减去指定的时间量</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public boolean after(Object when)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此Calendar表示的时间是否在值得Object表示的时间之后，返回判断结果</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public boolean before(Object when)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此Calendar表示的时间是否在值得Object表示的时间之前，返回判断结果</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void clear()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">清空Calendar中的日期时间值</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public int compareTo(Calendar anotherCalendar)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">比较两个Calendar对象表示的时间值(从历元至现在的毫秒偏移量)，若小，则返回-1，相等返回0，若大返回1</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public int get(int field)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回给定日历字段的值</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public int getActualMaximun(int field)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">给定此Calendar的时间值，返回指定日历字段可能具有的 Calenda最大值</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public int getActualMinimum(int field)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">给定此Calendar的时间值，返回指定日历字段可能具有的 Calenda最小值</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public static Locale[] getAvailableLocales()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回所有语言环境的数组，此类的getInstance()方法可以为其返回本地化的实例</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public int getFirstDayOfWeek()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获得一星期的第一天，根据不同的国家地区，返回不同的值。例如，在美国，这一天是Sunday，而在中国，这一天是Monday</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>11</strong></td>
+<td style="text-align:center"><strong>public static Calendar getInstance()</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>使用默认时区和默认语言环境获得一个日历</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public static Calendar getInstance(Locale aLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">使用默认时区和指定语言环境获得一个日历</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public static Calendar getInstance(TimeZone zone)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">使用指定时区和默认语言环境获得一个日历</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public static Calendar getInstance(TimeZone zone,Locale aLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">使用指定时区和指定语言环境获得一个日历</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public Date getTime()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回一个表示此Calendar时间值(从历元至现在的ms偏移量)的Date对象</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public long getTimeMillis()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回指定Calendar的时间值，以ms为单位</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">public TimeZone getTimeZone()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获得时区</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">public void set(int field,int value)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定的日历字段设置为给定值</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">public void set(int year,int month,int date)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置日历字段 YEAR 、MONTH和DAY_OF_MONTH的值</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">public void set(int year,int month,int date,int hourOfDay,int minute)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置日历字段 YEAR 、MONTH、DAY_OF_MONTH、HOUR_OF_DAY和MINUTE的值</td>
+</tr>
+<tr>
+<td style="text-align:center">21</td>
+<td style="text-align:center">public void set(int year,int month,int date,int hourOfDay,int minute,int second)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置日历字段 YEAR 、MONTH、DAY_OF_MONTH、HOUR_OF_DAY、MINUTE和SECOND的值</td>
+</tr>
+<tr>
+<td style="text-align:center">22</td>
+<td style="text-align:center">public setFirstDayOfWeek(int value)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置一星期的第一天是哪一天，根据不同的国家地区，返回不同的值</td>
+</tr>
+<tr>
+<td style="text-align:center">23</td>
+<td style="text-align:center">public void setTime(Date date)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">使用给定的Date设置此Calendar的时间</td>
+</tr>
+<tr>
+<td style="text-align:center">24</td>
+<td style="text-align:center">public void setTimeInMillis(long millis)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">用给定的long值设置此Calendar的当前时间值</td>
+</tr>
+<tr>
+<td style="text-align:center">25</td>
+<td style="text-align:center">public void setTimeZone(TimeZone value)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">使用给定的时区值来设置时区</td>
+</tr>
+<tr>
+<td style="text-align:center">26</td>
+<td style="text-align:center">public String toString()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此日历的字符串表示</td>
+</tr>
+</tbody>
+</table>
+<p>​		在Calendar类中除了存在功能强大的方法之外，还有众多的常量，下表列出一些常用的常量，更多的常量可前往API帮助文档内查看。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">常量</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public static int DATE</td>
+<td style="text-align:center">表示一个月中的某天</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public static int DAY_OF_MONTH</td>
+<td style="text-align:center">表示一个月中的某天</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public static int DAY_OF_WEEK</td>
+<td style="text-align:center">表示一个星期中的某天</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public static int DAY_OF_WEEK_IN_MONTH</td>
+<td style="text-align:center">表示当前月中的第几个星期</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public static int DAY_OF_YEAR</td>
+<td style="text-align:center">表示当前年中的天数</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public static int MINUTE</td>
+<td style="text-align:center">表示一小时中的分钟</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public static int SECOND</td>
+<td style="text-align:center">表示一分钟中的秒</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public static int MONTH</td>
+<td style="text-align:center">表示月份</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public static int HOUR</td>
+<td style="text-align:center">表示上午或下午的小时</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public static int HOUR_OF_DAY</td>
+<td style="text-align:center">表示一天中的小时</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public static int WEEK_OF_MONTH</td>
+<td style="text-align:center">表示当前月中的星期数</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public static int WEEK_OF_YEAR</td>
+<td style="text-align:center">表示当前年中的星期数</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public static int YEAR</td>
+<td style="text-align:center">表示年份</td>
+</tr>
+</tbody>
+</table>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.GregorianCalendar;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Calendar cal1=Calendar.getInstance();</span><br><span class="line">        Calendar cal2=<span class="keyword">new</span> GregorianCalendar();</span><br><span class="line">        System.out.println(<span class="string">&quot;年份：&quot;</span>+cal1.get(Calendar.YEAR));</span><br><span class="line">        System.out.println(<span class="string">&quot;月份：&quot;</span>+(cal1.get(Calendar.MONTH)+<span class="number">1</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;号数：&quot;</span>+cal1.get(Calendar.DATE));</span><br><span class="line">        System.out.println(<span class="string">&quot;今年的第&quot;</span>+cal1.get(Calendar.DAY_OF_YEAR)+<span class="string">&quot;天&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;本月的第&quot;</span>+cal1.get(Calendar.DAY_OF_MONTH)+<span class="string">&quot;天&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;本月的第&quot;</span>+cal1.get(Calendar.DAY_OF_WEEK_IN_MONTH)+<span class="string">&quot;周&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;星期&quot;</span>+(cal1.get(Calendar.DAY_OF_WEEK)-<span class="number">1</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;24小时制：&quot;</span>+cal1.get(Calendar.HOUR_OF_DAY));</span><br><span class="line">        System.out.println(<span class="string">&quot;12小时制：&quot;</span>+cal1.get(Calendar.HOUR));</span><br><span class="line">        System.out.println(<span class="string">&quot;分钟：&quot;</span>+cal1.get(Calendar.MINUTE));</span><br><span class="line">        System.out.println(<span class="string">&quot;秒钟：&quot;</span>+cal1.get(Calendar.SECOND));</span><br><span class="line">        System.out.println(<span class="string">&quot;毫秒：&quot;</span>+cal1.get(Calendar.MILLISECOND));</span><br><span class="line">        System.out.println(<span class="string">&quot;日期：&quot;</span>+cal1.getTime());</span><br><span class="line">        cal2.set(<span class="number">2022</span>,<span class="number">1</span>,<span class="number">1</span>);			<span class="comment">//2022年的春节为2.1</span></span><br><span class="line">        <span class="keyword">long</span> time=cal2.getTimeInMillis()-cal1.getTimeInMillis();</span><br><span class="line">        <span class="keyword">long</span> day=time/(<span class="number">24</span>*<span class="number">60</span>*<span class="number">60</span>*<span class="number">1000</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;今天距离2022的春节还有&quot;</span>+day+<span class="string">&quot;天&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">年份：<span class="number">2021</span></span><br><span class="line">月份：<span class="number">8</span></span><br><span class="line">号数：<span class="number">9</span></span><br><span class="line">今年的第<span class="number">221</span>天</span><br><span class="line">本月的第<span class="number">9</span>天</span><br><span class="line">本月的第<span class="number">2</span>周</span><br><span class="line">星期<span class="number">1</span></span><br><span class="line"><span class="number">24</span>小时制：<span class="number">14</span></span><br><span class="line"><span class="number">12</span>小时制：<span class="number">2</span></span><br><span class="line">分钟：<span class="number">36</span></span><br><span class="line">秒钟：<span class="number">52</span></span><br><span class="line">毫秒：<span class="number">851</span></span><br><span class="line">日期：Mon Aug 09 <span class="number">14</span>:<span class="number">36</span>:<span class="number">52</span> CST <span class="number">2021</span></span><br><span class="line">今天距离<span class="number">2022</span>的春节还有<span class="number">176</span>天</span><br></pre></td></tr></table></figure>
+<p>​		在以上程序中，cal1是通过Calendar类中的getInstance()方法实例化的，而cal2是通过Calendar的子类GregorianCalendar实例化的。其中，需要注意的是：第一，在Calendar类中，0表示1月份。第二，获取星期几时要减1，因为一个星期的第一天是从星期天开始算的。</p>
+<h3 id="日期格式类dateformat类"><a class="markdownIt-Anchor" href="#日期格式类dateformat类"></a> 日期格式类：DateFormat类</h3>
+<p>​		在程序设计中，日期和时间的处理要根据不同的需求显示不同的样式。前面学习到的Date类虽然可以获取精确的时间，但是显示格式不理想。为此java语言提供了java.textDateFormat类用于日期和时间的格式化处理。DateFormat类的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">DateFormat</span> <span class="keyword">extends</span> <span class="title">Format</span></span></span><br></pre></td></tr></table></figure>
+<p>​		可以看出DateFormat类与前面的Calendar类一样作为抽象类，所以不能使用new关键字实例化，而是使用DateFormat类中提供的静态方法getDateFormat()实例化。DateFormat类的常用变量和方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public static int DEFAULT</td>
+<td style="text-align:center">常量</td>
+<td style="text-align:center">用于默认模式的常量</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public static int FULL</td>
+<td style="text-align:center">常量</td>
+<td style="text-align:center">用于FULL模式的常量</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public static int LONG</td>
+<td style="text-align:center">常量</td>
+<td style="text-align:center">用于LONG模式的常量</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public static int MEDIUM</td>
+<td style="text-align:center">常量</td>
+<td style="text-align:center">用于MEDIUM模式的常量</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public static int SHORT</td>
+<td style="text-align:center">常量</td>
+<td style="text-align:center">用于SHORT模式的常量</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public String format(Date date)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>将一个Date格式化为日期/时间字符串</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public Calendar getCalendar()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获得此日期/时间格式关联的日历</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public static DateFormat getDateInstance()</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>获得日期格式，该格式具有默认FORMAT语言环境的默认格式化风格</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public static DateFormat getDateInstance(int style)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">获得日期格式，该格式具有默认语言环境的<strong>给定</strong>格式化风格</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public static DateFormat getDateInstance(int style,Locale aLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">获得日期格式，该格式具有<strong>给定</strong>语言环境的<strong>给定</strong>格式化风格</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>11</strong></td>
+<td style="text-align:center"><strong>public static DateFormat getDateTimeInstance()</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>获得日期/时间格式，该格式具有默认语言环境的默认格式化风格</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public static DateFormat getDateTimeInstance(int dateStyle,int timeStyle)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">获得日期/时间格式，该格式具有给定语言环境的<strong>给定</strong>格式化风格</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>13</strong></td>
+<td style="text-align:center"><strong>public static  DateFormat getInstance()</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>获得使用SHORT风格的默认日期/时间格式</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public NumberFormat getNumberFomat()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获得此日期/时间格式用于格式化和分析时间的数字</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>15</strong></td>
+<td style="text-align:center"><strong>public static DateFormat getTimeInstance()</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>获得时间格式，该格式具有默认语言环境的默认格式化风格</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public static DateFormat getTimeInstance(int style)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">获得时间格式，该格式具有默认语言环境的给定格式化风格</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">public static DateFormat getTimeInstance(int style,Locale aLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">获得时间格式，该格式具有给定语言环境的给定格式化风格</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">public TimeZone getTimeZone()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获得时区</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">public Date parse(String source)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定的字符串解析成日期/时间</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">public void setCalendar(Calendar newCalendar)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置此日期格式所使用的日历</td>
+</tr>
+<tr>
+<td style="text-align:center">21</td>
+<td style="text-align:center">public void setNumberFormat(NumberFomat newNumberFomat)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">允许用户设置数字格式</td>
+</tr>
+<tr>
+<td style="text-align:center">22</td>
+<td style="text-align:center">public void setTimeZone(Timezone zone)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">指定DateFormat对象的日历设置时区</td>
+</tr>
+</tbody>
+</table>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.text.DateFormat;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        DateFormat df1=DateFormat.getInstance();</span><br><span class="line">        DateFormat df2=DateFormat.getDateInstance();</span><br><span class="line">        DateFormat df3=DateFormat.getTimeInstance();</span><br><span class="line">        DateFormat df4=DateFormat.getDateTimeInstance();</span><br><span class="line">        System.out.println(<span class="string">&quot;默认：&quot;</span>+df1.format(<span class="keyword">new</span> Date()));</span><br><span class="line">        System.out.println(<span class="string">&quot;Date默认：&quot;</span>+df2.format(<span class="keyword">new</span> Date()));		<span class="comment">//格式化日期</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Time默认：&quot;</span>+df3.format(<span class="keyword">new</span> Date()));		<span class="comment">//格式化时间</span></span><br><span class="line">        System.out.println(<span class="string">&quot;DateTime默认：&quot;</span>+df4.format(<span class="keyword">new</span> Date()));	<span class="comment">//格式化日期时间</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">默认：<span class="number">21</span>-<span class="number">8</span>-<span class="number">9</span> 下午<span class="number">3</span>:<span class="number">27</span></span><br><span class="line">Date默认：<span class="number">2021</span>-<span class="number">8</span>-<span class="number">9</span></span><br><span class="line">Time默认：<span class="number">15</span>:<span class="number">27</span>:<span class="number">38</span></span><br><span class="line">DateTime默认：<span class="number">2021</span>-<span class="number">8</span>-<span class="number">9</span> <span class="number">15</span>:<span class="number">27</span>:<span class="number">38</span></span><br></pre></td></tr></table></figure>
+<p>​		程序执行后显示的时间格式比前面的Date类和Calendar类输出的时间格式好一些，但不是很符合中文的显示格式。若想要显示更加合理的日期格式，在构造DateFormat实例时，可传入DateFormat的常量和Locale常量。</p>
+<p>输出中文格式的日期：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Locale;</span><br><span class="line"><span class="keyword">import</span> java.text.DateFormat;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        DateFormat dfSHORT=DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,Locale.CHINA);</span><br><span class="line">        DateFormat dfMEDIUM=DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,Locale.CHINA);</span><br><span class="line">        DateFormat dfDEFAULT=DateFormat.getDateTimeInstance(DateFormat.DEFAULT,DateFormat.DEFAULT,Locale.CHINA);</span><br><span class="line">        DateFormat dfFULL=DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL,Locale.CHINA);</span><br><span class="line">        DateFormat dfLONG=DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG,Locale.CHINA);</span><br><span class="line">        System.out.println(<span class="string">&quot;SHORT型：&quot;</span>+dfSHORT.format(<span class="keyword">new</span> Date()));</span><br><span class="line">        System.out.println(<span class="string">&quot;MEDIUM型：&quot;</span>+dfMEDIUM.format(<span class="keyword">new</span> Date()));</span><br><span class="line">        System.out.println(<span class="string">&quot;EFAULT型：&quot;</span>+dfDEFAULT.format(<span class="keyword">new</span> Date()));</span><br><span class="line">        System.out.println(<span class="string">&quot;FULL型：&quot;</span>+dfFULL.format(<span class="keyword">new</span> Date()));</span><br><span class="line">        System.out.println(<span class="string">&quot;fLONG型：&quot;</span>+dfLONG.format(<span class="keyword">new</span> Date()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SHORT型：<span class="number">21</span>-<span class="number">8</span>-<span class="number">9</span> 下午<span class="number">3</span>:<span class="number">53</span></span><br><span class="line">MEDIUM型：<span class="number">2021</span>-<span class="number">8</span>-<span class="number">9</span> <span class="number">15</span>:<span class="number">53</span>:<span class="number">59</span></span><br><span class="line">EFAULT型：<span class="number">2021</span>-<span class="number">8</span>-<span class="number">9</span> <span class="number">15</span>:<span class="number">53</span>:<span class="number">59</span></span><br><span class="line">FULL型：<span class="number">2021</span>年<span class="number">8</span>月<span class="number">9</span>日 星期一 下午<span class="number">03</span>时<span class="number">53</span>分<span class="number">59</span>秒 CST</span><br><span class="line">fLONG型：<span class="number">2021</span>年<span class="number">8</span>月<span class="number">9</span>日 下午<span class="number">03</span>时<span class="number">53</span>分<span class="number">59</span>秒</span><br></pre></td></tr></table></figure>
+<p>​		以上程序，getDateTimeFormat()方法使用了三个参数，这是因为该方法获取的数据有两个，分别是日期和时间，所以参数的列表也应对应三个，分别为(int dateStyle,int TimeStyle,Locale aLocale)，以上表格为简化形式。</p>
+<p>​		从程序的运行结果可以发现，FULL模式和LONG模式较好地符合了中国显示习惯。若开发人员想要得到自己定义的格式，需要用到DateFormat的子类SimpleDateFormat。</p>
+<h3 id="转换日期格式类simpledateformat类"><a class="markdownIt-Anchor" href="#转换日期格式类simpledateformat类"></a> 转换日期格式类：SimpleDateFormat类</h3>
+<p>​		在程序设计汇总，经常用到特定的日期时间格式，前面的DateFormat类明显不能满足要求，如将2021年8月9日 15:53:59转化为21年8月9日 15:53:59。这两个日期表示的都是同一个时间点，不同的是日期格式更加省略。</p>
+<p>​		想要转换自定义格式，可以使用java.text.SimpleDateFormat类。SimpleDateFormat是以日期时间格式化类，一个与语言环境相关的方式和解析日期的具体类。</p>
+<p>​		使用SimpleDateFormat类时，首先要定义一个完整的日期时间转换模板，在模板中可以通过特定的日期时间标记将一个日期时间的数字提取出来。日期时间格式模板中的字母及其含义如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">标记</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">y</td>
+<td style="text-align:center">表示年份。一般使用yy标记两位年份，yyyy标记四位年份</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">M</td>
+<td style="text-align:center">表示月份。一般使用MM标记两位年份，若使用MMM，则会根据语言环境的不同，显示不同的月份</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">d</td>
+<td style="text-align:center">表示月份中的天数。一般使用dd表示天数</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">D</td>
+<td style="text-align:center">表示年份中的天数。一般使用D表示当天是当年的第几天</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">E</td>
+<td style="text-align:center">表示星期中的天数。使用E即可标记，会根据语言环境的不同，显示不同的星期几</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">H</td>
+<td style="text-align:center">表示一天的小时数(24小时制)。一般使用HH标记</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">h</td>
+<td style="text-align:center">表示一天的小时数(12小时制)。一般使用hh标记</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">m</td>
+<td style="text-align:center">表示小时中的分钟数。一般使用mm标记</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">s</td>
+<td style="text-align:center">表示分钟中的秒数。一般使用ss标记</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">S</td>
+<td style="text-align:center">表示毫秒数。一般使用SSS标记</td>
+</tr>
+</tbody>
+</table>
+<p>​		处理使用以上的模板标记，还需要使用SimpleDateFormat类中的一些方法，常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public SimpleDateFormat()</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">用默认的模式和默认语言环境的日期格式符号构造SimpleDateFormat对象</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public SimpleDateFormat(String pattern)</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>用给定的模式和默认语言环境的日期格式符号构造SimpleDateFormat对象</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public SimpleDateFormat(String pattern,Locale locale)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">用给定的模式和给定的语言环境的默认日期格式符号构造SimpleDateFormat对象</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void applyLocalizedPattren(String pattern)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定的本地化模式字符串应用于此日期格式</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public void applyPattern(String pattern)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定模式字符串应用与此日期格式</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public String format(Date date)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>将一个Date格式化为日期/时间字符串</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public StringBuffer format(Date date,StringBuffer toAppendTo,FieldPosition pos)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定的Date格式化为日期/时间字符串，并将结果追加到给定的StringBuffer</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public public Date parse(String source) Throws ParseException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>将一个包含日期的字符串转变为Date类型</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public Date parse(String text,ParsePosition pos)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">分析字符串的文本，生成Date</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public void setDateFormatSymbols(DateFormatSymbols newFormatSymbols)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置此日期格式的日期和时间格式符号</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public String toLocalizePattern()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回描述此日期格式的本地化模式字符串</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public String toPattern()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回描述此日期格式的模式字符串</td>
+</tr>
+</tbody>
+</table>
+<h4 id="使用指定的格式模板输出日期和时间"><a class="markdownIt-Anchor" href="#使用指定的格式模板输出日期和时间"></a> 使用指定的格式模板输出日期和时间</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        String format1=<span class="string">&quot;yyyy年MM月dd日 HH:mm:ss E&quot;</span>;			<span class="comment">//指定日期时间格式模板</span></span><br><span class="line">        String format2=<span class="string">&quot;yyyy年MM月dd日 HH时mm分ss秒SSS E&quot;</span>;</span><br><span class="line">        SimpleDateFormat sdf1=<span class="keyword">new</span> SimpleDateFormat(format1);	<span class="comment">//使用指定模板实例化对象</span></span><br><span class="line">        SimpleDateFormat sdf2=<span class="keyword">new</span> SimpleDateFormat(format2);</span><br><span class="line">        String d1=sdf1.format(<span class="keyword">new</span> Date());</span><br><span class="line">        String d2=sdf2.format(<span class="keyword">new</span> Date());</span><br><span class="line">        System.out.println(d1);</span><br><span class="line">        System.out.println(d2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2021</span>年08月09日 <span class="number">16</span>:<span class="number">57</span>:<span class="number">47</span> 星期一</span><br><span class="line"><span class="number">2021</span>年08月09日 <span class="number">16</span>时<span class="number">57</span>分<span class="number">47</span>秒<span class="number">421</span> 星期一</span><br></pre></td></tr></table></figure>
+<p>​		以上程序是以指定的日期时间格式format的模板形式显示日期时间的。SimpleDateFormat类还可以将包含日期的字符串转换为日期Date类型。</p>
+<h4 id="将包含日期的字符串转换为日期date类型"><a class="markdownIt-Anchor" href="#将包含日期的字符串转换为日期date类型"></a> 将包含日期的字符串转换为日期Date类型</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.text.ParseException;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        String strDate=<span class="string">&quot;2021-08-09 17:02:32.562&quot;</span>;</span><br><span class="line">        String format=<span class="string">&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;</span>;</span><br><span class="line">        SimpleDateFormat sdf=<span class="keyword">new</span> SimpleDateFormat(format);</span><br><span class="line">        Date date=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            date=sdf.parse(strDate);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(ParseException e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">        System.out.println(date);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Mon Aug 09 <span class="number">17</span>:<span class="number">02</span>:<span class="number">32</span> CST <span class="number">2021</span></span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，使用parse()方法将字符串解析为Date类型时，需要进行异常处理。还需要注意的是，指定日期时间模板的格式是要与日期时间的字符串一致，否则在运行时将产生错误。</p>
+<p>错误如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">java.text.ParseException: Unparseable date: <span class="string">&quot;2021-08-09 17:02:32:562&quot;</span></span><br><span class="line">        at java.text.DateFormat.parse(Unknown Source)</span><br><span class="line">        at Test.main(Test.java:<span class="number">14</span>)</span><br><span class="line"><span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+<h3 id="牛刀小试"><a class="markdownIt-Anchor" href="#牛刀小试"></a> 牛刀小试</h3>
+<p>​		请编写一段程序，以获取输入日期所在月份的日历。如输出 2021 年 8 月，就可获得 当月的日历。</p>
+<p>​		答：若要编写该程序，首先要获取输出的日期，可以使用Scanner类。在获取了日期后，还需要获得该日期当前月的1号是星期几，该月的天数是多少，这就需要使用Calendar类。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Scanner scan=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        System.out.println(<span class="string">&quot;————请输入年月————&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;年份：&quot;</span>);</span><br><span class="line">        <span class="keyword">int</span> year=scan.nextInt();</span><br><span class="line">        System.out.println(<span class="string">&quot;月份：&quot;</span>);</span><br><span class="line">        <span class="keyword">int</span> month=scan.nextInt();</span><br><span class="line">        <span class="keyword">if</span>(month&lt;<span class="number">1</span>||month&gt;<span class="number">12</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;输入的月份错误！&quot;</span>);</span><br><span class="line">            System.exit(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        Calendar c=Calendar.getInstance();</span><br><span class="line">        c.set(year,month-<span class="number">1</span>,<span class="number">1</span>);		<span class="comment">//将时间设置为指定日期,注意月份</span></span><br><span class="line">        <span class="keyword">int</span> firstday=c.get(Calendar.DAY_OF_WEEK);		<span class="comment">//获取1号为星期几</span></span><br><span class="line">        <span class="keyword">int</span> max=c.getActualMaximum(Calendar.DATE);		<span class="comment">//获取当月最大天数</span></span><br><span class="line">        System.out.println(<span class="string">&quot;      &quot;</span>+year+<span class="string">&quot;年&quot;</span>+month+<span class="string">&quot;月&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;日 一 二 三 四 五 六&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;firstday;i++)			<span class="comment">//输出第一天之前的空白天数</span></span><br><span class="line">        &#123;</span><br><span class="line">            System.out.print(<span class="string">&quot;   &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=max;i++)				<span class="comment">//输出月中的所有日期</span></span><br><span class="line">        &#123;</span><br><span class="line">            System.out.print(i+<span class="string">&quot; &quot;</span>);</span><br><span class="line">            <span class="keyword">if</span>(i&lt;<span class="number">10</span>)</span><br><span class="line">            	System.out.print(<span class="string">&quot; &quot;</span>);</span><br><span class="line">            <span class="keyword">if</span>((firstday+i-<span class="number">1</span>)%<span class="number">7</span>==<span class="number">0</span>)</span><br><span class="line">                System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BB1.png" alt="" /></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/08/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E7%B3%BB%E7%BB%9F%E7%B1%BB%EF%BC%9ASystem%E7%B1%BB/" rel="prev" title="系统类：System类">
+      <i class="fa fa-chevron-left"></i> 系统类：System类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/09/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%95%B0%E5%AD%A6%E7%B1%BB%EF%BC%9AMath%E7%B1%BB/" rel="next" title="数学类：Math类">
+      数学类：Math类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%97%A5%E6%9C%9F%E6%93%8D%E4%BD%9C%E7%B1%BBdate%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text"> 简单日期操作类：Date类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E6%8A%BD%E8%B1%A1%E7%B1%BBcalendar%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text"> 日期抽象类：Calendar类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E7%B1%BBdateformat%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text"> 日期格式类：DateFormat类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E7%B1%BBsimpledateformat%E7%B1%BB"><span class="nav-number">4.</span> <span class="nav-text"> 转换日期格式类：SimpleDateFormat类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9A%E7%9A%84%E6%A0%BC%E5%BC%8F%E6%A8%A1%E6%9D%BF%E8%BE%93%E5%87%BA%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4"><span class="nav-number">4.1.</span> <span class="nav-text"> 使用指定的格式模板输出日期和时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E5%8C%85%E5%90%AB%E6%97%A5%E6%9C%9F%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%97%A5%E6%9C%9Fdate%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.2.</span> <span class="nav-text"> 将包含日期的字符串转换为日期Date类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%9B%E5%88%80%E5%B0%8F%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text"> 牛刀小试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

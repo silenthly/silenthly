@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		枚举原本是 C 语言或 C++语言中的一种构造类型。当一个变量有几种可能的取值时， 将变量的值一一列出来，变量的值只限于列举出来的值的范围内，这称为枚举。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="枚举">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/20/java/%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B/%E6%9E%9A%E4%B8%BE/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		枚举原本是 C 语言或 C++语言中的一种构造类型。当一个变量有几种可能的取值时， 将变量的值一一列出来，变量的值只限于列举出来的值的范围内，这称为枚举。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-20T13:26:01.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:45:15.312Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/20/java/%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B/%E6%9E%9A%E4%B8%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>枚举 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/20/java/%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B/%E6%9E%9A%E4%B8%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          枚举
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-20 21:26:01" itemprop="dateCreated datePublished" datetime="2021-08-20T21:26:01+08:00">2021-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:45:15" itemprop="dateModified" datetime="2021-10-27T12:45:15+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/20/java/%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B/%E6%9E%9A%E4%B8%BE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/20/java/%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B/%E6%9E%9A%E4%B8%BE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		枚举原本是 C 语言或 C++语言中的一种构造类型。当一个变量有几种可能的取值时， 将变量的值一一列出来，变量的值只限于列举出来的值的范围内，这称为枚举。</p>
+<span id="more"></span>
+<h3 id="为什么要使用枚举"><a class="markdownIt-Anchor" href="#为什么要使用枚举"></a> 为什么要使用枚举</h3>
+<p>​		JDK 1.5 开始引入了枚举类型，可以使用枚举取代以往通过定义常量的方式来限制一个类的对象产生范围。java增加枚举之后，不但扩充了java的类集，还赋予了程序在编译时检查的功能。</p>
+<p>​		在某些情况下，一个类的对象是有限且固定的，如方向类，它只有东南西北这4个对象，其他的任何值都是非法的。在以往没有泛型的程序设计中，会采取以下的方式构建这样的代码。</p>
+<p>代码示例：(使用普通类)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Directions</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        setName(name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Directions EAST=<span class="keyword">new</span> Directions(<span class="string">&quot;东&quot;</span>);	<span class="comment">//创建“东”实例</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Directions SOUTH=<span class="keyword">new</span> Directions(<span class="string">&quot;南&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Directions WEST=<span class="keyword">new</span> Directions(<span class="string">&quot;西&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Directions NORTH=<span class="keyword">new</span> Directions(<span class="string">&quot;北&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Directions <span class="title">getDirections</span><span class="params">(<span class="keyword">int</span> direcNumber)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span>(direcNumber)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> EAST;		<span class="comment">//返回“东”实例</span></span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> SOUTH;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                <span class="keyword">return</span> WEST;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                <span class="keyword">return</span> NORTH;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span>		<span class="comment">//重写toString()方法</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getName();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Directions dirEast=Directions.getDirections(<span class="number">0</span>);		<span class="comment">//获取东</span></span><br><span class="line">        System.out.println(<span class="string">&quot;获取Directions对象：&quot;</span>+dirEast);</span><br><span class="line">        Directions dirWest=Directions.getDirections(<span class="number">2</span>);		<span class="comment">//获取西</span></span><br><span class="line">        System.out.println(<span class="string">&quot;获取Directions对象：&quot;</span>+dirWest);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">获取Directions对象：东</span><br><span class="line">获取Directions对象：西</span><br></pre></td></tr></table></figure>
+<p>​		在以上程序中，Directions 类有以下几个特点：</p>
+<ul>
+<li>构造方法是 private 的，这是单例设计模式。</li>
+<li>该类的对象是有限，有4个对象类型，且用 public  static final 属性来保存。</li>
+<li>其他类通过调用该类的静态方法 getDirections()方法取得相对应的实例。</li>
+</ul>
+<p>​		由于 Directions 类的构造方法是 private 的，所有只能通过 getDirections()方法取得 Directions 的实例，且只能从 EAST、SOUTH、WEST、NORTH 中选择，这样可以有效地限制对象的取值范围。除此之外，<strong>还可以通过接口的方式限制方向的取值范围，但此时 Directions 对象需要使用常量表示</strong>。</p>
+<p>代码示例：(使用接口)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EAST=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SOUTH=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> WEST=<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NORTH=<span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;获取东属性：&quot;</span>+Directions.EAST);</span><br><span class="line">        System.out.println(<span class="string">&quot;获取西属性：&quot;</span>+Directions.WEST);</span><br><span class="line">        System.out.println(<span class="string">&quot;错误属性：&quot;</span>+(Directions.WEST+Directions.NORTH)); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">获取东属性：<span class="number">0</span></span><br><span class="line">获取西属性：<span class="number">2</span></span><br><span class="line">错误属性：<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>​		从以上程序可以发现，使用接口的方式相对较为简单， 但容易产生歧义，如 Directions.WEST+Directions.NORTH。 还有意义不明确的，如打印输出的是0，用户不查看文档就 很难知道0代表的是东。</p>
+<p>​		以上这两种形式都无法让用户了解程序可以提供的向种类，如有没有前后左右上下等。若想实现这样的功能，将是一个复杂的过程。从这个意义上来说，枚举的存在是非常有用的。</p>
+<h3 id="定义枚举类型"><a class="markdownIt-Anchor" href="#定义枚举类型"></a> 定义枚举类型</h3>
+<p>​		从 JDK 1.5 开始 java 新增了一个关键字 enum，用来定义枚举类型。<strong>枚举类型是一个常量集合的数据类型，所以枚举类型中的枚举成员的标识符都是大写的</strong>。</p>
+<h4 id="常见的枚举定义方法"><a class="markdownIt-Anchor" href="#常见的枚举定义方法"></a> 常见的枚举定义方法</h4>
+<p>​		从 JDK 1.5 开始可以使用 enum 关键字直接定义枚举类型，其语法格式如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">public</span>] <span class="class"><span class="keyword">enum</span> 枚举类型名</span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    枚举成员<span class="number">1</span>,枚举成员<span class="number">2.</span>..枚举成员n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		其中，定义枚举类型时，各成员之类使用英文的逗号（,）分隔开。<strong>一个源文件只能定义一个 public 类型的枚举类型</strong>，枚举类型经过 java 编译器编译后，也将产生一个字节码文件（.class）。枚举类型本质上也是类，不过是一个特殊的类。</p>
+<blockquote>
+<p>注意：所有的枚举类型都隐性地继承 java.lang.Enum。</p>
+</blockquote>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;		<span class="comment">//定义枚举成员</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Directions dir=Directions.EAST;</span><br><span class="line">        System.out.println(<span class="string">&quot;获取的枚举成员：&quot;</span>+dir);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">获取的枚举成员：EAST</span><br></pre></td></tr></table></figure>
+<h4 id="在-switch-语句中使用枚举"><a class="markdownIt-Anchor" href="#在-switch-语句中使用枚举"></a> 在 switch 语句中使用枚举</h4>
+<p>​		 switch 语句是支持枚举类型的，下面演示使用 switch 语句判断枚举类型。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;		<span class="comment">//定义枚举成员</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(Directions dir)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span>(dir)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> EAST:</span><br><span class="line">                System.out.println(<span class="string">&quot;您传递进来的枚举成员为：东&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> SOUTH:</span><br><span class="line">                System.out.println(<span class="string">&quot;您传递进来的枚举成员为：南&quot;</span>); </span><br><span class="line">                <span class="keyword">break</span>; </span><br><span class="line">            <span class="keyword">case</span> WEST:</span><br><span class="line">                System.out.println(<span class="string">&quot;您传递进来的枚举成员为：西&quot;</span>); </span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> NORTH:</span><br><span class="line">                System.out.println(<span class="string">&quot;您传递进来的枚举成员为：北&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Directions dir=Directions.WEST;</span><br><span class="line">        show(dir);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">您传递进来的枚举成员为：西</span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，<strong>在 switch 语句中不能在每个 case 语句的枚举类型值前面加上枚举类型的类名</strong>，如 （Directions.WEST），可见枚举有参数类型检测优势。 若调用 show()方法时传入的参数不是 Directions 类型， 程序编译时将会报错。例如，在 main()方法中调用 show(0)，将会抛出如下异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Test.java:<span class="number">28</span>: 错误: 不兼容的类型: <span class="keyword">int</span>无法转换为<span class="function">Directions</span></span><br><span class="line"><span class="function">        <span class="title">show</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line">             ^</span><br><span class="line">注: 某些消息已经过简化; 请使用 -Xdiags:verbose 重新编译以获得完整输出</span><br><span class="line"><span class="number">1</span> 个错误</span><br></pre></td></tr></table></figure>
+<h4 id="枚举类型与枚举类的区别"><a class="markdownIt-Anchor" href="#枚举类型与枚举类的区别"></a> 枚举类型与枚举类的区别</h4>
+<p>​		使用 enum 关键字可以定义一个枚举类型，实际上相当于定义了一个类，该类继承了 java.lang.Enum 类。可以使用 values()遍历所有的枚举成员。</p>
+<p>​		枚举类 Enum 是 java.lang 包中的一个类，该类的构造方法是 protected 的。实际上定义 一个枚举类型之后，就会自动调用 Enum 类的构造方法。Enum 类中还有许多的方法可以被调用。</p>
+<h3 id="枚举类enum"><a class="markdownIt-Anchor" href="#枚举类enum"></a> 枚举类：Enum</h3>
+<p>​		前面提示过，所有的枚举类型都隐性地继承 java.lang.Enum 类，就是说所有的枚举类型都可以看成一个类。<strong>当定义一个枚举类型时，每一个枚举类型成员都是枚举类型的一个 实例</strong>。<strong>这些实例的默认属性为 public static final，可以直接通过“类名.变量”的形式访问</strong>。</p>
+<p>java.lang.Enum类的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Enum</span>&lt;<span class="title">E</span> <span class="keyword">extends</span> <span class="title">Enum</span>&lt;<span class="title">E</span>&gt;&gt; <span class="keyword">extends</span> <span class="title">Object</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">E</span>&gt;,<span class="title">Serializable</span></span></span><br></pre></td></tr></table></figure>
+<p>​		可以发现，Enum 类是抽象类且实现了 Comparable 和 Serializable 接口，索引枚举类型可以使用比较器和进行序列化操作。由于枚举类型继承了 Enum 类，<strong>所有 Enum 类中的以下关于操作枚举类型的方法，都可以运用到枚举类型中</strong>。Enum 类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>protected Enum(String name,int ordinal)</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>以指定枚举的名称和枚举的常量创建枚举对象</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">protected Object clone()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">克隆枚举对象</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public int compareTo(E o)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">比较此枚举与指定对象的顺序</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public boolean equals(Object other)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">比较两个枚举对象是否相等。若相等，则返回true，否则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public Class getDeclaringClass()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回与指定枚举常量的枚举类型相对应的Class对象</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public int hashCode()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回枚举常量的哈希码</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>7</strong></td>
+<td style="text-align:center"><strong>public String name()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回此枚举常量的名称，不能被重写</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public int ordinal()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回枚举常量的序数（它在枚举声明中的位置，其中初始常量序数为 0）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public String toString()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回枚举常量的名称，可重写</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>10</strong></td>
+<td style="text-align:center"><strong>public static &gt; T  valueOf(Class enumType, String name)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回带指定名称的指定枚举类型的枚举常量</strong></td>
+</tr>
+</tbody>
+</table>
+<p>​		下面通过一些范例演示 Enum 类的使用。</p>
+<h4 id="枚举类型的values方法"><a class="markdownIt-Anchor" href="#枚举类型的values方法"></a> 枚举类型的values()方法</h4>
+<p>​		<strong>枚举类型实例都含有一个 values()方法，该方法是静态方法</strong>，用于将枚举类型的成员<strong>以数组的形式返回</strong>，也可以通过该方法获取枚举成员信息。</p>
+<p>代码实例：(验证values()方法)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;		<span class="comment">//定义枚举成员</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;使用循环方式输出：&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;Directions.values().length;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;枚举成员：&quot;</span>+Directions.values()[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;使用foreach方式输出：&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(Directions dir:Directions.values())</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;枚举成员：&quot;</span>+dir); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">使用循环方式输出：</span><br><span class="line">枚举成员：EAST</span><br><span class="line">枚举成员：SOUTH</span><br><span class="line">枚举成员：WEST</span><br><span class="line">枚举成员：NORTH</span><br><span class="line">使用foreach方式输出：</span><br><span class="line">枚举成员：EAST</span><br><span class="line">枚举成员：SOUTH</span><br><span class="line">枚举成员：WEST</span><br><span class="line">枚举成员：NORTH</span><br></pre></td></tr></table></figure>
+<p>​		可以发现，values()是静态方法，可以通过“枚举.values()” 的形式调用。<strong>该方法返回的是枚举类型的数组</strong>，所以可以使 用length获取其长度。</p>
+<h4 id="获取枚举成员的名称和索引"><a class="markdownIt-Anchor" href="#获取枚举成员的名称和索引"></a> 获取枚举成员的名称和索引</h4>
+<p>​		在 Enum 类中，提供了name()方法可以获取枚举类型成员的名称，而ordinal()方法用于获取每个枚举成员的索引值， 索引值从0 开始。</p>
+<p>代码示例：(获取枚举成员的名称和索引)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;		<span class="comment">//定义枚举成员</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;使用循环方式输出：&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;Directions.values().length;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;索引位置：&quot;</span>+Directions.values()[i].ordinal()+ </span><br><span class="line"> <span class="string">&quot;，枚举成员名称：&quot;</span>+Directions.values()[i].name()); </span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;使用foreach方式输出：&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(Directions dir:Directions.values())</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;索引位置：&quot;</span>+dir.ordinal()+ </span><br><span class="line"> <span class="string">&quot;，枚举成员名称：&quot;</span>+dir.name());  </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">使用循环方式输出：</span><br><span class="line">索引位置：<span class="number">0</span>，枚举成员名称：EAST</span><br><span class="line">索引位置：<span class="number">1</span>，枚举成员名称：SOUTH</span><br><span class="line">索引位置：<span class="number">2</span>，枚举成员名称：WEST</span><br><span class="line">索引位置：<span class="number">3</span>，枚举成员名称：NORTH</span><br><span class="line">使用foreach方式输出：</span><br><span class="line">索引位置：<span class="number">0</span>，枚举成员名称：EAST</span><br><span class="line">索引位置：<span class="number">1</span>，枚举成员名称：SOUTH</span><br><span class="line">索引位置：<span class="number">2</span>，枚举成员名称：WEST</span><br><span class="line">索引位置：<span class="number">3</span>，枚举成员名称：NORTH</span><br></pre></td></tr></table></figure>
+<p>​		在以上程序中，使用的是循环方式和 foreach 方式获取每个枚举成员，foreach显得更为简洁。Enum 类会自动为枚举类型中的每一个枚举成员进行自动编号，从 0 开始。</p>
+<h4 id="枚举类的构造方法与valueof方法"><a class="markdownIt-Anchor" href="#枚举类的构造方法与valueof方法"></a> 枚举类的构造方法与valueof()方法</h4>
+<p>​		枚举类型是一个特殊的类，那么类相关的规则在枚举类型中也是适用的。枚举类的构造方法常用作添加枚举成员的构造方法，为各个枚举成员添加附加的说明。枚举类型中的静态方法 valueOf()可将字符串转变为枚举类型。</p>
+<p>代码示例：( 枚举类型对象属性)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST(<span class="string">&quot;东&quot;</span>),SOUTH(<span class="string">&quot;南&quot;</span>),WEST(<span class="string">&quot;西&quot;</span>),NORTH(<span class="string">&quot;北&quot;</span>);</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Directions</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Directions</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(Directions dir:Directions.values())</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;索引位置：&quot;</span>+dir.ordinal()+<span class="string">&quot;。枚举成员名称：&quot;</span>+dir.name()+<span class="string">&quot;，说明信息：&quot;</span>+dir.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">索引位置：<span class="number">0</span>。枚举成员名称：EAST，说明信息：东</span><br><span class="line">索引位置：<span class="number">1</span>。枚举成员名称：SOUTH，说明信息：南</span><br><span class="line">索引位置：<span class="number">2</span>。枚举成员名称：WEST，说明信息：西</span><br><span class="line">索引位置：<span class="number">3</span>。枚举成员名称：NORTH，说明信息：北</span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，Directions 类的构造方法为 private 的，这意味着外部是无法调用其构造方法创建对象的。其中，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EAST(<span class="string">&quot;东&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>相当于：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Directions EAST=<span class="keyword">new</span> Directions(<span class="string">&quot;东&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>​		还可以使用 setter 方法来设置枚举成员的属性，但操作的枚举成员的属性值是明确的。 如果操作的对象是 EAST，则其属性值应该为东，若操作的是 WEST，则其属性值应该是西。</p>
+<p>代码示例：(使用 setter 方法设置枚举成员的属性)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span>(<span class="keyword">this</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> EAST:</span><br><span class="line">                <span class="keyword">if</span>(name.equals(<span class="string">&quot;东&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">this</span>.name=name;</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                	&#123;</span><br><span class="line">                    	System.out.println(<span class="string">&quot;设置EAST属性错误！&quot;</span>);</span><br><span class="line">                    	<span class="keyword">return</span>;</span><br><span class="line">                	&#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">             <span class="keyword">case</span> SOUTH:</span><br><span class="line">                <span class="keyword">if</span>(name.equals(<span class="string">&quot;南&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">this</span>.name=name;</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                	&#123;</span><br><span class="line">                    	System.out.println(<span class="string">&quot;设置SOUTH属性错误！&quot;</span>);</span><br><span class="line">                    	<span class="keyword">return</span>;</span><br><span class="line">                	&#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">             <span class="keyword">case</span> WEST:</span><br><span class="line">                <span class="keyword">if</span>(name.equals(<span class="string">&quot;西&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">this</span>.name=name;</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                	&#123;</span><br><span class="line">                    	System.out.println(<span class="string">&quot;设置WEST属性错误！&quot;</span>);</span><br><span class="line">                    	<span class="keyword">return</span>;</span><br><span class="line">                	&#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">             <span class="keyword">case</span> NORTH:</span><br><span class="line">                <span class="keyword">if</span>(name.equals(<span class="string">&quot;北&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">this</span>.name=name;</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                	&#123;</span><br><span class="line">                    	System.out.println(<span class="string">&quot;设置NORTH属性错误！&quot;</span>);</span><br><span class="line">                    	<span class="keyword">return</span>;</span><br><span class="line">                	&#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Directions dir=Directions.SOUTH;</span><br><span class="line">        dir.setName(<span class="string">&quot;南&quot;</span>); </span><br><span class="line">        System.out.println(<span class="string">&quot;属性：&quot;</span>+dir.getName());</span><br><span class="line">        dir.setName(<span class="string">&quot;左&quot;</span>); </span><br><span class="line">        System.out.println(<span class="string">&quot;属性：&quot;</span>+dir.getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">属性：南</span><br><span class="line">设置SOUTH属性错误！</span><br><span class="line">属性：南</span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，取得枚举类中的枚举成员后，想要为其设置 name 属性，则先要对其进行判断。若符合要求，则执行 this.name=name；不符合要求，则输出“设置 XXX 属性错 误！”。除此之外，还可以通过valueOf()方法获取枚举类的对象。</p>
+<p>代码示例：(valueOf()方法获取枚举类的对象)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Directions dir=Enum.valueOf(Directions.class,<span class="string">&quot;SOUTH&quot;</span>);</span><br><span class="line">        dir.setName(<span class="string">&quot;南&quot;</span>); </span><br><span class="line">        System.out.println(<span class="string">&quot;属性：&quot;</span>+dir.getName());</span><br><span class="line">        dir.setName(<span class="string">&quot;左&quot;</span>); </span><br><span class="line">        System.out.println(<span class="string">&quot;属性：&quot;</span>+dir.getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">属性：南</span><br><span class="line">设置SOUTH属性错误！</span><br><span class="line">属性：南</span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，Directions.class 为反射机制的内容，后面将会详细地讲解，这样可以根据用户输入来设置枚举成员。</p>
+<h3 id="类集的枚举操作enummap和enumset"><a class="markdownIt-Anchor" href="#类集的枚举操作enummap和enumset"></a> 类集的枚举操作：EnumMap和EnumSet</h3>
+<p>​		从JDK1.5开始，java.util包中新增了两个用来建立枚举类的集合类，EnumMap和EnumSet，其中EnumMap是Map的子类，而EnumSet是Set的子类。</p>
+<h4 id="enummap类"><a class="markdownIt-Anchor" href="#enummap类"></a> EnumMap类</h4>
+<p>​		EnumMap类是一个与枚举类一起实现的Map的子类，其本身是以Map的形式操作的，即 key→value。<strong>EnumMap在内部是以数组形式保存的</strong>，所以EnumMap的实现非常高效。与普通的 Map集合不同的是，EnumMap要与指定枚举类关联。EnumMap的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>protected EnumMap(Class&lt;K&gt; keyType)</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>创建具有指定key类型的空枚举映射</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">protected EnumMap(EnumMap&lt;K,? extends V&gt; m)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建一个枚举映射，其key类型与指定的枚举映射相同</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">protected numMap(Map&lt;K,? extends V&gt; m)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建从指定Map初始化的枚举映射</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public EnumMap&lt;K,V&gt; clone()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此枚举映射的副本</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public boolean containsKey(Object key)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">如果此映射包含指定的key，则返回 true</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public boolean containsValue(Object Value)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">如果此映射包含指定的value，则返回 true</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public void clear()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">从此映射中删除所有映射</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public Set&lt;Map Entry&lt;K,V&gt; entrySet()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>将此Map转换为Set集合</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public boolean equals(Object o)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">比较指定的对象o与此Map对象是否相等。若相等，则返回true，否则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public V get(Object key)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回指定key所映射的value值。如果此key不包含映射关系，则返回null</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public int hashCode()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此Map集合的哈希码值</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public Set&lt;K&gt; keySet()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此Map集合中所有的key值</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>13</strong></td>
+<td style="text-align:center"><strong>public V put(K key,V value)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>向此Map集合添加新的元素</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public void putAll(Map&lt;? extends K,? extends V&gt; m)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指定的Map集合中的所有内容添加到此Map集合中</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public V remove(Object key)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">根据key值删除相对应的value值</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public int size()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取此Map集合的元素个数</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">public Collection&lt;V&gt; values()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取此Map集合中所有的value值</td>
+</tr>
+</tbody>
+</table>
+<p>代码示例：(验证EnumMap的应用)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.EnumMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        EnumMap&lt;Directions,String&gt; em=<span class="keyword">new</span> EnumMap&lt;Directions,String&gt;(Directions.class);</span><br><span class="line">        em.put(Directions.EAST,<span class="string">&quot;东&quot;</span>);</span><br><span class="line">        em.put(Directions.SOUTH,<span class="string">&quot;南&quot;</span>);</span><br><span class="line">        em.put(Directions.WEST,<span class="string">&quot;西&quot;</span>);</span><br><span class="line">        em.put(Directions.NORTH,<span class="string">&quot;北&quot;</span>);</span><br><span class="line">        Set&lt;Map.Entry&lt;Directions,String&gt;&gt; set=em.entrySet();</span><br><span class="line">        Iterator&lt;Map.Entry&lt;Directions,String&gt;&gt; it=set.iterator();</span><br><span class="line">        <span class="keyword">while</span>(it.hasNext())</span><br><span class="line">        &#123;</span><br><span class="line">            Map.Entry&lt;Directions,String&gt; me=it.next();</span><br><span class="line">            System.out.println(me.getKey()+<span class="string">&quot;---→&quot;</span>+me.getValue()); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">EAST---→东</span><br><span class="line">SOUTH---→南</span><br><span class="line">WEST---→西</span><br><span class="line">NORTH---→北</span><br></pre></td></tr></table></figure>
+<p>​		在以上程序中，EnumMap 的使用与普通的 Map 集合使用没有多大区别。</p>
+<blockquote>
+<p>提示：EnumMap 中不允许使用 null 作为 key 值，但允许 null 作为 value 值。</p>
+</blockquote>
+<h3 id="enumset-类"><a class="markdownIt-Anchor" href="#enumset-类"></a> EnumSet 类</h3>
+<p>​		EnumSet 是与枚举类型一起使用的 Set 实现。<strong>EnumSet 集合中的所有值都必须来自单个枚举类型</strong>，该枚举类型在创建 EnumSet 对象时显式或隐式地指定。EnumSet 集合中的元素是有序的，是根据枚举成员在枚举类中定义的顺序决定的，即根据 ordinal()排序。EnumSet 在内部表示为位向量，此表示形式非常紧凑且高效，其空间和时间性能应该很好。尤其是在批量操作（如 containsAll 和 retainAll）时运行得非常快。</p>
+<p>​		<strong>EnumSet 集合不允许 null 元素</strong>。试图插入 null 元素将抛出 NullPointerException。但是， 试图测试是否出现 null 元素或移除 null 元素将不会抛出异常。</p>
+<p>​		<strong>EnumSet 的构造方法是 private 的</strong>，其他类是不能通过其构造方法来创建 EnumSet 对象 的，所以 EnumSet 提供很多静态方法。EnumSet 类的常用方法如下表所示。</p>
+<blockquote>
+<p>提示：EnumSet 是不同步的。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public boolean add(E e)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>向集合中添加元素</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public static &lt;E extends Enum&lt;E&gt;&gt; EnumSet&lt;E&gt; allOf(Class&lt;E&gt; elementType)</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>以指定元素类型创建一个EnumSet对象</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public static &lt;E extends Enum&lt;E&gt;&gt; EnumSet&lt;E&gt; complementOf(EnumSet&lt;E&gt; s)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">创建一个其元素类型与指定EnumSet集合s相同的EnumSet集合，包含s中所不包含的此类型的所有元素</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>4</strong></td>
+<td style="text-align:center"><strong>public static &lt;E extends Enum&lt;E&gt;&gt; EnumSet&lt;E&gt; copyOf(Collection&lt;E&gt; c)</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>创建一个包含c中的所有元素的EnumSet集合</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:center"><strong>public static &lt;E extends Enum&lt;E&gt;&gt; EnumSet&lt;E&gt; iterator()</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>创建 Iterator 实例</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public static &lt;E extends Enum&lt;E&gt;&gt; EnumSet&lt;E&gt; noneOf(Class&lt;E&gt; elementType)</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>创建一个具有指定元素类型的空 EnumSet 集合</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>7</strong></td>
+<td style="text-align:center"><strong>public static &lt;E extends Enum&lt;E&gt;&gt; EnumSet&lt;E&gt; of(E e1,E e2…)</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>创建一个最初包含指定元素e的 EnumSet 集合</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public static &lt;E extends Enum&lt;E&gt;&gt; EnumSet&lt;E&gt; range(E from, E to)</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>创建一个最初包含由两个指定端点所定义范围内的所有元素的 EnumSet 集合</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public boolean remove(Object o)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">从集合中删除指定的元素</td>
+</tr>
+</tbody>
+</table>
+<p>​		下面通过一些范例来演示 EnumSet 类的操作。</p>
+<h4 id="向集合中添加元素"><a class="markdownIt-Anchor" href="#向集合中添加元素"></a> 向集合中添加元素</h4>
+<p>​		EnumSet 类提供 allOf()方法，向集合中添加元素，还可以使用其继承来的 add()和 addAll()方法。</p>
+<p>代码示例：(allOf()方法向集合中添加元素)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"><span class="keyword">import</span> java.util.EnumSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(EnumSet ms)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Iterator&lt;Directions&gt; it=ms.iterator();</span><br><span class="line">        <span class="keyword">while</span>(it.hasNext())</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(it.next());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        EnumSet&lt;Directions&gt; ms1=EnumSet.allOf(Directions.class);</span><br><span class="line">        System.out.println(<span class="string">&quot;enumset1 = EnumSet.allOf(Directions .class)&quot;</span>);</span><br><span class="line">        show(ms1);</span><br><span class="line">        EnumSet&lt;Directions&gt; ms2=EnumSet.noneOf(Directions.class);</span><br><span class="line">        ms2.add(Directions.EAST);</span><br><span class="line">        ms2.add(Directions.SOUTH); </span><br><span class="line">        ms2.add(Directions.NORTH); </span><br><span class="line">        System.out.println(<span class="string">&quot;enumset2 = EnumSet.noneOf(Directions .class)和 add()&quot;</span>); </span><br><span class="line">        show(ms2);</span><br><span class="line">        EnumSet&lt;Directions&gt; ms3=EnumSet.noneOf(Directions.class);</span><br><span class="line">        ms3.addAll(ms1);</span><br><span class="line">        System.out.println(<span class="string">&quot;enumset3 = EnumSet.noneOf(Directions .class)和 addAll()&quot;</span>); </span><br><span class="line">        show(ms3);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">enumset1 = EnumSet.allOf(Directions .class)</span><br><span class="line">EAST</span><br><span class="line">SOUTH</span><br><span class="line">WEST</span><br><span class="line">NORTH</span><br><span class="line">enumset2 = EnumSet.noneOf(Directions .class)和 add()</span><br><span class="line">EAST</span><br><span class="line">SOUTH</span><br><span class="line">NORTH</span><br><span class="line">enumset3 = EnumSet.noneOf(Directions .class)和 addAll()</span><br><span class="line">EAST</span><br><span class="line">SOUTH</span><br><span class="line">WEST</span><br><span class="line">NORTH</span><br></pre></td></tr></table></figure>
+<p>​		在以上程序中，EnumSey类的静态方法allOf()是将一个枚举类的所有枚举成员添加到EnumSet集合中。而静态方法noneOf()方法只是将集合中的元素设置为指定的枚举类型，并没有添加任何枚举类中的枚举成员到EnumSet集合中，即执行noneOf()方法生成的EnumSet集合是空集合。</p>
+<h4 id="of-copyof和range方法"><a class="markdownIt-Anchor" href="#of-copyof和range方法"></a> of()、copyOf()和range()方法</h4>
+<p>​		EnumSet 类中的静态方法 of()可以创建一个包含指定元素的 EnumSet 集合。静态方法 copyOf()可以将指定集合中所有的元素复制到另一个 EnumSet 集合中。range()也可用于创建一个包含指定元素的 EnumSet 集合，但其可以包含的是由两个指定端点所定义范围内的所有元素。</p>
+<p>代码示例：( 验证of()、copyOf()和range() )</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"><span class="keyword">import</span> java.util.EnumSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST,SOUTH,WEST,NORTH;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(EnumSet ms)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Iterator&lt;Directions&gt; it=ms.iterator();</span><br><span class="line">        <span class="keyword">while</span>(it.hasNext())</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(it.next());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        EnumSet&lt;Directions&gt; ms1=EnumSet.of(Directions.EAST,Directions.WEST);</span><br><span class="line">        System.out.println(<span class="string">&quot;enumset1=EnumSet.of(Directions.EAST,Directions.WEST)&quot;</span>);</span><br><span class="line">        show(ms1);</span><br><span class="line">        EnumSet&lt;Directions&gt; ms2=EnumSet.copyOf(ms1); </span><br><span class="line">        System.out.println(<span class="string">&quot;enumset2=EnumSet.copyOf(ms1)&quot;</span>); </span><br><span class="line">        show(ms2);</span><br><span class="line">        EnumSet&lt;Directions&gt; ms3=EnumSet.range(Directions.WEST,Directions.NORTH);</span><br><span class="line">        ms3.addAll(ms1);</span><br><span class="line">        System.out.println(<span class="string">&quot;enumset3=EnumSet.range(Directions.WEST,Directions.NORTH)&quot;</span>); </span><br><span class="line">        show(ms3);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">enumset1=EnumSet.of(Directions.EAST,Directions.WEST)</span><br><span class="line">EAST</span><br><span class="line">WEST</span><br><span class="line">enumset2=EnumSet.copyOf(ms1)</span><br><span class="line">EAST</span><br><span class="line">WEST</span><br><span class="line">enumset3=EnumSet.range(Directions.WEST,Directions.NORTH)</span><br><span class="line">EAST</span><br><span class="line">WEST</span><br><span class="line">NORTH</span><br></pre></td></tr></table></figure>
+<h3 id="枚举类与接口"><a class="markdownIt-Anchor" href="#枚举类与接口"></a> 枚举类与接口</h3>
+<p>​		一般情况下，接口中都包含抽象方法。当一个枚举类实现接口时，每一个枚举对象都必须分别实现接口中的抽象方法。与普通类一样，枚举类也是可以实现多个接口的，但必须实现所有的抽象方法。</p>
+<p>代码示例：(枚举类实现接口)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">EnumInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span> <span class="keyword">implements</span> <span class="title">EnumInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为东&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    SOUTH()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为南&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    WEST()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为西&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    NORTH()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为北&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(Directions dir:Directions.values())</span><br><span class="line">        &#123;</span><br><span class="line">            dir.show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">此枚举成员为东</span><br><span class="line">此枚举成员为南</span><br><span class="line">此枚举成员为西</span><br><span class="line">此枚举成员为北</span><br></pre></td></tr></table></figure>
+<p>​		从以上的程序可以发现，枚举类实现接口与普通类是一致的，都是使用 implements 关键字来实现接口的，并且需要实现接口中的所有抽象方法。枚举成员后面的花括号实际上是类体部分，可以说枚举类中的枚举成员是枚举类中的匿名内部子类。</p>
+<h3 id="枚举类与抽象方法"><a class="markdownIt-Anchor" href="#枚举类与抽象方法"></a> 枚举类与抽象方法</h3>
+<p>​		枚举类除了可以实现接口中的抽象方法之外，还可以直接在枚举类中定义抽象方法。一个枚举类可以定义一个或多个抽象方法，但<strong>每一个枚举对象需要实现每一个抽象方法</strong>。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">EnumInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Directions</span> <span class="keyword">implements</span> <span class="title">EnumInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    EAST()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为东&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">getDirections</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;东&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    SOUTH()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为南&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">getDirections</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;南&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    WEST()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为西&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">getDirections</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;西&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    NORTH()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;此枚举成员为北&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">getDirections</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;北&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getDirections</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(Directions dir:Directions.values())</span><br><span class="line">        &#123;</span><br><span class="line">            dir.show();</span><br><span class="line">            System.out.println(<span class="string">&quot;属性：&quot;</span>+dir.getDirections()); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">此枚举成员为东</span><br><span class="line">属性：东</span><br><span class="line">此枚举成员为南</span><br><span class="line">属性：南</span><br><span class="line">此枚举成员为西</span><br><span class="line">属性：西</span><br><span class="line">此枚举成员为北</span><br><span class="line">属性：北</span><br></pre></td></tr></table></figure>
+<p>​		由以上程序可以发现，在枚举类中定义抽象方法，枚举类不需要显式使用 abstract 关键字将枚举类定义为抽象类，并且在枚举类中定义抽象方法时，必须有枚举成员实现，定义多少个抽象方法就必须实现多少个。</p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/18/java/%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B/%E5%85%B6%E4%BB%96%E9%9B%86%E5%90%88/" rel="prev" title="其他集合">
+      <i class="fa fa-chevron-left"></i> 其他集合
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/24/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" rel="next" title="java反射机制">
+      java反射机制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E6%9E%9A%E4%B8%BE"><span class="nav-number">1.</span> <span class="nav-text"> 为什么要使用枚举</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text"> 定义枚举类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E6%9E%9A%E4%B8%BE%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text"> 常见的枚举定义方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8-switch-%E8%AF%AD%E5%8F%A5%E4%B8%AD%E4%BD%BF%E7%94%A8%E6%9E%9A%E4%B8%BE"><span class="nav-number">2.2.</span> <span class="nav-text"> 在 switch 语句中使用枚举</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E6%9E%9A%E4%B8%BE%E7%B1%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.3.</span> <span class="nav-text"> 枚举类型与枚举类的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BBenum"><span class="nav-number">3.</span> <span class="nav-text"> 枚举类：Enum</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E7%9A%84values%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text"> 枚举类型的values()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%9E%9A%E4%B8%BE%E6%88%90%E5%91%98%E7%9A%84%E5%90%8D%E7%A7%B0%E5%92%8C%E7%B4%A2%E5%BC%95"><span class="nav-number">3.2.</span> <span class="nav-text"> 获取枚举成员的名称和索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E4%B8%8Evalueof%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text"> 枚举类的构造方法与valueof()方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E9%9B%86%E7%9A%84%E6%9E%9A%E4%B8%BE%E6%93%8D%E4%BD%9Cenummap%E5%92%8Cenumset"><span class="nav-number">4.</span> <span class="nav-text"> 类集的枚举操作：EnumMap和EnumSet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#enummap%E7%B1%BB"><span class="nav-number">4.1.</span> <span class="nav-text"> EnumMap类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enumset-%E7%B1%BB"><span class="nav-number">5.</span> <span class="nav-text"> EnumSet 类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%91%E9%9B%86%E5%90%88%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0"><span class="nav-number">5.1.</span> <span class="nav-text"> 向集合中添加元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#of-copyof%E5%92%8Crange%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text"> of()、copyOf()和range()方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3"><span class="nav-number">6.</span> <span class="nav-text"> 枚举类与接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%8A%BD%E8%B1%A1%E6%96%B9%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text"> 枚举类与抽象方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

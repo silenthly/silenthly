@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		Java 最初是作为一种网络编程的语言出现的，因此 Java 具有强大的网络编程功能。为 了让 Java 开发人员能够方便快捷地进行网络程序设计，Java 的 JDK 中加入了大量与网络相关的类和接口。这些类和接口将多种 Internet 协议封装在其中，与其他的编程语言相比， Java 网络编程是更容易的。 ​		Java 编写的网络程序可以使用网络上的各种资源和数据，能够与服务器建立各类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java网络编程">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/25/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		Java 最初是作为一种网络编程的语言出现的，因此 Java 具有强大的网络编程功能。为 了让 Java 开发人员能够方便快捷地进行网络程序设计，Java 的 JDK 中加入了大量与网络相关的类和接口。这些类和接口将多种 Internet 协议封装在其中，与其他的编程语言相比， Java 网络编程是更容易的。 ​		Java 编写的网络程序可以使用网络上的各种资源和数据，能够与服务器建立各类">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B1.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B2.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B3.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B4.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B5.png">
+<meta property="article:published_time" content="2021-08-25T00:32:03.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:44:50.156Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B.png">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/25/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>java网络编程 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/25/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java网络编程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-25 08:32:03" itemprop="dateCreated datePublished" datetime="2021-08-25T08:32:03+08:00">2021-08-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:44:50" itemprop="dateModified" datetime="2021-10-27T12:44:50+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/25/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/25/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		Java 最初是作为一种网络编程的语言出现的，因此 Java 具有强大的网络编程功能。为 了让 Java 开发人员能够方便快捷地进行网络程序设计，Java 的 JDK 中加入了大量与网络相关的类和接口。这些类和接口将多种 Internet 协议封装在其中，与其他的编程语言相比， Java 网络编程是更容易的。</p>
+<p>​		Java 编写的网络程序可以使用网络上的各种资源和数据，能够与服务器建立各类形式的连接和传输方式，能够让计算机之间实现通信。</p>
+<span id="more"></span>
+<h3 id="网络编程的基础知识"><a class="markdownIt-Anchor" href="#网络编程的基础知识"></a> 网络编程的基础知识</h3>
+<p>​		在介绍网络程序设计之前，首先要对网络有一个基本的认识，了解一些网络的相关概念，如各种网络协议、IP 地址和端口等。</p>
+<h4 id="tcpip-协议常用的传输协议"><a class="markdownIt-Anchor" href="#tcpip-协议常用的传输协议"></a> TCP/IP 协议——常用的传输协议</h4>
+<p>​		网络编程的主要目的就是为了实现直接或间接地通过网络与其他计算机进行通信。因此有两个问题需要解决：<strong>一是如何准确地定位网络上的一台或多台计算机</strong>；<strong>二是找到特定的计算机后如何快速、高效地进行数据传输</strong>。这就需要使用 TCP/IP 协议，它是 Internet 的主要协议，也是最常用的协议，定义了计算机和外部设备之间进行通信所使用的规则。</p>
+<blockquote>
+<p>提示：按照网络覆盖的地理范围可将网络可以分为以下几类。</p>
+<p>局域网（LAN）：作用范围一般为几米到几十公里。</p>
+<p>城域网（MAN）：界于 WAN 与 LAN 之间。</p>
+<p>广域网（WAN）：作用范围一般为几十到几千公里。</p>
+</blockquote>
+<p>​		TCP/IP 是 Transmission Control Protocol/Internet Protocol 的简写，中文含义是传输控制协议/因特网互联协议，亦称网络通信协议。TCP/IP 协议是 Internet 最基本的协议、Internet 国际互联网络的基础，由网络层的 IP 协议和传输层的 TCP 协议组成。与 OSI 开放式系统互联的参考模型不同，TCP/IP 协议只有 4 层而不是 7 层，如下图所示。</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B.png" alt="" /></p>
+<p>​		TCP 传输控制协议是一种面向连接的、可靠的、基于字节流的运输层通信协议。通过 TCP 协议传输得到一个顺序的无差错的数据流。<strong>在通信开始时，需要进行“三次握手”的 方式建立连接</strong>。连接一旦建立起来就可以进行双向数据传输，发送方和接收方都可以进行发送和接收操作。</p>
+<p>​		UDP 是 User Datagram Protocol 的简称，其中文含义是用户数据报协议，一种无连接的传输层协议，可以与 IP 协议一起使用。但 <strong>UDP 协议提供的是面向非连接的、简单的、不可靠的信息传送服务，它不对连接状态和数据丢失做检查，只是保证数据发送出去</strong>，就像平时使用的 QQ 或 MSM 一样，只是把消息发送出去不管对方是否在线。而使用 <strong>TCP 协议的连接是需要双方建立起连接，如视频的时候需要双方都在线。</strong></p>
+<h4 id="ip-地址计算机的标识"><a class="markdownIt-Anchor" href="#ip-地址计算机的标识"></a> IP 地址——计算机的标识</h4>
+<p>​		在 Internet 上，每一台通信实体（这个通信实体可以是路由器的某一端口、计算机和服务器等设备）都有一个唯一标识的 IP 地址。所有的 IP 地址都由国际组织 NIC（Network  Information Center）负责统一分配。目前使用的主要还是 IPv4，是一种层次性地址，由网络号和主机号组成，如下图所示。</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B1.png" alt="" /></p>
+<p>​		每个IP地址有32b，也就是4个字节，由4个小于256的正整数组成，数字之间使用&quot;.&quot;分隔。为了方便记忆，一般采用十进制的形式，这种方法称为“点分十进制记法”。 IP 地址被分成 A、B、C、D、E 这 5 个类别，每一个类别都有各自的规则，即网络号和主机号所在的位数。</p>
+<ul>
+<li>A 类：地址范围为 1.0.0.1~126.255.255.255（二进制表示为：00000001 00000000  00000000 00000001 ~ 01111110 11111111 11111111 11111111）。</li>
+<li>B 类：地址范围为 128.0.0.1~191.255.255.255（二进制表示为 10000000 00000001  00000000 00000001~10111111 11111111 11111111 11111111）。</li>
+<li>C 类：地址范围为 192.0.0.0~223.255.255.255（二进制表示为 11000000 00000000  00000000 00000000 ~ 11011111 11111111 11111111 11111111）。</li>
+<li>D 类：D 类 IP 地址是组播地址，地址范围为 224.0.0.0～239.255.255.255（二进制 表示为 11100000 00000000 00000000 00000000~11101111 11111111 11111111  11111111）。</li>
+<li>E 类：主要用于 Internet 试验和开发，地址范围为 240.0.0.0~255.255.255.255（二进 制表示为 11110000 00000000 00000000 00000000~11111111 11111111 11111111  11111111）。</li>
+</ul>
+<blockquote>
+<p>提示：原本属于 A 类地址范围内的 IP 地址 127.0.0.0~127.255.255.255 并不在 A 类地址内，<strong>因为任意以 127 开头的 IP 地址是回送地址，它是一个保留地址</strong>，最常见的为 127.0.0.1 。 <strong>C 类地址中的私有地址： 192.168.X.X 是私有地址 （192.168.0.0—192.168.255.255）</strong>。</p>
+</blockquote>
+<p>​		一般来说，A类地址保留给政府机构，B类地址分配给中等规模的公司，C类地址分配给任何需要的人，D类用于组播，E类用于实验，各类可容纳的地址数目不同。A类、B类、和C类这三类地址用于TCP/IP节点，其它两类D类和E类被用于特殊用途。</p>
+<h4 id="端口通信的窗口"><a class="markdownIt-Anchor" href="#端口通信的窗口"></a> 端口——通信的窗口</h4>
+<p>​		I<strong>P 地址可以准确地标识网络上唯一的一个通信实体。但通信实体上可以使用多个提供网络通信的程序，此时还需要使用端口</strong>。如在计算机上，有即时聊天工具、浏览器和下载工具等需要网络的程序，使用端口可以明确地知道需要网络连接的是计算机上的哪一个服务，如下图所示。</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B2.png" alt="" /></p>
+<p>​		端口并非真实的物理存在，TCP 和 UDP 都使用了应用层接口处的端口与上层的应用进程进行通信，可以认为是计算机与外界通信的出口。<strong>端口是一个 16 位的整数，用于标识不同的应用进程</strong>。<strong>同一台计算机上不能存在两个应用进程使用同一个端口，端口号的取值范围为 0~65535</strong>，通常可以分为以下 3 类。</p>
+<ul>
+<li>公认端口：亦称熟知端口，取值范围为 0~1023，它们紧密绑定于一些服务。通常这些端口的通信明确表明了某种服务的协议。常见的公认端口如下表所示。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">服务协议</th>
+<th style="text-align:center">FTP</th>
+<th style="text-align:center">TELNET</th>
+<th style="text-align:center">SMTP</th>
+<th style="text-align:center">DNS</th>
+<th style="text-align:center">TFTP</th>
+<th style="text-align:center">HTTP</th>
+<th style="text-align:center">POP3</th>
+<th style="text-align:center">SNMP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">公认端口</td>
+<td style="text-align:center">21</td>
+<td style="text-align:center">23</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">53</td>
+<td style="text-align:center">69</td>
+<td style="text-align:center">80</td>
+<td style="text-align:center">110</td>
+<td style="text-align:center">162</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>注册端口：取值范围为 1024~49151，它们松散地绑定于一些服务。</li>
+<li>动态和/或私有端口：取值范围为 49152~65535。这些端口号一般不固定分配给某个服务，只要运行的程序向系统提出访问网络的申请，那么系统就可以从这些端口号中分配一个供该程序使用。</li>
+</ul>
+<p>​		可以把 IP 地址理解为教授 Java 课程的老师的办公室所在的地址，如哪个学院，但是仅有这个地址是不能找到老师的，还需要知道这位老师的办公室牌号，这个牌号就是端口号。</p>
+<h4 id="套接字应用程序与端口的桥梁"><a class="markdownIt-Anchor" href="#套接字应用程序与端口的桥梁"></a> 套接字——应用程序与端口的桥梁</h4>
+<p>​		网络上具有唯一标识的 IP 地址和端口号相结合在一起，才能构成唯一能识别的标识符套接字（Socket）。Socket 用于将应用程序与端口连接起来，一个 TCP 连接由通信双方的 Socket 确定。而且 Socket 为通信双方的输入和输出所有，实现全双工式的通信。</p>
+<p>​		Socket 负责将 TCP/IP 包发送到指定的 IP 地址，可以当成在两个程序进行通信连接中的一个端点。一个程序将数据写入 Socket 中，并将该数据发送到另一个 Socket 中，使得这个数据得以传送到其他程序，如下图所示。其中，这两个程序可以是在同一台计算机上，也可以是在 Internet 上的两台计算机。</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B3.png" alt="" /></p>
+<h4 id="urlinternet-资源的门牌号"><a class="markdownIt-Anchor" href="#urlinternet-资源的门牌号"></a> URL——Internet 资源的门牌号</h4>
+<p>​		URL 是 Uniform Resource Locator 的简写，中文含义是统一资源定位符，俗称“网址”。 URL 是用于完整地描述 Internet 上网页和其他资源的地址的一种标识方法。</p>
+<p>​		统一资源定位符 URL 一般由以下几部分组成。</p>
+<ul>
+<li>协议（protocol）：指定使用的传输协议。最常用的是 HTTP 协议，如 <a target="_blank" rel="noopener" href="http://xn--bizv42a">http://表示</a> WWW 服务器，还有 file://表示通过 FTP 访问资源。<a target="_blank" rel="noopener" href="https://xn--15qt0wcuwipce90as9juqa">https://表示通过安全的</a> https 访问该资源。</li>
+<li>主机名（hostname）：是指存放资源服务器的域名系统（DNS）主机名或 IP 地址。</li>
+<li>端口号（port）：为整数，可选选项，省略时使用方案的默认端口。各种传输协议都有默认的端口号，如 http 的默认端口为 80，ftp 的默认端口为 21。有时候出于 安全或其他考虑，可以在服务器上对端口进行重定义，即采用非标准端口号，此时，URL 中就不能省略端口号这一项。</li>
+<li>路径（path）：由 0 或多个“/”符号隔开的字符串，一般用来表示主机上的一个目录或文件地址，通用格式为“目录/子目录/文件名”。与端口号一样，路径有时是一 个可选选项，如 <a target="_blank" rel="noopener" href="http://www.baidu.com:80/index.html">http://www.baidu.com:80/index.html</a> 可简写为 <a target="_blank" rel="noopener" href="http://www.baidu.com/%E3%80%82">http://www.baidu.com/。</a></li>
+</ul>
+<h3 id="知识扩展"><a class="markdownIt-Anchor" href="#知识扩展"></a> 知识扩展</h3>
+<p>​		以下内容仅作记录。</p>
+<h4 id="三次握手协议"><a class="markdownIt-Anchor" href="#三次握手协议"></a> “三次握手”协议</h4>
+<p>​		TCP 是通过“三次握手”实现端到端可靠连接控制的，其过程如下。</p>
+<p>（1）第一次握手：A 的 TCP 向 B 发出连接请求报文段，其首部中的同步位 SYN=1， 并选择序号 seq=x，表明传送数据时的第一个数据字节的序号是 x。</p>
+<p>（2）第二次握手：B 的 TCP 收到连接请求报文段后，如同意，则发回确认。B 在确认报文段中应使 SYN=1，使 ACK=1，其确认号 ack=x+1，自己选择的序号 seq=y。</p>
+<p>（3）第三次握手：A 收到此报文段后向 B 给出确认，其 ACK=1，确认号 ack=y+1。A 的 TCP 通知上层应用进程，连接已经建立。其过程如图所示。</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B4.png" alt="" /></p>
+<h4 id="tcp的连接释放"><a class="markdownIt-Anchor" href="#tcp的连接释放"></a> TCP的连接释放</h4>
+<p>​		TCP 是通过“四次挥手”实现连接的释放，其过程如下。</p>
+<p>（1）第一次挥手：数据传输结束后，通信的双方都可释放连接。现在 A 的应用 第 3 篇 Java 应用程序设计 ·558· 进程先向其 TCP 发出连接释放报文段，并停止再发送数据，主动关闭 TCP 连接。A 把连 接释放报文段首部的 FIN=1，其序号 seq=u，等待 B 的确认。</p>
+<p>（2）第二次挥手：B 发出确认，确认号 ack=u+1，而这个报文段自己的序号 seq=v。TCP 服务器进程通知高层应用进程。从 A 到 B 这个方向的连接就释放了，TCP 连接处于半关闭状态。B 若发送数据，A 仍要接收。</p>
+<p>（3）第三次挥手：若 B 已经没有要向 A 发送的数据，其应用进程就通知 TCP 释放连接。</p>
+<p>（4）第四次挥手：A 收到连接释放报文段后，必须发出确认。在确认报文段中 ACK=1， 确认号 ack=w+1，自己的序号 seq=u+1。TCP 连接必须经过时间 2MSL 后才真正释放掉。</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B5.png" alt="" /></p>
+<blockquote>
+<p>提示：A 必须等待 2MSL 时间的原因如下。 第一，为了保证 A 发送的最后一个 ACK 报文段能够到达 B。 第二，防止“已失效的连接请求报文段”出现在本连接中。A 在发送完最后一个 ACK 报文段后，再经过时间 2MSL，就可以使本连接持续时间内所产生的所有报文段，都从网 络中消失。这样就可以使下一个新的连接中不会出现这种旧的连接请求报文段。</p>
+</blockquote>
+<h4 id="tcpip协议的4层模型"><a class="markdownIt-Anchor" href="#tcpip协议的4层模型"></a> TCP/IP协议的4层模型</h4>
+<p>（1）网络接口层，亦称链路层或数据链路层。该层是 TCP/IP 协议的最底层，负 责接收 IP 数据报并通过网络进行发送，或者从网络中接收物理帧，提取出 IP 数据报，交给网络层。网络接口层还通常包括操作系统中的设备驱动程序和计算机中对应的网络接 口卡。</p>
+<p>（2）网络层，亦称互联网层，负责相邻计算机之间的通信，主要定义了 IP 地址的格式， 从而能够使不同应用类型的数据可以在 Internet 上传输。在 TCP/IP 协议族中，网络层协议包括：</p>
+<ul>
+<li>IP 协议（网际协议）</li>
+<li>ICMP 协议（Internet 互联网控制报文协议）</li>
+<li>IGMP 协议（Internet 组管理协议）</li>
+</ul>
+<p>（3）传输层，亦称运输层，主要为两台主机上的应用程序间的通信。在 TCP/IP 协议族中，有两个互不相同的传输协议，即 TCP（传输控制协议）和 UDP（用户数据报协议）。</p>
+<p>（4）应用层，负责处理向用户提供的应用程序细节。几乎各种不同的 TCP/IP 实现都会提供下面这些通用的应用程序：</p>
+<ul>
+<li>Telnet 远程登录；</li>
+<li>FTP 文件传输协议；</li>
+<li>SMTP 简单邮件传送协议；</li>
+<li>SNMP 简单网络管理协议。</li>
+</ul>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://zhidao.baidu.com/question/568614300.html">IP地址共有A、B、C、D、E五类，怎样区分呢？_百度知道 (baidu.com)</a></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+<p>相关链接：</p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/335116451">什么情况下IP地址会相同？ - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%A7%81%E6%9C%89ip/2216993?fr=aladdin">私有ip_百度百科 (baidu.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/24/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" rel="prev" title="java反射机制">
+      <i class="fa fa-chevron-left"></i> java反射机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/26/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Inetaddress%E7%B1%BB/" rel="next" title="Inetaddress类">
+      Inetaddress类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text"> 网络编程的基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#tcpip-%E5%8D%8F%E8%AE%AE%E5%B8%B8%E7%94%A8%E7%9A%84%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.1.</span> <span class="nav-text"> TCP&#x2F;IP 协议——常用的传输协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ip-%E5%9C%B0%E5%9D%80%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E6%A0%87%E8%AF%86"><span class="nav-number">1.2.</span> <span class="nav-text"> IP 地址——计算机的标识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E9%80%9A%E4%BF%A1%E7%9A%84%E7%AA%97%E5%8F%A3"><span class="nav-number">1.3.</span> <span class="nav-text"> 端口——通信的窗口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A5%97%E6%8E%A5%E5%AD%97%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E4%B8%8E%E7%AB%AF%E5%8F%A3%E7%9A%84%E6%A1%A5%E6%A2%81"><span class="nav-number">1.4.</span> <span class="nav-text"> 套接字——应用程序与端口的桥梁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#urlinternet-%E8%B5%84%E6%BA%90%E7%9A%84%E9%97%A8%E7%89%8C%E5%8F%B7"><span class="nav-number">1.5.</span> <span class="nav-text"> URL——Internet 资源的门牌号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95"><span class="nav-number">2.</span> <span class="nav-text"> 知识扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.</span> <span class="nav-text"> “三次握手”协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tcp%E7%9A%84%E8%BF%9E%E6%8E%A5%E9%87%8A%E6%94%BE"><span class="nav-number">2.2.</span> <span class="nav-text"> TCP的连接释放</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tcpip%E5%8D%8F%E8%AE%AE%E7%9A%844%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.3.</span> <span class="nav-text"> TCP&#x2F;IP协议的4层模型</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

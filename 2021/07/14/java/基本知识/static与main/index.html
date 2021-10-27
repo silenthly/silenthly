@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		static表示“静态”“全局”的意思，可以用来修饰成员变量和成员方法，也可以生成静态代码块，但在JAVA里没有全局变量的概念。 ​		被static修饰的成员变量和成员方法，独立于该类的任何对象。也就是说，它不依赖特定的是咧，被类的所有实例共享。 ​		用public修饰的static成员变量和成员方法本质是全局变量和全局方法，当声明它的类时，不会生成一个static副本，而是类的所有实例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="static修饰符">
+<meta property="og:url" content="https://silenthly.github.io/2021/07/14/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/static%E4%B8%8Emain/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		static表示“静态”“全局”的意思，可以用来修饰成员变量和成员方法，也可以生成静态代码块，但在JAVA里没有全局变量的概念。 ​		被static修饰的成员变量和成员方法，独立于该类的任何对象。也就是说，它不依赖特定的是咧，被类的所有实例共享。 ​		用public修饰的static成员变量和成员方法本质是全局变量和全局方法，当声明它的类时，不会生成一个static副本，而是类的所有实例">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-14T15:35:53.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:50:02.998Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/07/14/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/static%E4%B8%8Emain/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>static修饰符 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/07/14/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/static%E4%B8%8Emain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          static修饰符
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-14 23:35:53" itemprop="dateCreated datePublished" datetime="2021-07-14T23:35:53+08:00">2021-07-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:50:02" itemprop="dateModified" datetime="2021-10-27T12:50:02+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/07/14/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/static%E4%B8%8Emain/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/07/14/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/static%E4%B8%8Emain/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		static表示“静态”“全局”的意思，可以用来修饰成员变量和成员方法，也可以生成静态代码块，但在JAVA里没有全局变量的概念。<br />
+​		被static修饰的成员变量和成员方法，独立于该类的任何对象。也就是说，它不依赖特定的是咧，被类的所有实例共享。<br />
+​		用public修饰的static成员变量和成员方法本质是全局变量和全局方法，当声明它的类时，不会生成一个static副本，而是类的所有实例共用听一个static变量。</p>
+<span id="more"></span>
+<h4 id="static变量"><a class="markdownIt-Anchor" href="#static变量"></a> static变量</h4>
+<p>​	按照是否静态对类成员变量进行分类可分成两种：</p>
+<p>1）被static修饰的变量，叫静态变量或类变量</p>
+<p>2）没被static修饰的变量，叫实例变量</p>
+<p>区别：</p>
+<p>1）JVM只为静态分配一次内存，在加载类的过程中完成静态变量的内存分配，<strong>可用类名直接访问</strong>。</p>
+<p>2）对于实例变量，每创建一个实例，就会为实例变量分配一次内存，实例变量可以在内存中有多个拷贝，互不影响。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticDemo01</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> ticket=<span class="number">10</span>;		<span class="comment">//定义静态变量ticket</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sell</span><span class="params">()</span>					<span class="comment">//定义sell方法</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ticket--;</span><br><span class="line">        System.out.println(<span class="string">&quot;剩余：&quot;</span> + ticket);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">left</span><span class="params">()</span>			<span class="comment">//定义left方法</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i=ticket-<span class="number">2</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;还剩余：&quot;</span> + i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> x=ticket--;					<span class="comment">//直接访问ticket</span></span><br><span class="line">        System.out.println(<span class="string">&quot;x=&quot;</span>+x+<span class="string">&quot;,ticket=&quot;</span>+ticket);</span><br><span class="line">        <span class="keyword">int</span> y=StaticDemo01.ticket--;	<span class="comment">//通过类名访问ticket</span></span><br><span class="line">        System.out.println(<span class="string">&quot;y=&quot;</span>+y+<span class="string">&quot;,ticket=&quot;</span>+ticket);</span><br><span class="line">        StaticDemo01 p1=<span class="keyword">new</span> StaticDemo01();</span><br><span class="line">        <span class="keyword">int</span> k=p1.ticket--;				<span class="comment">//通过实例访问</span></span><br><span class="line">        System.out.println(<span class="string">&quot;k=&quot;</span>+k+<span class="string">&quot;,ticket=&quot;</span>+ticket);</span><br><span class="line">        StaticDemo01 p2=<span class="keyword">new</span> StaticDemo01();</span><br><span class="line">        p2.sell();						<span class="comment">//通过非静态方法访问ticket</span></span><br><span class="line">        left();							<span class="comment">//通过静态方法访问ticket</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x=10,ticket=9</span><br><span class="line">y=9,ticket=8</span><br><span class="line">k=8,ticket=7</span><br><span class="line">剩余：6</span><br><span class="line">还剩余：4</span><br></pre></td></tr></table></figure>
+<p>一般在需要实现以下两个功能时使用静态变量：</p>
+<p>1）在对象之间共享值时</p>
+<p>2）方便访问变量时</p>
+<h4 id="静态方法"><a class="markdownIt-Anchor" href="#静态方法"></a> 静态方法</h4>
+<p>​		静态方法<strong>也可以直接通过类名调用</strong>，任何的实例也都可以调用，因此静态方法中不能用this和super关键字，不能直接访问所属类的实例变量和实例方法，<strong>只能访问所属类的静态成员变量和成员方法</strong>。</p>
+<h4 id="static代码块"><a class="markdownIt-Anchor" href="#static代码块"></a> static代码块</h4>
+<p>​		static代码块也叫静态代码块，是在<strong>类中独属于类成员的static语句块</strong>，可以有多个，位置可以随便放，它不在任何的方法体内，JVM加载类是会执行这些静态的代码块，如果static代码块有多个，JVM将按照它们在类中出现的先后顺序，依次执行它们，每个代码块只会被执行一次。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test5</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> a;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> b;</span><br><span class="line">	<span class="keyword">static</span></span><br><span class="line">    &#123;</span><br><span class="line">		a=<span class="number">3</span>;</span><br><span class="line">		System.out.println(a);</span><br><span class="line">		Test5 t=<span class="keyword">new</span> Test5();</span><br><span class="line">		t.f();</span><br><span class="line">		t.b=<span class="number">1000</span>;</span><br><span class="line">		System.out.println(t.b);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">static</span></span><br><span class="line">    &#123;</span><br><span class="line">		Test5.a=<span class="number">4</span>;</span><br><span class="line">		System.out.println(a);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// TODO 自动生成方法存根</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">static</span></span><br><span class="line">    &#123;</span><br><span class="line">		Test5.a=<span class="number">5</span>;</span><br><span class="line">		System.out.println(a);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">&quot;hhahhahah&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">hhahhahah</span><br><span class="line">1000</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+<h4 id="程序入口main方法"><a class="markdownIt-Anchor" href="#程序入口main方法"></a> 程序入口main()方法</h4>
+<p>​		程序在运行的时候，第一个执行的方法就是<code>main()</code>方法。通常情况下， 如果要运行一个类的方法，必须首先实例化出来这个类的一个对象，然后通过&quot;<strong>对象名.方法名()</strong>&quot;的方式来运行方法，但是因为main是程序的入口，这时候还没有实例化对象，因此将main方法声明为static的，这样这个方法就可以直接通过“<strong>类名.方法名()</strong> ”的方式来调用。简单来说，<strong>在main函数中调用函数只能调用静态的。如果要调用非静态的，那么必须要先实例化对象，然后通过对象来调用非静态方法。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* Java中的main()方法详解 </span></span><br><span class="line"><span class="comment">*/</span> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123; </span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123; </span><br><span class="line"> System.out.println(<span class="string">&quot;Hello World!&quot;</span>); </span><br><span class="line"> &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="对于类"><a class="markdownIt-Anchor" href="#对于类"></a> 对于类</h5>
+<p>​		HelloWorld 类中有<code>main()</code>方法，说明这是个java应用程序，通过JVM直接启动运行的程序。<br />
+既然是类，java允许类不加public关键字约束，当然类的定义只能限制为public或者无限制关键字（默认的）。</p>
+<h5 id="对于main方法"><a class="markdownIt-Anchor" href="#对于main方法"></a> 对于main方法</h5>
+<p>​		这个<code>main()</code>方法的声明为：<code>public static void main(String args[])</code> 。必须这么定义，这是Java的规范。</p>
+<p>​		为什么要这么定义，和JVM的运行有关系。</p>
+<p>​		当一个类中有<code>main()</code>方法，执行命令“java 类名”则会启动虚拟机执行该类中的main方法。</p>
+<p>​		由于JVM在运行这个Java应用程序的时候，首先会调用main方法，调用时不实例化这个类的对象，而是通过类名直接调用因此需要是限制为public static。</p>
+<p>对于java中的main方法，jvm有限制，不能有返回值，因此返回值类型为void。</p>
+<p>​		main方法中还有一个输入参数，类型为String[]，这个也是java的规范，<code>main()</code>方法中必须有一个入参，类细必须<code>String[]</code>，至于字符串数组的名字，这个是可以自己设定的，根据习惯，这个字符串数组的名字一般和sun java规范范例中mian参数名保持一致，取名为args。</p>
+<p>因此，<code>main()</code>方法定义必须是：“<code>public static void main(String 字符串数组参数名[])</code> ”。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://www.jb51.net/article/91910.htm">详细讲解Java中的main()方法_java_脚本之家 (jb51.net)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/13/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/%E5%8F%98%E9%87%8F%E4%B8%8E%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F/" rel="prev" title="变量的作用域">
+      <i class="fa fa-chevron-left"></i> 变量的作用域
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/15/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/%E4%BB%A3%E7%A0%81%E5%9D%97/" rel="next" title="代码块">
+      代码块 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#static%E5%8F%98%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text"> static变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text"> 静态方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#static%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">3.</span> <span class="nav-text"> static代码块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%85%A5%E5%8F%A3main%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text"> 程序入口main()方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E7%B1%BB"><span class="nav-number">4.1.</span> <span class="nav-text"> 对于类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8Emain%E6%96%B9%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text"> 对于main方法</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

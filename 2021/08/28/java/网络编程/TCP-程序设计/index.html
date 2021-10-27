@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		TCP&#x2F;IP 协议是一种可靠的网络协议，它在通信的两端分别建立一个 Socket，从而在通信的两端形成网路虚拟链路。只有虚拟的网络链路建立了，双方才可以进行通信。进行 TCP 网络编程需要使用两个类，一个是服务器套接字 ServerSocket 类，另一个是客户端套接字 Socket 类。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP 程序设计">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/28/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		TCP&#x2F;IP 协议是一种可靠的网络协议，它在通信的两端分别建立一个 Socket，从而在通信的两端形成网路虚拟链路。只有虚拟的网络链路建立了，双方才可以进行通信。进行 TCP 网络编程需要使用两个类，一个是服务器套接字 ServerSocket 类，另一个是客户端套接字 Socket 类。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/TCP%E9%80%9A%E4%BF%A1.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/TCP%E9%80%9A%E4%BF%A11.png">
+<meta property="article:published_time" content="2021-08-28T04:54:31.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:44:25.821Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/TCP%E9%80%9A%E4%BF%A1.png">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/28/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TCP 程序设计 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/28/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TCP 程序设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-28 12:54:31" itemprop="dateCreated datePublished" datetime="2021-08-28T12:54:31+08:00">2021-08-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:44:25" itemprop="dateModified" datetime="2021-10-27T12:44:25+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/28/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/28/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		TCP/IP 协议是一种可靠的网络协议，它在通信的两端分别建立一个 Socket，从而在通信的两端形成网路虚拟链路。只有虚拟的网络链路建立了，双方才可以进行通信。进行 TCP 网络编程需要使用两个类，一个是服务器套接字 ServerSocket 类，另一个是客户端套接字 Socket 类。</p>
+<span id="more"></span>
+<h3 id="serversocket-类"><a class="markdownIt-Anchor" href="#serversocket-类"></a> ServerSocket 类</h3>
+<p>​		ServerSocket 类用来为服务端建立套接字，它的主要功能是等到来自网络中其他客户端的请求。ServerSocket 类可以指定端口等待连接的套接字，服务器的套接字一次只能与一个客户端套接字相连。</p>
+<p>​		如果多态客户端同时请求连接，服务器会将请求连接的客户端放入队列中，然后从中取出一个套接字与服务器的套接字相连。若请求数大于最大的容纳数，则多余出来的请求就会被拒绝，最大容纳数默认为 50。ServerSocket 类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public ServeSocket()throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建非绑定服务器套接字</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public ServeSocket(int port)throws IOException</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>创建绑定到特定端口的服务器套接字</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public ServeSocket(int port,int backing)throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">利用指定的 backlog 创建服务器套接字并 将其绑定到指定的本地端口号</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public ServeSocket(int port,int backing,InetAddress bindAddr)throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">使用指定的端口、侦听backlog和要绑定到的本地IP地址创建服务器。这个情况适应于计算机上存在多个网卡多个IP地址的时候，使用该构造方法可以明确规定ServerSocket在哪块网卡或哪个IP地址等待连接请求</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public void bind(SocketAddress endpoint)throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将ServerSocket绑定到特定地址（IP地址和端口号）</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public void bind(SocketAddress endpoint,int bocklog)throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将ServerSocket绑定到特定地址（IP地址和端口号）</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>7</strong></td>
+<td style="text-align:center"><strong>public void close()throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>关闭此套接字</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public ServerSocketChannel getChannel()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回与此套接字关联的唯一 ServerSocketChannel 对象</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public InetAddress getInetAddress()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此服务器套接字的本地地址</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public int getLocalPort()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此套接字上侦听的端口</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public SocketAddress getLocalSocketAddress()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此套接字绑定的端点地址，如果尚未绑定，则返回 null</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public boolean isBound()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回 ServerSocket 的绑定状态</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public boolean isClosed()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断 ServerSocket 是否关闭；若已经关闭了套接字，则返回 true，否则返回 false</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public static void setSocketFactory(Socket  ImplFactory fac)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">设置应用程序的服务端套接字实现工厂</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>15</strong></td>
+<td style="text-align:center"><strong>public Socket accept() throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>侦听并接受客户端的连接。若连接成功， 则创建一个套接字</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public String toString()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">作为 String 返回此套接字的实现地址和实现端口</td>
+</tr>
+</tbody>
+</table>
+<p>​		当 ServerSocket 类的对象创建后，调用 accept()方法接收客户端发来的连接请求。accept() 方法采用的是“阻塞”方式监听，直到客户端连接之后程序才可以向下继续执行并返回一个与客户端 Socket 对象相连的 Socket 对象。服务器端的 Socket 对象使用 getOutputStream() 方法获得的输出流，将指向客户端Socket对象使用getInputStream()方法获得的那个输入流。 同样地，服务器端的 Socket 对象使用 getInputStream()方法获得的输入流，将指向客户端 Socket 对象使用 getOutputStream()方法获得的那个输出流。</p>
+<h3 id="socket-类"><a class="markdownIt-Anchor" href="#socket-类"></a> Socket 类</h3>
+<p>​		在 Java 中，有专门的 Socket 类来处理用户的请求和响应。利用 Socket 类的方法，就可以实现两台计算机之间的通信。客户端创建 Socket 对象之后，会向指定的 IP 地址即端口尝试连接。服务端的 Socket 接到连接请求后创建新的 Socket 与客户端的 Socket 进行连接。若服务端 Socket 与客户端 Socket 连接成功之后，就可以获取 Socket 中的输入/输出流。 Socket 类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public Socket()</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建非绑定服务器套接字</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public Socket(InetAddress address,int port)throws IOException</strong></td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建一个<strong>流套接</strong>字并将其连接到指定 <strong>IP 地址</strong>的指定端口号</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public Socket(InetAddress address,int port,InetAddress localAddr,int localport)throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建一个套接字并将其连接到指定<strong>远程地址</strong>上的指定远程端口</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public Socket(Porxy proxy)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建一个未连接的套接字并指定代理类型（如果有），该代理不管其他设置如何都应被使用</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public Socket(String host, int port) throws  UnknownHostException,IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建一个<strong>流套接字</strong>并将其连接到指定<strong>主机</strong>上的指定端口号</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public Socket(String host, int port, InetAddress  localAddr, int localPort) throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建一个套接字并将其连接到指定<strong>远程主机</strong>上的指定远程端口</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public void bind(SocketAddress bindpoint)throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将套接字绑定到本地地址</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public void close() throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>关闭此套接字</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public void connect(SocketAddress  endpoint)throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将此套接字连接到服务器</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public void connect(SocketAddress endpoint, int timeout) throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将此套接字连接到服务器，并指定一个超时值</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>11</strong></td>
+<td style="text-align:center"><strong>public InetAddress getInetAddress()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center">返回套接字<strong>连接的</strong>地址</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public InetAddress getLocalAddress()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取套接字<strong>绑定的</strong>本地地址</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>13</strong></td>
+<td style="text-align:center"><strong>public InputStream getInputStream() throws  IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回此套接字的输入流</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>14</strong></td>
+<td style="text-align:center"><strong>public OutputStream getOutputStream() throws  IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回此套接字的输出流</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public int getLocalPort()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此套接字<strong>绑定到的</strong>本地端口</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public SocketAddress getLocalSocketAddress()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此套接字<strong>绑定的</strong>端点地址，如果尚未绑定则返回 null</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">public int getPort()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此套接字<strong>连接到的</strong>远程端口</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">public SocketAddress getRemoteSocketAddress()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此套接字<strong>连接的</strong>端点地址，如果未连接则返回 null</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">public int getTrafficClass() throws Socket  Exception</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">为从此 Socket 上发送的包获取 IP 头中的流量类别或服务类型</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">public boolean isBound()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断套接字是否绑定，若套接字成功地绑定到一个地址，则返回 true，否则返回 false</td>
+</tr>
+<tr>
+<td style="text-align:center">21</td>
+<td style="text-align:center">public boolean isClosed()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断 Socket 是否关闭，若已经关闭了套接字，则返回 true，否则返回 false</td>
+</tr>
+<tr>
+<td style="text-align:center">22</td>
+<td style="text-align:center">public boolean isConnected()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断套接字是否连接上服务器，若套接字成功地连接到服务器，则为 true，否则返回 false</td>
+</tr>
+<tr>
+<td style="text-align:center">23</td>
+<td style="text-align:center">public void sendUrgentData(int data) throws  IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">在套接字上发送一个紧急数据字节</td>
+</tr>
+<tr>
+<td style="text-align:center">24</td>
+<td style="text-align:center">public static void setSocketImplFactory  (SocketImplFactory fac) throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置应用程序的客服端套接字实现工厂</td>
+</tr>
+<tr>
+<td style="text-align:center">25</td>
+<td style="text-align:center">public void shutdownInput() throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">此套接字的输入流置于“流的末尾”</td>
+</tr>
+<tr>
+<td style="text-align:center">26</td>
+<td style="text-align:center">public void shutdownOutput() throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">禁用此套接字的输出流</td>
+</tr>
+<tr>
+<td style="text-align:center">27</td>
+<td style="text-align:center">public String toString()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将此套接字转换为 String</td>
+</tr>
+</tbody>
+</table>
+<p>​		在 Socket 类中的诸多方法中，最常用的是 getInputStream()和 getOutputStream()方法，这两个是实际通信中必须使用的方法。</p>
+<h4 id="socket-通信过程一对一的-tcp-程序"><a class="markdownIt-Anchor" href="#socket-通信过程一对一的-tcp-程序"></a> Socket 通信过程：一对一的 TCP 程序</h4>
+<p>​		下面使用 ServerSocket 类和 Socket 类来完成一个服务端的程序开发，代码如下。</p>
+<h5 id="服务端程序"><a class="markdownIt-Anchor" href="#服务端程序"></a> 服务端程序：</h5>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServerTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ServerSocket server=<span class="keyword">null</span>;</span><br><span class="line">        Socket socket=<span class="keyword">null</span>;</span><br><span class="line">        DataInputStream din=<span class="keyword">null</span>;</span><br><span class="line">        DataOutputStream dout=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            server=<span class="keyword">new</span> ServerSocket(<span class="number">8000</span>);		<span class="comment">//创建一个绑定8000端口的服务套接字</span></span><br><span class="line">            System.out.println(<span class="string">&quot;等待客服连接上......&quot;</span>);</span><br><span class="line">            socket=server.accept();		<span class="comment">//阻塞等待客服端的连接</span></span><br><span class="line">            System.out.println(<span class="string">&quot;客户端连接上......\n客户端来自：&quot;</span>+socket.getInetAddress().getHostAddress());	<span class="comment">//获取客户端的IP地址</span></span><br><span class="line">            din=<span class="keyword">new</span> DataInputStream(socket.getInputStream());	<span class="comment">//获取客户端的输入流</span></span><br><span class="line">            dout=<span class="keyword">new</span> DataOutputStream(socket.getOutputStream());	<span class="comment">//获取客户端的输出流</span></span><br><span class="line">            String strMassage=<span class="keyword">null</span>;</span><br><span class="line">            Scanner scan=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">            <span class="keyword">boolean</span> flag=<span class="keyword">true</span>;	<span class="comment">//标记位</span></span><br><span class="line">            <span class="keyword">while</span>(flag)</span><br><span class="line">            &#123;</span><br><span class="line">                strMassage=din.readUTF();		<span class="comment">//读取客户端发送的信息</span></span><br><span class="line">                <span class="keyword">if</span>(!strMassage.equals(<span class="string">&quot;bye&quot;</span>))	<span class="comment">//若消息为bye则退出，否则继续</span></span><br><span class="line">                &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;客户端消息：\n&quot;</span>+strMassage);</span><br><span class="line">                    System.out.println(<span class="string">&quot;回复客户端：&quot;</span>);</span><br><span class="line">                    strMassage=scan.next();		<span class="comment">//输入信息</span></span><br><span class="line">                    dout.writeUTF(strMassage);	<span class="comment">//向客户端发送消息</span></span><br><span class="line">                    dout.flush();</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    din.close();</span><br><span class="line">                    dout.close();</span><br><span class="line">                    flag=<span class="keyword">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            server.close();			<span class="comment">//关闭服务端</span></span><br><span class="line">            System.out.println(<span class="string">&quot;服务器退出......&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		在以上程序中服务端运行之后要等待客户端的连 接，采用的是阻塞方式。下面编写客户端的程序，代码如下。</p>
+<h5 id="客户端"><a class="markdownIt-Anchor" href="#客户端"></a> 客户端：</h5>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClientTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ClientTest</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Socket socket=<span class="keyword">null</span>;</span><br><span class="line">        DataInputStream din=<span class="keyword">null</span>;</span><br><span class="line">        DataOutputStream dout=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;尝试连接服务器......&quot;</span>);</span><br><span class="line">            socket=<span class="keyword">new</span> Socket(<span class="string">&quot;127.0.0.1&quot;</span>,<span class="number">8000</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;连接服务器成功......&quot;</span>);</span><br><span class="line">            din=<span class="keyword">new</span> DataInputStream(socket.getInputStream());</span><br><span class="line">            dout=<span class="keyword">new</span> DataOutputStream(socket.getOutputStream());</span><br><span class="line">            String strMassage=<span class="keyword">null</span>;</span><br><span class="line">            Scanner scan=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">            <span class="keyword">boolean</span> flag=<span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">while</span>(flag)</span><br><span class="line">            &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;发送消息：&quot;</span>);</span><br><span class="line">                strMassage=scan.next();</span><br><span class="line">                dout.writeUTF(strMassage);		<span class="comment">//向服务端发送消息</span></span><br><span class="line">                dout.flush();</span><br><span class="line">                strMassage=din.readUTF();		<span class="comment">//读取服务器消息</span></span><br><span class="line">                <span class="keyword">if</span>(!strMassage.equals(<span class="string">&quot;bye&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;接收信息：\n&quot;</span>+strMassage);</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    din.close();</span><br><span class="line">                    dout.close();</span><br><span class="line">                    flag=<span class="keyword">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            socket.close();		<span class="comment">//关闭客户端</span></span><br><span class="line">            System.out.println(<span class="string">&quot;服务器退出......&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端运行并连接上服务端后，可以向服务端发送消息，服务端接收到消息后也可以向客户端发送消息。运行结果如图所示：</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/TCP%E9%80%9A%E4%BF%A1.png" alt="" /></p>
+<p>​		可以看到，先输入&quot;bye&quot;结束对话的一端，会因为另一端的结束而抛出异常。在以上程序中存在一个很大的缺点，就是服务端一次只能与一个客户端相连，因为该程序属于单线程的处理机制。为了让服务端可以同时连接多个客户端，可以加入多线程处理机制。</p>
+<h4 id="socket-通信过程一对多的-tcp-程序"><a class="markdownIt-Anchor" href="#socket-通信过程一对多的-tcp-程序"></a> Socket 通信过程：一对多的 TCP 程序</h4>
+<p>​		在服务端加入多线程之后，当每一个客户端连接上服务端时，就启动一个新的线程。这样的好处是每一个 Socket 对象执行完成之后，只有包含该 Socket 对象的线程终止，而不会对其他的线程产生影响。开启多线程也会消耗更多的计算机资源，因为服务端可以连接的客户端数量是有限的。下面编写一个 ServerThread 类专门处理多线程操作，代码如下。</p>
+<p>处理多线程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServerThread</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Socket socket;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ServerThread</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ServerThread</span><span class="params">(Socket socket)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.socket=socket;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        DataInputStream din=<span class="keyword">null</span>;</span><br><span class="line">        DataOutputStream dout=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;客户端连接上......\n客户端来自：&quot;</span>+socket.getInetAddress().getHostAddress());</span><br><span class="line">            din=<span class="keyword">new</span> DataInputStream(socket.getInputStream());</span><br><span class="line">            dout=<span class="keyword">new</span> DataOutputStream(socket.getOutputStream());</span><br><span class="line">            String strMassage=<span class="keyword">null</span>;</span><br><span class="line">            Scanner scan=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">            <span class="keyword">boolean</span> flag=<span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">while</span>(flag)</span><br><span class="line">            &#123;</span><br><span class="line">                strMassage=din.readUTF();	<span class="comment">//读取客户端发送的消息</span></span><br><span class="line">                <span class="keyword">if</span>(!strMassage.equals(<span class="string">&quot;bye&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;客户端信息：&quot;</span>+strMassage);</span><br><span class="line">                	System.out.println(<span class="string">&quot;回复客户端：&quot;</span>);</span><br><span class="line">                	strMassage=scan.next();</span><br><span class="line">                	dout.writeUTF(strMassage);</span><br><span class="line">                	dout.flush();</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    din.close();</span><br><span class="line">                    dout.close();</span><br><span class="line">                    flag=<span class="keyword">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            socket.close();		<span class="comment">//关闭服务器</span></span><br><span class="line">            System.out.println(<span class="string">&quot;服务器退出......&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再编写一个主类来使用 ServerThread 类，范例如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServerTest01</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ServerSocket server=<span class="keyword">null</span>;</span><br><span class="line">        Socket socket=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            server=<span class="keyword">new</span> ServerSocket(<span class="number">8000</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;等待客户端连接......&quot;</span>);</span><br><span class="line">            <span class="keyword">while</span>(<span class="keyword">true</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                socket=server.accept();</span><br><span class="line">                <span class="keyword">new</span> Thread(<span class="keyword">new</span> ServerThread(socket)).start();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		客户端就是前面的范例，无须任何修改.在 ServerTest01 运行时，可以同时与多个客户端进行通信，每一个客户端的 Socket 都会以一个线程的方式运行。运行结果如下：</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/TCP%E9%80%9A%E4%BF%A11.png" alt="" /></p>
+<p>​		从程序运行结果发现，服务端的确可以连接多个客户端，但如果多个客户端同时发送消息时，需要按照客户端消息发送顺序回复。</p>
+<h3 id="牛刀小试"><a class="markdownIt-Anchor" href="#牛刀小试"></a> 牛刀小试</h3>
+<p>请编写一个简单的端口扫描程序。要求：</p>
+<ul>
+<li>可以指定扫描的 IP。</li>
+<li>可以指定扫描的 IP。</li>
+</ul>
+<p>​		通过 Socket 类尝试与指定主机的指定端口建立连接，以检查该主机的某些端口是否活动。如果在建立与一个端口的连接时未抛出任何异常，则表明该端口是活动的，代码如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Scanner scan=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        System.out.println(<span class="string">&quot;请输入IP地址：&quot;</span>);</span><br><span class="line">        String ip=scan.next();</span><br><span class="line">        System.out.println(<span class="string">&quot;请输入起始端口号：&quot;</span>);</span><br><span class="line">        <span class="keyword">int</span> from=scan.nextInt();</span><br><span class="line">        System.out.println(<span class="string">&quot;请输入终止端口号：&quot;</span>);</span><br><span class="line">        <span class="keyword">int</span> end=scan.nextInt();</span><br><span class="line">        Socket socket=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> port=<span class="number">0</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;扫描中......&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(port=from;port&lt;=end;port++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                socket=<span class="keyword">new</span> Socket(ip,port);</span><br><span class="line">                System.out.println(<span class="string">&quot;活动端口：&quot;</span>+port);</span><br><span class="line">            &#125;<span class="keyword">catch</span>(ConnectException e)</span><br><span class="line">            	&#123;</span><br><span class="line">                	System.out.println(port+<span class="string">&quot;端口关闭&quot;</span>);</span><br><span class="line">            	&#125;</span><br><span class="line">            <span class="keyword">if</span>(socket!=<span class="keyword">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                socket.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;扫描结束......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">请输入IP地址：</span><br><span class="line"><span class="number">14.215</span><span class="number">.177</span><span class="number">.38</span></span><br><span class="line">请输入起始端口号：</span><br><span class="line"><span class="number">78</span></span><br><span class="line">请输入终止端口号：</span><br><span class="line"><span class="number">84</span></span><br><span class="line">扫描中......</span><br><span class="line"><span class="number">78</span>端口关闭</span><br><span class="line"><span class="number">79</span>端口关闭</span><br><span class="line">活动端口：<span class="number">80</span></span><br><span class="line"><span class="number">81</span>端口关闭</span><br><span class="line"><span class="number">82</span>端口关闭</span><br><span class="line"><span class="number">83</span>端口关闭</span><br><span class="line"><span class="number">84</span>端口关闭</span><br><span class="line">扫描结束......</span><br></pre></td></tr></table></figure>
+<p>​		以上用于测试的IP地址为百度的IP地址。</p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+<p>相关链接：</p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000019252960">backlog参数对TCP连接建立的影响 - SegmentFault 思否</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/27/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/URL%E7%B1%BB%E5%92%8CURLConnection%E7%B1%BB/" rel="prev" title="URL类和URLConnection类">
+      <i class="fa fa-chevron-left"></i> URL类和URLConnection类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/29/java/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/UDP%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" rel="next" title="UDP程序设计">
+      UDP程序设计 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#serversocket-%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text"> ServerSocket 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#socket-%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text"> Socket 类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#socket-%E9%80%9A%E4%BF%A1%E8%BF%87%E7%A8%8B%E4%B8%80%E5%AF%B9%E4%B8%80%E7%9A%84-tcp-%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.1.</span> <span class="nav-text"> Socket 通信过程：一对一的 TCP 程序</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.1.1.</span> <span class="nav-text"> 服务端程序：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.1.2.</span> <span class="nav-text"> 客户端：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#socket-%E9%80%9A%E4%BF%A1%E8%BF%87%E7%A8%8B%E4%B8%80%E5%AF%B9%E5%A4%9A%E7%9A%84-tcp-%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.2.</span> <span class="nav-text"> Socket 通信过程：一对多的 TCP 程序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%9B%E5%88%80%E5%B0%8F%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text"> 牛刀小试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

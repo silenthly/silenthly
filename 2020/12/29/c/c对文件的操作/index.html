@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="二进制文件与ASCII文件（纯文本文件）  数据在内存中是以二进制形式存储的（因为CPU只认识0和1），如果不加转换的输出到外存，就是二进制文件。也称之为映像文件 ​		广义的二进制文件即指文件，由文件在外部设备的存放形式为二进制而得名。狭义的二进制文件即除文本文件以外的文件。文本文件是一种由很多行字符构成的计算机文件。文本文件存在于计算机系统中，通常在文本文件最后一行放置文件结束标志。文本文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c对文件的操作">
+<meta property="og:url" content="https://silenthly.github.io/2020/12/29/c/c%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="二进制文件与ASCII文件（纯文本文件）  数据在内存中是以二进制形式存储的（因为CPU只认识0和1），如果不加转换的输出到外存，就是二进制文件。也称之为映像文件 ​		广义的二进制文件即指文件，由文件在外部设备的存放形式为二进制而得名。狭义的二进制文件即除文本文件以外的文件。文本文件是一种由很多行字符构成的计算机文件。文本文件存在于计算机系统中，通常在文本文件最后一行放置文件结束标志。文本文件">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-29T15:57:45.000Z">
+<meta property="article:modified_time" content="2021-10-27T05:01:03.915Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2020/12/29/c/c%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>c对文件的操作 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2020/12/29/c/c%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          c对文件的操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-29 23:57:45" itemprop="dateCreated datePublished" datetime="2020-12-29T23:57:45+08:00">2020-12-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 13:01:03" itemprop="dateModified" datetime="2021-10-27T13:01:03+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index"><span itemprop="name">c</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/12/29/c/c%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/29/c/c%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="二进制文件与ascii文件纯文本文件"><a class="markdownIt-Anchor" href="#二进制文件与ascii文件纯文本文件"></a> 二进制文件与ASCII文件（纯文本文件）</h3>
+<h5 id="数据在内存中是以二进制形式存储的因为cpu只认识0和1如果不加转换的输出到外存就是二进制文件-也称之为映像文件"><a class="markdownIt-Anchor" href="#数据在内存中是以二进制形式存储的因为cpu只认识0和1如果不加转换的输出到外存就是二进制文件-也称之为映像文件"></a> 数据在内存中是以二进制形式存储的（因为CPU只认识0和1），如果不加转换的输出到外存，就是二进制文件。也称之为映像文件</h5>
+<p>​		广义的二进制文件即指文件，由文件在外部设备的存放形式为二进制而得名。狭义的二进制文件即除文本文件以外的文件。文本文件是一种由很多行字符构成的计算机文件。文本文件存在于计算机系统中，通常在文本文件最后一行放置文件结束标志。文本文件的编码基于字符定长，译码相对要容易一些；二进制文件编码是变长的，灵活利用率要高，而译码要难一些，不同的二进制文件译码方式是不同的。</p>
+<p>​		二者本质上没有什么区别，在硬盘上都有一种存放方式——二进制，文本文件是特殊的二进制文件。</p>
+<span id="more"></span>
+<h5 id="二进制文件的好处"><a class="markdownIt-Anchor" href="#二进制文件的好处"></a> 二进制文件的好处</h5>
+<p><strong>第一</strong>是二进制文件比较节约空间，这两者储存字符型数据时并没有差别。但是在储存数字，特别是实型数字时，二进制更节省空间，比如储存 Real*4 的数据：3.1415927，文本文件需要 9 个字节，分别储存：3 . 1 4 1 5 9 2 7 这 9 个 ASCII 值，而二进制文件只需要 4 个字节（DB 0F 49 40）</p>
+<p><strong>第二</strong>个原因是，内存中参加计算的数据都是用二进制无格式储存起来的，因此，使用二进制储存到文件就更快捷。如果储存为文本文件，则需要一个转换的过程。在数据量很大的时候，两者就会有明显的速度差别了。<br />
+　　<strong>第三</strong>，就是一些比较精确的数据，使用二进制储存不会造成有效位的丢失。</p>
+<h3 id="什么是缓冲区"><a class="markdownIt-Anchor" href="#什么是缓冲区"></a> <strong>什么是缓冲区</strong></h3>
+<p>缓冲区又称为缓存，它是内存空间的一部分。也就是说，在内存空间中预留了一定的存储空间，这些存储空间用来缓冲输入或输出的数据，这部分预留的空间就叫做缓冲区。缓冲区根据其对应的是输入设备还是输出设备，分为输入缓冲区和输出缓冲区。</p>
+<p><strong>为什么要引入缓冲区</strong></p>
+<p>我们为什么要引入缓冲区呢？</p>
+<p>比如我们从磁盘里取信息，我们先把读出的数据放在缓冲区，计算机再直接从缓冲区中取数据，等缓冲区的数据取完后再去磁盘中读取，这样就可以减少磁盘的读写次数，再加上计算机对缓冲区的操作大大快于对磁盘的操作，故应用缓冲区可大大提高计算机的运行速度。</p>
+<p>又比如，我们使用打印机打印文档，由于打印机的打印速度相对较慢，我们先把文档输出到打印机相应的缓冲区，打印机再自行逐步打印，这时我们的CPU可以处理别的事情。现在您基本明白了吧，缓冲区就是一块内存区，它用在输入输出设备和CPU之间，用来缓存数据。它使得低速的输入输出设备和高速的CPU能够协调工作，避免低速的输入输出设备占用CPU，解放出CPU，使其能够高效率工作。</p>
+<table>
+<thead>
+<tr>
+<th>其中，二进制模式与文本模式操作相似，只不过是以二进制流的形式读写而已，下面以文本模式为例分析：</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.“r” 模式：</td>
+<td></td>
+</tr>
+<tr>
+<td>1.1 打开文件进行“<strong>只读</strong>”操作，即只能从文件读取内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>1.2 若欲操作的<strong>文件不存在，则打开失败</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>1.3 成功打开文件时，文件指针位于文件<strong>开头</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>1.4 打开文件后，<strong>不会清空</strong>文件内原有内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>1.5 可从文件中<strong>任意位置</strong>读取内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>2.“w” 模式：</td>
+<td></td>
+</tr>
+<tr>
+<td>2.1 打开文件进行“<strong>只写</strong>”操作，即只能向文件写入内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>2.2 若欲操作的<strong>文件不存在，则新建文件</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>2.3 成功打开文件时，文件指针位于文件<strong>开头</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>2.4 打开文件后，<strong>会清空</strong>文件内原有的内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>2.5 可向文件中<strong>任意位置</strong>写入内容，且进行写入操作时，会<strong>覆盖</strong>原有位置的内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>3.“a” 模式：</td>
+<td></td>
+</tr>
+<tr>
+<td>3.1 打开文件进行“<strong>追加</strong>”操作，即只能向文件写入内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>3.2 若欲操作的<strong>文件不存在，则新建文件</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>3.3 成功打开文件时，文件指针位于文件<strong>结尾</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>3.4 打开文件后，<strong>不会清空</strong>文件内原有内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>3.5 只能向文件**末尾追加(写)**内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>4.&quot;r+&quot;模式：</td>
+<td></td>
+</tr>
+<tr>
+<td>4.1 打开文件进行“<strong>读写</strong>”操作，即既可读取，又可写入。</td>
+<td></td>
+</tr>
+<tr>
+<td>4.2 若欲操作的<strong>文件不存在，则打开失败</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>4.3 成功打开文件时，文件指针位于文件<strong>开头</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>4.4 打开文件后，<strong>不会清空文</strong>件内原有内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>4.5 无论是读取内容还是写入内容，都可在文件中<strong>任意位置</strong>进行，且进行写入操作时，会<strong>覆盖</strong>原有位置的内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>5.&quot;w+&quot;模式：</td>
+<td></td>
+</tr>
+<tr>
+<td>5.1 打开文件进行“<strong>读写</strong>”操作，即既可读取，又可写入。</td>
+<td></td>
+</tr>
+<tr>
+<td>5.2 若欲操作的<strong>文件不存在，则新建文件</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>5.3 成功打开文件时，文件指针位于文件<strong>开头</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>5.4 打开文件后，<strong>会清空</strong>文件内原有的内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>5.5 无论是读取内容还是写入内容，都可在文件中<strong>任意位置</strong>进行，且进行写入操作时，会<strong>覆盖</strong>原有位置的内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>6.&quot;a+&quot;模式：</td>
+<td></td>
+</tr>
+<tr>
+<td>6.1 打开文件进行“<strong>读写</strong>”操作，即既可读取，又可写入。</td>
+<td></td>
+</tr>
+<tr>
+<td>6.2 若欲操作的<strong>文件不存在，则新建文件</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>6.3 成功打开文件时，文件指针位于文件<strong>结尾</strong>。</td>
+<td></td>
+</tr>
+<tr>
+<td>6.4 打开文件后，<strong>不会清空</strong>文件内原有内容。</td>
+<td></td>
+</tr>
+<tr>
+<td>6.5 读取内容时，可以在<strong>任意位置</strong>进行，但写入内容时，只会<strong>追加</strong>在文件尾部。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="文件函数"><a class="markdownIt-Anchor" href="#文件函数"></a> 文件函数</h4>
+<h5 id="1-打开与关闭文件函数"><a class="markdownIt-Anchor" href="#1-打开与关闭文件函数"></a> 1、打开与关闭文件函数</h5>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fopen(<span class="string">&quot;文件名&quot;</span>,<span class="string">&quot;使用文件方式&quot;</span>);<span class="comment">//打开文件，文件名是一个字符串，使用方式需要加双引号</span></span><br></pre></td></tr></table></figure>
+<p>为了使文件指针与文件建立联系，我们要将函数返回的指针给我们的文件指针，像这样：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FILE *p;</span><br><span class="line">p=fopen(<span class="string">&quot;test.txt&quot;</span>,<span class="string">&quot;r&quot;</span>);<span class="comment">//以读的方式打开默认路径下一个叫test的文本文件</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fclose(p);<span class="comment">//关闭p指向的文件</span></span><br></pre></td></tr></table></figure>
+<p>示例一：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *p;			<span class="comment">//设置一个文件指针</span></span><br><span class="line">    <span class="keyword">char</span> ch;			<span class="comment">//定义一个字符变量</span></span><br><span class="line">    <span class="keyword">if</span>((p=fopen(<span class="string">&quot;text.txt&quot;</span>,<span class="string">&quot;w&quot;</span>))==<span class="literal">NULL</span>)	<span class="comment">//以只写的方式打开一个叫test的文本文件，当出错时，即返回值为NULL时，输出错误信息</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;error!&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);		<span class="comment">//关闭所有文件，终止正在执行的程序</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(;ch!=<span class="string">&#x27;\n&#x27;</span>;)		<span class="comment">//输入ch直到输入空格</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%c&quot;</span>,&amp;ch);</span><br><span class="line">        fputc(ch,p);	<span class="comment">//将字符ch写入p所指向的文件</span></span><br><span class="line">    &#125;</span><br><span class="line">    fclose(p);			<span class="comment">//关闭文件</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>示例二：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *p;</span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    <span class="keyword">if</span>((p=(<span class="string">&quot;text.txt&quot;</span>,<span class="string">&quot;r&quot;</span>))==<span class="literal">NULL</span>)<span class="comment">//以只读的方式打开text。</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;error!&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(;ch!=<span class="string">&#x27;\n&#x27;</span>;)</span><br><span class="line">    &#123;</span><br><span class="line">        ch=fgetc(p);<span class="comment">//ch得到p所指文件中的每一个字符</span></span><br><span class="line">        <span class="built_in">putchar</span>(ch);<span class="comment">//将得到的字符输出到屏幕</span></span><br><span class="line">    &#125;</span><br><span class="line">    flose(p);<span class="comment">//关闭文件</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="2-读写字符函数"><a class="markdownIt-Anchor" href="#2-读写字符函数"></a> 2、读写字符函数</h5>
+<h6 id="读字符fgetc"><a class="markdownIt-Anchor" href="#读字符fgetc"></a> 读字符fgetc</h6>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fgetc(文件指针);<span class="comment">//从指针所指向的文件中读入一个字符</span></span><br></pre></td></tr></table></figure>
+<h6 id="写字符fputc"><a class="markdownIt-Anchor" href="#写字符fputc"></a> 写字符fputc</h6>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fputc(ch,p);<span class="comment">//把字符变量ch写到p所指向的文件中去</span></span><br></pre></td></tr></table></figure>
+<h6 id="示例文件复制"><a class="markdownIt-Anchor" href="#示例文件复制"></a> 示例：文件复制</h6>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *p1,*p2;		<span class="comment">//设置2个文件指针</span></span><br><span class="line">    <span class="keyword">char</span> filename1[<span class="number">30</span>],filename2[<span class="number">30</span>],ch;	<span class="comment">//设置2个字符数组用来输入文件名</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;请输入要复制的文件名:\n&quot;</span>);</span><br><span class="line">    gets(filename1);	<span class="comment">//输入文件名</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;请输入复制后的文件名:\n&quot;</span>);</span><br><span class="line">    gets(filename2);	<span class="comment">//输入文件名</span></span><br><span class="line">    <span class="keyword">if</span>((p1=fopen(filename1,<span class="string">&quot;rb&quot;</span>))==<span class="literal">NULL</span>)	<span class="comment">//打开被复制的文件</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;error!&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>((p2=fopen(filename2,<span class="string">&quot;wb&quot;</span>))==<span class="literal">NULL</span>)	<span class="comment">//写入要复制的文件名</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;error!&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(!feof(p1))		<span class="comment">//用一个检查文件是否结束的函数来判断</span></span><br><span class="line">    &#123;</span><br><span class="line">        ch=fgetc(p1);		<span class="comment">//读出每一个p1指向的文件中的字节，把ch写入到p2指向的文件中去</span></span><br><span class="line">        fputc(ch,p2);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;复制成功&quot;</span>);</span><br><span class="line">    fclose(p1);				<span class="comment">//用完之后，为了避免不必要的操作干扰读写，要关闭文件，即断掉文件指针与文件的联系</span></span><br><span class="line">    fclose(p2);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="检测文件是否结束的函数"><a class="markdownIt-Anchor" href="#检测文件是否结束的函数"></a> 检测文件是否结束的函数</h5>
+<p>feof(end of file)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">feof(文件指针);	<span class="comment">//当文件结束时返回非零值，但文件未结束时返回零</span></span><br></pre></td></tr></table></figure>
+<p>再看刚才的循环语句</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(!feof(p))	<span class="comment">//当返回值为0的时候执行循环，返回值非0的时候就结束循环</span></span><br></pre></td></tr></table></figure>
+<h5 id="注意该函数先读再判断是否结束参考资料httpwwwvoidcncomarticlep-cycpxclc-nohtml"><a class="markdownIt-Anchor" href="#注意该函数先读再判断是否结束参考资料httpwwwvoidcncomarticlep-cycpxclc-nohtml"></a> 注意：该函数先读再判断是否结束，参考资料：<a target="_blank" rel="noopener" href="http://www.voidcn.com/article/p-cycpxclc-no.html">http://www.voidcn.com/article/p-cycpxclc-no.html</a></h5>
+<h5 id="当然对于文本文件可以不用二进制的方式处理"><a class="markdownIt-Anchor" href="#当然对于文本文件可以不用二进制的方式处理"></a> 当然对于文本文件可以不用二进制的方式处理</h5>
+<p>可以把刚才的循环语句换成如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(!(ch=fgetc(p))==EOF)	<span class="comment">//EOF和NULL在标准函数库里的宏定义分别是-1和0</span></span><br></pre></td></tr></table></figure>
+<p>那么这个-1又代表了什么</p>
+<p><strong>文件的所有有效字符后有一个文件尾标志，当读完全部的字符后，文件读写位置标记就会指向最后一个字符的后面的结束字节（里面存放了-1），如果再读取就会读出-1</strong></p>
+<p>在文本文件中，数据都是以字符的ASCII代码值的形式存放。我们知道，ASCII代码值的范围是0~127，不可能出现-1，因此可以用EOF作为文件结束标志。</p>
+<p><strong>WARNING</strong>二进制文件因为是以二进制形式保存的所以不能以字符的方式来存取的，所以不应用刚才的方式对二进制文件进行写入。</p>
+<h5 id="字符串读写文件"><a class="markdownIt-Anchor" href="#字符串读写文件"></a> 字符串读写文件</h5>
+<table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>调用形式</th>
+<th>功能</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fgets</strong></td>
+<td><strong>fgets(str,n,fp)</strong></td>
+<td>从fp指向的文件读入一个长度为n-1的字符串，存放到字符数组str中去</td>
+<td>成功返回地址str,失败返回NULL</td>
+</tr>
+<tr>
+<td><strong>fputs</strong></td>
+<td><strong>fputs(str,fp)</strong></td>
+<td>把str所指向的字符串写入fp所指向的文件中</td>
+<td>成功返回0，失败返回非零</td>
+</tr>
+</tbody>
+</table>
+<p>例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#incldue<span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *p;</span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">40</span>],str[<span class="number">30</span>];		<span class="comment">//定义一个字符数组来储存文件里的信息</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;请输入要打开的文件名\n&quot;</span>);</span><br><span class="line">    gets(filename);</span><br><span class="line">    <span class="keyword">if</span>((p=fopen(filename,<span class="string">&quot;r&quot;</span>))==<span class="literal">NULL</span>)	<span class="comment">//以只读的方式打开文件</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;error!&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    fgets(str,<span class="number">20</span>,p);			<span class="comment">//将p所指的文件中的20字符读取给字符串str</span></span><br><span class="line">    fclose(p);					<span class="comment">//关闭文件</span></span><br><span class="line">    <span class="built_in">puts</span>(str);					<span class="comment">//以字符串形式输出str</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="3-以格式化的方式读写文本文件"><a class="markdownIt-Anchor" href="#3-以格式化的方式读写文本文件"></a> 3、以格式化的方式读写文本文件</h5>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>引用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fprintf</strong></td>
+<td><strong>fprintf(文件指针，格式字符串，输出列表)</strong></td>
+</tr>
+<tr>
+<td><strong>fscanf</strong></td>
+<td><strong>fscanf（文件指针，格式字符串，输入列表）</strong></td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">3</span>;</span><br><span class="line">    <span class="keyword">float</span> j=<span class="number">4.567</span>;</span><br><span class="line">    <span class="keyword">char</span> <span class="built_in">string</span>[<span class="number">20</span>];</span><br><span class="line">    FILE *p;</span><br><span class="line">    <span class="keyword">if</span>((p=fopen(<span class="string">&quot;text1.txt&quot;</span>,<span class="string">&quot;r+&quot;</span>))=<span class="literal">NULL</span>)		<span class="comment">//以读写的方式打开test</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;error!&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">fscanf</span>(p,<span class="string">&quot;%s&quot;</span>,<span class="built_in">string</span>);				<span class="comment">//把其中的字符串写入字符数组string中</span></span><br><span class="line">    <span class="built_in">puts</span>(<span class="built_in">string</span>);						<span class="comment">//输出由文件中写入的字符串</span></span><br><span class="line">    <span class="built_in">fprintf</span>(p,<span class="string">&quot;%d .3%f&quot;</span>,i,j);			<span class="comment">//以%3d %.3的格式给文本输入整形变量i和浮点型变量j(文件末尾不能有空格，否则无法输入)</span></span><br><span class="line">    fclose(p);							<span class="comment">//关闭文件</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="4-用二进制方式向文件读写一组数据"><a class="markdownIt-Anchor" href="#4-用二进制方式向文件读写一组数据"></a> 4、用二进制方式向文件读写一组数据</h5>
+<p>上面的复制文件的例子也是对二进制文件的读写，在这里有一组专门的二进制文件读写函数</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>引用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fread</strong></td>
+<td><strong>fread(buffer,size,count,stream)</strong></td>
+</tr>
+<tr>
+<td><strong>fwrite</strong></td>
+<td><strong>fwrite(buffer,size,count,stream)</strong></td>
+</tr>
+</tbody>
+</table>
+<p>（也被称为数据块读写）</p>
+<p>参 数<br />
+buffer<br />
+用于接收数据的内存地址（是一个指针，无论输出输入都是首地址）<br />
+size<br />
+要读的每个数据项的字节数，单位是字节<br />
+count<br />
+要读count个数据项，每个数据项size个字节.<br />
+stream<br />
+文件指针</p>
+<p><strong>数据块读写多用于结构体变量的读写</strong>（因为结构体所占的字符数是不规则的）</p>
+<p>fwrite与fprintf的区别(原创地址：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/hhddcpp/p/4303572.html">https://www.cnblogs.com/hhddcpp/p/4303572.html</a>)</p>
+<p><strong>用fwrite 写入文件的如果是能够表示为字符，那么就会显示为字符，如果显示不出来，那就写的是二进制内容（所谓的乱码）</strong></p>
+<p><strong>fprintf写的是数字转换成ASCII码之后的字符。</strong></p>
+<p>用记事本打开看下，fwrite写的打开是乱码，fprintf写入的是可读的字符</p>
+<p>其实这四个示例生成的文件用fopen都是可读的，四个文件都没有错</p>
+<p><strong>总而言之：如果要让生成的文件自己可以看得懂，那么就选择fprintf，如果想看不懂，那就用fwrite，两者只是写入方式不同，生成的文件倒都是计算机可读的</strong></p>
+<h5 id="随机读写数据文件"><a class="markdownIt-Anchor" href="#随机读写数据文件"></a> 随机读写数据文件</h5>
+<h5 id="1文件位置标记及其定位"><a class="markdownIt-Anchor" href="#1文件位置标记及其定位"></a> (1)文件位置标记及其定位</h5>
+<p><strong>文件位置标记</strong>其实是一个文件中的一个指针，在我们的顺序读写当中，都是一个字符一个字符的读出又写入，没有出现跳跃的情况，但在实际使用的过程中，我们不许要每次都要把文件全部都读一遍<br />
+只需要稍微的改动某些数据，</p>
+<h5 id="5-文件位置标记的定位"><a class="markdownIt-Anchor" href="#5-文件位置标记的定位"></a> 5、文件位置标记的定位</h5>
+<p><strong>rewind</strong> 功能是将文件内部的指针重新指向一个文件的开头</p>
+<h5 id="注意不是-文件指针而是文件内部的位置指针随着对文件的读写文件的位置指针指向当前读写字节向后移动-而文件指针是指向整个文件如果不重新赋值文件指针不会改变"><a class="markdownIt-Anchor" href="#注意不是-文件指针而是文件内部的位置指针随着对文件的读写文件的位置指针指向当前读写字节向后移动-而文件指针是指向整个文件如果不重新赋值文件指针不会改变"></a> 注意：不是 文件指针而是文件内部的位置指针，随着对文件的读写文件的位置指针（指向当前读写字节）向后移动。而文件指针是指向整个文件，如果不重新赋值文件指针不会改变。</h5>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>引用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>rewind</strong></td>
+<td><strong>fread(文件指针)</strong></td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE  *fp;</span><br><span class="line">    <span class="keyword">char</span>  ch;</span><br><span class="line">    <span class="keyword">if</span>((fp=fopen(<span class="string">&quot;text1.txt&quot;</span>,<span class="string">&quot;w+&quot;</span>))==<span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\nCannot open file\nstrike any key exit\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;input a string:\n&quot;</span>);</span><br><span class="line">    ch=getchar();</span><br><span class="line">    <span class="keyword">while</span>(ch!=<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        fputc(ch,fp);</span><br><span class="line">        ch=getchar();</span><br><span class="line">    &#125;</span><br><span class="line">    rewind(fp);        </span><br><span class="line">    ch=fgetc(fp);          </span><br><span class="line">    <span class="keyword">while</span>(ch!=EOF)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">putchar</span>(ch);</span><br><span class="line">        ch=fgetc(fp);</span><br><span class="line">    &#125;</span><br><span class="line">    fclose(fp);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>rewind§	每输入一个字符，文件内部位置指针向后移动一个字节。写入完毕，该指针已指向文件末尾, 如果要把文件从头读出，须把指针移到文件头，利用rewind()函数。</p>
+<p><strong>fseek</strong>函数,文件指针位置函数</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>引用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fseek</strong></td>
+<td><strong>fseek(文件指针,位移量，起始点)</strong></td>
+</tr>
+</tbody>
+</table>
+<p>起始点有3种情况，分别是0，1，2</p>
+<table>
+<thead>
+<tr>
+<th>起始点</th>
+<th>名字</th>
+<th>用数字代表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文件开始位置</td>
+<td>SEEK_SET</td>
+<td>0</td>
+</tr>
+<tr>
+<td>文件当前位置</td>
+<td>SEEK_CUR</td>
+<td>1</td>
+</tr>
+<tr>
+<td>文件末尾位置</td>
+<td>SEEK_END</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>位移量是long形数据要在结尾加上L</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fseek(fp,<span class="number">100L</span>,<span class="number">0</span>);<span class="comment">//将文件位置标记向前移动到离文件开头100个字节处</span></span><br><span class="line">fseek(fp,<span class="number">50L</span>,<span class="number">1</span>);<span class="comment">//将文件位置标记前移到离当前位置50个字节处</span></span><br><span class="line">fseek(fp,<span class="number">-10L</span>,<span class="number">2</span>);<span class="comment">//将文件位置标记从文件末尾后退10个字节</span></span><br></pre></td></tr></table></figure>
+<p>在上面的代码出修改一下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;NUM;i+=<span class="number">2</span>)</span><br><span class="line">&#123;</span><br><span class="line">	fseek(fp,i*<span class="keyword">sizeof</span>(struct Student),<span class="number">0</span>);<span class="comment">//跳过每次移动2个结构体所占的字节</span></span><br><span class="line">	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%-10s%4d%4d%15s&quot;</span>,Stud[i].name,Stud[i].num,Stud[i].age,Stud[i].add);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就实现了只输出部分的数据</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/29/c/%E5%AD%A6%E7%94%9F%E6%88%90%E7%BB%A9%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" rel="prev" title="学生成绩管理系统">
+      <i class="fa fa-chevron-left"></i> 学生成绩管理系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/25/c/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%88%9D%E6%8E%A2/" rel="next" title="动态规划初探">
+      动态规划初探 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6%E4%B8%8Eascii%E6%96%87%E4%BB%B6%E7%BA%AF%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text"> 二进制文件与ASCII文件（纯文本文件）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E6%98%AF%E4%BB%A5%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%BD%A2%E5%BC%8F%E5%AD%98%E5%82%A8%E7%9A%84%E5%9B%A0%E4%B8%BAcpu%E5%8F%AA%E8%AE%A4%E8%AF%860%E5%92%8C1%E5%A6%82%E6%9E%9C%E4%B8%8D%E5%8A%A0%E8%BD%AC%E6%8D%A2%E7%9A%84%E8%BE%93%E5%87%BA%E5%88%B0%E5%A4%96%E5%AD%98%E5%B0%B1%E6%98%AF%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6-%E4%B9%9F%E7%A7%B0%E4%B9%8B%E4%B8%BA%E6%98%A0%E5%83%8F%E6%96%87%E4%BB%B6"><span class="nav-number">1.0.1.</span> <span class="nav-text"> 数据在内存中是以二进制形式存储的（因为CPU只认识0和1），如果不加转换的输出到外存，就是二进制文件。也称之为映像文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">1.0.2.</span> <span class="nav-text"> 二进制文件的好处</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text"> 什么是缓冲区</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text"> 文件函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%89%93%E5%BC%80%E4%B8%8E%E5%85%B3%E9%97%AD%E6%96%87%E4%BB%B6%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.1.</span> <span class="nav-text"> 1、打开与关闭文件函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%AF%BB%E5%86%99%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.2.</span> <span class="nav-text"> 2、读写字符函数</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AF%BB%E5%AD%97%E7%AC%A6fgetc"><span class="nav-number">2.1.2.1.</span> <span class="nav-text"> 读字符fgetc</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%86%99%E5%AD%97%E7%AC%A6fputc"><span class="nav-number">2.1.2.2.</span> <span class="nav-text"> 写字符fputc</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6"><span class="nav-number">2.1.2.3.</span> <span class="nav-text"> 示例：文件复制</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E7%BB%93%E6%9D%9F%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.3.</span> <span class="nav-text"> 检测文件是否结束的函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E8%AF%A5%E5%87%BD%E6%95%B0%E5%85%88%E8%AF%BB%E5%86%8D%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E7%BB%93%E6%9D%9F%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99httpwwwvoidcncomarticlep-cycpxclc-nohtml"><span class="nav-number">2.1.4.</span> <span class="nav-text"> 注意：该函数先读再判断是否结束，参考资料：http:&#x2F;&#x2F;www.voidcn.com&#x2F;article&#x2F;p-cycpxclc-no.html</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%93%E7%84%B6%E5%AF%B9%E4%BA%8E%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E5%8F%AF%E4%BB%A5%E4%B8%8D%E7%94%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E6%96%B9%E5%BC%8F%E5%A4%84%E7%90%86"><span class="nav-number">2.1.5.</span> <span class="nav-text"> 当然对于文本文件可以不用二进制的方式处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.6.</span> <span class="nav-text"> 字符串读写文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E4%BB%A5%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%9A%84%E6%96%B9%E5%BC%8F%E8%AF%BB%E5%86%99%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.7.</span> <span class="nav-text"> 3、以格式化的方式读写文本文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E7%94%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%B9%E5%BC%8F%E5%90%91%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99%E4%B8%80%E7%BB%84%E6%95%B0%E6%8D%AE"><span class="nav-number">2.1.8.</span> <span class="nav-text"> 4、用二进制方式向文件读写一组数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.9.</span> <span class="nav-text"> 随机读写数据文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE%E6%A0%87%E8%AE%B0%E5%8F%8A%E5%85%B6%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.1.10.</span> <span class="nav-text"> (1)文件位置标记及其定位</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE%E6%A0%87%E8%AE%B0%E7%9A%84%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.1.11.</span> <span class="nav-text"> 5、文件位置标记的定位</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%B8%8D%E6%98%AF-%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E8%80%8C%E6%98%AF%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E7%9A%84%E4%BD%8D%E7%BD%AE%E6%8C%87%E9%92%88%E9%9A%8F%E7%9D%80%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%8D%E7%BD%AE%E6%8C%87%E9%92%88%E6%8C%87%E5%90%91%E5%BD%93%E5%89%8D%E8%AF%BB%E5%86%99%E5%AD%97%E8%8A%82%E5%90%91%E5%90%8E%E7%A7%BB%E5%8A%A8-%E8%80%8C%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E6%98%AF%E6%8C%87%E5%90%91%E6%95%B4%E4%B8%AA%E6%96%87%E4%BB%B6%E5%A6%82%E6%9E%9C%E4%B8%8D%E9%87%8D%E6%96%B0%E8%B5%8B%E5%80%BC%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E4%B8%8D%E4%BC%9A%E6%94%B9%E5%8F%98"><span class="nav-number">2.1.12.</span> <span class="nav-text"> 注意：不是 文件指针而是文件内部的位置指针，随着对文件的读写文件的位置指针（指向当前读写字节）向后移动。而文件指针是指向整个文件，如果不重新赋值文件指针不会改变。</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		数值是程序设计中经常要处理的数据，可以根据不同的需求，显示不同的样式或格式。在java中可以使用NumberFormat类实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="格式化类：NumberFormat类">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/10/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%B1%BB%EF%BC%9ANumberFormat%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		数值是程序设计中经常要处理的数据，可以根据不同的需求，显示不同的样式或格式。在java中可以使用NumberFormat类实现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-10T07:28:01.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:46:17.926Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/10/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%B1%BB%EF%BC%9ANumberFormat%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>格式化类：NumberFormat类 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/10/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%B1%BB%EF%BC%9ANumberFormat%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          格式化类：NumberFormat类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-10 15:28:01" itemprop="dateCreated datePublished" datetime="2021-08-10T15:28:01+08:00">2021-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:46:17" itemprop="dateModified" datetime="2021-10-27T12:46:17+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/10/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%B1%BB%EF%BC%9ANumberFormat%E7%B1%BB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/10/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%B1%BB%EF%BC%9ANumberFormat%E7%B1%BB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		数值是程序设计中经常要处理的数据，可以根据不同的需求，显示不同的样式或格式。在java中可以使用NumberFormat类实现。</p>
+<span id="more"></span>
+<p>​		java.text.NumberFormat类是用于数字的格式化类，可以根据需求进行数字的格式显示。NumberFormat类的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">NumbrerFormat</span> <span class="keyword">extends</span> <span class="title">Format</span></span></span><br></pre></td></tr></table></figure>
+<p>​		可以看出<strong>NumberFormat是抽象类，所以不能使用new关键字为其实例化，可以通过NumberFormat类的静态方法为其实例化</strong>。NumberFormat类的常用方法如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public static Locale[] getAvailableLocales()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回所有语言环境的数组</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public Currency getCurrency()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取格式化货币值时此数字格式使用的货币符号</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">pubclic static format(double number)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">规范格式</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public static NumberFormat getCurrencyInstance()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回当前默认语言环境的<strong>货币格式符号</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public static NumberFormat getCurrencyInstance(Locale inLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回指定语言环境的货币格式符号</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public static NumberFormat getInstance()</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>返回当前默认语言环境的数字格式</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public static NumberFormat getInstance(Locale inLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回指定语言环境的<strong>数字格式</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public static NumberFormat getIntegerInstance()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回当前默认语言环境的<strong>整数格式</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>9</strong></td>
+<td style="text-align:center"><strong>public static NumberFormat getIntegerInstance(Locale inLocale)</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>返回指定语言环境的整数格式</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public static NumberFormat getNumberInstance()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回当前默认语言环境的<strong>通用数字格式</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public static NumberFormat getNumberInstance(Locale inLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回指定语言环境的通用数字格式</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public static NumberFormat getPercentInstance()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回当前默认语言环境的<strong>百分比格式</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public static NumberFormat getPercentInstance(Locale inLocale)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">返回指定语言环境的百分比格式</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public Number parse(String source)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定包含数字的字符串，解析为一个数字</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public void setCurrency(Currency currency)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取格式化货币值时此数字格式使用的货币</td>
+</tr>
+</tbody>
+</table>
+<p>​		一旦取得NumberFormat对象，就可以调用NumberFormat对象的format()方法来格式化数值。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.text.NumberFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Locale;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;———默认格式(中文)———&quot;</span>);</span><br><span class="line">        NumberFormat nf1=NumberFormat.getInstance();	<span class="comment">//默认格式</span></span><br><span class="line">        System.out.println(nf1.format(<span class="number">1000000000</span>));		<span class="comment">//格式化数据</span></span><br><span class="line">        System.out.println(nf1.format(<span class="number">1234567.89</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;———指定格式(德国)———&quot;</span>);</span><br><span class="line">        NumberFormat nf2=NumberFormat.getIntegerInstance(Locale.GERMAN);	<span class="comment">//整数格式(德国)</span></span><br><span class="line">        System.out.println(nf2.format(<span class="number">1000000000</span>));		<span class="comment">//格式化数据</span></span><br><span class="line">        System.out.println(nf2.format(<span class="number">1234567.89</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;———指定格式(美国)———&quot;</span>);</span><br><span class="line">        NumberFormat nf3=NumberFormat.getCurrencyInstance(Locale.US);	<span class="comment">//货币格式(美国)</span></span><br><span class="line">        System.out.println(nf3.format(<span class="number">1000000000</span>));		<span class="comment">//格式化数据</span></span><br><span class="line">        System.out.println(nf3.format(<span class="number">1234567.89</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;———默认格式(中文)———&quot;</span>);</span><br><span class="line">        NumberFormat nf4=NumberFormat.getPercentInstance();		<span class="comment">//默认百分比格式</span></span><br><span class="line">        System.out.println(nf4.format(<span class="number">0.123</span>));			<span class="comment">//格式化数据</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">———默认格式(中文)———</span><br><span class="line"><span class="number">1</span>,<span class="number">000</span>,<span class="number">000</span>,<span class="number">000</span></span><br><span class="line"><span class="number">1</span>,<span class="number">234</span>,<span class="number">567.89</span></span><br><span class="line">———指定格式(德国)———</span><br><span class="line"><span class="number">1.000</span><span class="number">.000</span><span class="number">.000</span></span><br><span class="line"><span class="number">1.234</span><span class="number">.568</span></span><br><span class="line">———指定格式(美国)———</span><br><span class="line">$<span class="number">1</span>,<span class="number">000</span>,<span class="number">000</span>,<span class="number">000.00</span></span><br><span class="line">$<span class="number">1</span>,<span class="number">234</span>,<span class="number">567.89</span></span><br><span class="line">———默认格式(中文)———</span><br><span class="line"><span class="number">12</span>%</span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，由于测试程序的操作系统是中文的，所以默认格式为中文格式。在指定不同的国家地区后，显示格式也发生了变化，表现出了国际化的作用。从程序的运行结果可以看出，中国是采用(,)作为数字分组分隔符的，而德 国是采用(.)作为数字分组分隔符。</p>
+<h4 id="知识扩展decimalformat类"><a class="markdownIt-Anchor" href="#知识扩展decimalformat类"></a> 知识扩展：DecimalFormat类</h4>
+<p>​		DecimalFormat是NumberFormat的一个具体子类，用于格式化十进制数字，使用该类格式化数字要比直接NumberFormat更加方便。</p>
+<p>​		DecimalFormat类设计有各种功能，使其能够分析和格式化任意语言环境中的数，包括对西方语言、阿拉伯语和印度语数字的支持。它还支持不同类型的数，包括整数(123)、定点数(123.4)、科学记数法表示的数(1.23E4)、百分数(12%)和金额($123)，所有这些内容都可以本地化。</p>
+<p><strong>未完待续。。。。(有时间再补)</strong></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/10/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%B1%BB%EF%BC%9ARandom%E7%B1%BB/" rel="prev" title="随机数类：Random类">
+      <i class="fa fa-chevron-left"></i> 随机数类：Random类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/11/java/%E9%9B%86%E5%90%88%E4%B8%8E%E6%B3%9B%E5%9E%8B/%E6%B3%9B%E5%9E%8B/" rel="next" title="泛型">
+      泛型 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95decimalformat%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text"> 知识扩展：DecimalFormat类</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

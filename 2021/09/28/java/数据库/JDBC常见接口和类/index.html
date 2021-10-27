@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​	无论是哪一个程序设计语言，想要操作数据库，第一件事就是连接数据库。java语言提供了多种方式连接数据库，都是通过JDBC来进行连接的。本文将介绍JDBC的基本知识。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JDBC常见接口和类">
+<meta property="og:url" content="https://silenthly.github.io/2021/09/28/java/%E6%95%B0%E6%8D%AE%E5%BA%93/JDBC%E5%B8%B8%E8%A7%81%E6%8E%A5%E5%8F%A3%E5%92%8C%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​	无论是哪一个程序设计语言，想要操作数据库，第一件事就是连接数据库。java语言提供了多种方式连接数据库，都是通过JDBC来进行连接的。本文将介绍JDBC的基本知识。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/JDBC1.png">
+<meta property="article:published_time" content="2021-09-28T14:14:23.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:40:32.036Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/JDBC1.png">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/09/28/java/%E6%95%B0%E6%8D%AE%E5%BA%93/JDBC%E5%B8%B8%E8%A7%81%E6%8E%A5%E5%8F%A3%E5%92%8C%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JDBC常见接口和类 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/09/28/java/%E6%95%B0%E6%8D%AE%E5%BA%93/JDBC%E5%B8%B8%E8%A7%81%E6%8E%A5%E5%8F%A3%E5%92%8C%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JDBC常见接口和类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-28 22:14:23" itemprop="dateCreated datePublished" datetime="2021-09-28T22:14:23+08:00">2021-09-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:40:32" itemprop="dateModified" datetime="2021-10-27T12:40:32+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/09/28/java/%E6%95%B0%E6%8D%AE%E5%BA%93/JDBC%E5%B8%B8%E8%A7%81%E6%8E%A5%E5%8F%A3%E5%92%8C%E7%B1%BB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/28/java/%E6%95%B0%E6%8D%AE%E5%BA%93/JDBC%E5%B8%B8%E8%A7%81%E6%8E%A5%E5%8F%A3%E5%92%8C%E7%B1%BB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​	无论是哪一个程序设计语言，想要操作数据库，第一件事就是连接数据库。java语言提供了多种方式连接数据库，都是通过JDBC来进行连接的。本文将介绍JDBC的基本知识。</p>
+<span id="more"></span>
+<h3 id="认识jdbc"><a class="markdownIt-Anchor" href="#认识jdbc"></a> 认识JDBC</h3>
+<p>​		JDBC是java Database Connectivity的缩写，其中文含义是<strong>java数据库连接</strong>。<strong>JDBC提供了一组与平台无关性，可用于连接数据库及执行SQL语句的API</strong>。JDBC允许用户从java程序访问任何支持SQL语言的关系型数据库，它由一组用java编程语言编写的类和接口组成。</p>
+<p>​		在程序设计中可以直接使用JDBC进行各个关系数据库的连接和操作，可以向数据库发送SQL语句。就是说，开发人员不需要为访问不同的数据库而编写不同的程序。JDBC中含有一套标准的接口，为许多不同的数据库连接模块的前端提供统一的接口。java语言编写的程序可以在支持java的平台上运行，而JDBC就是使用java语言编写的。因此，java与JDBC的结合，可以让程序实现 Write Once，Run Anywhere。java程序、JDBC和各个数据库之间的关系如图所示：</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/JDBC1.png" alt="" /></p>
+<p>​		大部分的数据库系统都有自己的JDBC驱动程序，如 Oracle、MySQL 和 Sybase 等。但某些特定的数据库，还需要相应的数据库驱动，如 Access 数据需要的是 JDBC-ODBC 桥进行数据库的连接。目前比较常见的 JDBC 驱动程序主要有以下 4 类。</p>
+<ul>
+<li>**JDBC-ODBC 桥：JDBC-ODBC桥驱动程序使用ODBC驱动程序来连接数据库。JDBC-ODBC桥驱动程序将JDBC方法调用转换为ODBC函数调用。**这种方式利用ODBC驱动程序提供JDBC访问数据库，即允许JDBC驱动程序被用于ODBC的驱动程序。必须将ODBC二进制加载到使用到驱动程序的每一个客户机上。但这种方式操作性能低，不推荐使用。</li>
+<li>**本地API部分java驱动程序：本地API驱动程序使用数据库提供的客户端库。驱动程序将JDBC方法调用转换为数据库API的本机调用。它不是完全用Java编写的。**这类的驱动程序把客户机API的JDBC转换为Oracle、DB2、Sybase、Informix 或其他 DBMS（数据库管理系统）的调用。这种类型要求驱动程序与应用程序一起驻留在客户机上，并直接与数据库服务器进行通信。这种驱动连接方式不能应用在 Internet 上且只能应用在特定的数据库上，会丧失可移植性。</li>
+<li>**JDBC网络纯java驱动程序：网络协议驱动程序使用中间件（应用程序服务器），该中间件将JDBC调用直接或间接转换为供应商特定的数据库协议。它是完全用Java编写的。**这种驱动程序将JDBC转换为DBMS无关的网络协议，之后再被某个服务器转换为一种DBMS协议。它是一种利用java语言编写的JDBC驱动程序，也是目前最灵活的JDBC驱动程序。所有这种解决方案的提供者，都提供了适合于Internet用户的产品。为了使这些产品支持internet，它们必须处理Web所提出的安全性、通过防火墙的访问等额外要求。</li>
+<li>**本地协议纯java驱动程序：本地协议驱动将JDBC调用直接转换为供应商特定的数据库协议。这就是为什么它被称为本地协议驱动。它完全用Java语言编写。**这种类型的驱动程序将JDBC调用直接转换为BDMS所使用的网络协议，这将允许从客户机上直接调用DBMS服务器，是Internet访问的一个实用的解决方法。此方式的执行效率非常高，不需要在客户端装载任何的软件或驱动程序，这种驱动程序可以被动态下载，但是对于不同的数据库需要下载不同的驱动程序。</li>
+</ul>
+<h3 id="jdbc常见接口和类"><a class="markdownIt-Anchor" href="#jdbc常见接口和类"></a> JDBC常见接口和类</h3>
+<p>​		JDBC提供了独立于数据库的统一API，让用户能够创建数据库连接、执行SQL语句、查询结果集等操作。要操作数据库，一般需要通过下面的类及接口来实现。</p>
+<h4 id="dirvermanager类"><a class="markdownIt-Anchor" href="#dirvermanager类"></a> DirverManager类</h4>
+<p>​		**DriverManager类用来管理数据库中所有的驱动程序，作用于用户和驱动程序之间。**DirverManger类用于跟踪可用的驱动程序，并在数据库和相应驱动程序之间建立连接。**DriverManger类也可以处理驱动程序登录时间限制，及登录和跟踪信息的显示等事务。**DriverManger类常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public static Connection getConnection(String url)throws SQLException</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">通过给定的数据库URL尝试与数据库建立连接</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public static Connection getConnecion(String url,String user,String password)throws SQLException</strong></td>
+<td style="text-align:center"><strong>静态</strong></td>
+<td style="text-align:center"><strong>通过给定的数据库URL尝试与数据库建立连接</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public static int getLoginTimeout()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">获取驱动程序在尝试登录到某一数据库时可以等待的最长时间，以秒为单位</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public static PrintWriter getLogWriter()</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">检索日志编写器</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public static void println(String message)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">将一条信息打印到当前JDBC日志流中</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public static void registerDriver(Driver driber)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">使用给定的驱动程序</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public static void setLoginTimeout(int seconds)</td>
+<td style="text-align:center">静态</td>
+<td style="text-align:center">设置驱动程序连接到某一数据库时将等待的最长时间，以秒为单位</td>
+</tr>
+</tbody>
+</table>
+<h4 id="connection接口"><a class="markdownIt-Anchor" href="#connection接口"></a> Connection接口</h4>
+<p>​		**Connection接口用于建立与特定的数据库连接，连接过程包括了所有执行SQL语句和在连接上所返回的结果。**一个连接就是一个会话，一个java程序可以存在一个连接或多个连接，还可以与多个数据库连接。Connection接口中常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public void close() throws SQLException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>关闭数据库连接，并立即释放与此连接有关的数据库和JDBC资源，而不是等待它们被自动释放</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public void commit() throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">提交与事务有关的操作，并释放此Connection对象当前持有的所有数据库锁</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>public Statement createStatement() throws SQLException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>创建一个Statement对象将SQL语句发送到数据</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public Statement createStatement(int resultSetTyp,int resultSetConcurrency)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">创建一个Statement对象，该对象将生成具有给定类型和并发性的ResultSet对象</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public Statement createStatement(int resultSetType,int resultSetConcurrency,int resultSetHoldability) throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">创建一个Statement对象，该对象将生成具有给定类型、并发性和保存性的ResultSet对象</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public boolean getAutoCommit() throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此Connection对象释放为自动提交模式，该操作与事务无关</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public DatabaseMateData getMetaData()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取数据库的元数据</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public boolean isClosed()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此Connection对象释放已经被关闭。若已被关闭，则返回true，否则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public boolean isReadOnly()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此Connection对象是否处于只读模式。若为只读的，则返回true，否则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public boolean isValid(int timeout)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此连接尚未关闭并且仍然有效。若连接有效，则返回true，否则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">*11</td>
+<td style="text-align:center">public String nativeSQL(String sql)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定的SQL语句转换成系统本机SQL语法</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public CallableStatement prepareCall(String sql)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">创建一个CallableStatement对象来调用数据库存储过程</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public CallableStatement prepareCall(String sql,int resultSetType,int resultSetConcurrency)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">创建一个 CallableStatement 对象，该对象将生成具有给定类型和并发性的 ResultSet 对 象</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public CallableStatement prepareCall(String sql,int resultSetType,int resultSetConcurrency,int resultSetHoldability)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">创建一个 CallableStatement 对象，该对象将生成具有给定类型和并发性的 ResultSet 对象</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public void rollback()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">取消在当前食物中进行的所有更改，实现回滚功能，并释放此Connection对象当前持有的所有数据库锁。此操作与事务无关</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public void rollback(Savepoint savepoint)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">数据库回滚到指定的保存点</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">public void setAutoCommit(boolean autoCommit)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将此连接的自动提交模式设置为指定状态</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">public void setReadOnly(boolean readOnly)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将此连接设置为只读模式，作为驱动程序启用数据库优化的提示</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">public Savepoint setSavepoint()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置数据库事务的保存点</td>
+</tr>
+</tbody>
+</table>
+<h4 id="statement接口"><a class="markdownIt-Anchor" href="#statement接口"></a> Statement接口</h4>
+<p>​		<strong>Statement 接口用于在建立连接的基础上向数据库发送静态的 SQL 语句，并返回执行结果。</strong> Statement 接口的对象可以执行 DDL、DCL 语句，还可以执行 DML 语句，主要用于 SQL 查询。例如，对于 INSERT、UPDATE和DELETE 语句，可以调用 executeUpdate() 方法；而执行 SELECT 语句时调用 executeQuery() 方法，并返回一个不能为null的 ResultSet 实例。Statement接口常用的方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public void addBatch(String sql)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定的SQL命令添加到此Statement对象的命令列表中</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public void cancel()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">如果BMS和驱动程序都支持终止SQL语句，则取消此Statement对象</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public void clearBatch()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">清空此Statement对象的当前SQL命令列表</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void clearWarnings()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">清除此Statement对象上报告的所有警告</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public void close()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">立即释放此Statement对象的数据库和JDBC资源</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public boolean execute(String sql)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">执行给定的SQl语句，该语句可能返回多个结果</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public int[] executeBatch()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将一批命令提交到数据库以供执行，如果所有命令成功执行，则返回一组更新计数。</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public ResultSet executeQuery(String sql)throws SQLException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>执行给定的SQL查询语句，该语句返回单个ResultSet对象</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>9</strong></td>
+<td style="text-align:center"><strong>public int executeUpdate(String sql)throws SQLException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>执行给定的INSERT、UPDATE和DELETE的SQL语句，返回更新记录数</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public Connection getConnection()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回生成此Statement对象的Connection对象</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public int getMaxRows()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取由此Statement对象生成的ResultSet对象可以包含的最大行数</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public int getQueryTimeout()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取驱动程序等待Statement对象执行的秒数</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public ResultSet getResultSet()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">以ResultSet对象的形式获取当前结果</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public boolean isClosed()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断是否已关闭了此Statement对象，若已关闭，则返回true，否则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public void setQueryTimeout(int seconds)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置等待Statement对象实现的秒数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="resultset接口"><a class="markdownIt-Anchor" href="#resultset接口"></a> ResultSet接口</h4>
+<p>​		<strong>ResultSet 接口用于接收SQL语句执行的结果集，类似一张临时的数据表，用来暂时存放数据库查询操作后所获得的结果集，可以通过next()方法将指针下移</strong>。ResultSet接口的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public boolean absolute(int row)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指针移动带此ResultSet对象指定编号的行</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public void afterLast()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指针移动到此ResultSet对象的末尾，即最后一行的位置</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public void beforeFirest()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指针移动到此ResultSet对象的开头，即第一行的位置</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void cancelRowUpdates()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">取消对ResultSet对象中的当前行所作的更新</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public clearWarnings()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">取消此ResultSet对象上报告的所有警告</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public void close()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">立即释放ResultSet对象的数据库和JDBC资源</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public void deleteRwow()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">从此ResultSet都系和数据库中删除当前行</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">public boolean first()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指针移动到此ResultSet对象的第一行</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public boolean getBoolean(int col)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">以boolean的形式获取此ResultSet对象的当前列的值。若为NULL，则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public byte getByte(int col)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">以byte的形式获取此ResultSet对象的当前行中指定列的值。若为NULL，则返回0，可重写为double,float,int,long,short类型</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">public Date getDate(int col)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">以java.sql.Date对象的形式获取此ResultSet对象的当前行指定列的值。若为NULL，则返回null</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">public ResultSetMetaDate getMetaDate()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取ResultSet对象的列的编号、类型和属性</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">public Object getObject(int col)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">以Object的形式获取此ResultSet对象的当前行中指定列的值。若为NULL，则返回值为null</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">public int getRow()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取当前行编号</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">public Statement getStatement()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回生成此ResultSet对象的Statement对象</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">public String getString(int col)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">以String的形式获取此ResultSet对象的当前行中指定列的值。若为NULL，则返回null</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">public Time getTime(int col)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">以java.sql.Time对象的形式获取此ResultSet对象的当前行指定列的值。若为NULL，则返回null</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">public int getType()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">获取此ResultSet对象的类型</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">public void insertRow()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将插入行的内容插入到此ResultSet对象和数据库中</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">public boolean isAfterLast()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断指针是否位于此ResultSet对象的最后一行之后</td>
+</tr>
+<tr>
+<td style="text-align:center">21</td>
+<td style="text-align:center">public boolean beforeFirst()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断指针是否位于此ResultSet对象的第一行之前</td>
+</tr>
+<tr>
+<td style="text-align:center">22</td>
+<td style="text-align:center">public boolean isClosed()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此ResultSet对象是否已关闭</td>
+</tr>
+<tr>
+<td style="text-align:center">23</td>
+<td style="text-align:center">public boolean isFirst()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此指针是否位于此ResultSet对象的第一行</td>
+</tr>
+<tr>
+<td style="text-align:center">24</td>
+<td style="text-align:center">public boolean isLast()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断此指针是否位于此ResultSet对象的最后一行</td>
+</tr>
+<tr>
+<td style="text-align:center">25</td>
+<td style="text-align:center">public boolean last()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指针移动到此ResultSet对象的最后一行</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>26</strong></td>
+<td style="text-align:center"><strong>public boolean next()throws SQLException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>将指针向下移动一行</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">27</td>
+<td style="text-align:center">public boolean previous()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指针向上移动一行</td>
+</tr>
+<tr>
+<td style="text-align:center">28</td>
+<td style="text-align:center">public boolean rowDelete()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断是否已删除某行</td>
+</tr>
+<tr>
+<td style="text-align:center">29</td>
+<td style="text-align:center">public booelan rowIntsert()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断当前行是否已有插入</td>
+</tr>
+<tr>
+<td style="text-align:center">30</td>
+<td style="text-align:center">public boolean rowUpdate()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">判断是否已更新当前行</td>
+</tr>
+<tr>
+<td style="text-align:center">31</td>
+<td style="text-align:center">public void setFetchSize(int rows)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">为JDBC驱动程序设置此ResultSet对象需要更多行时应该从数据库获取行数</td>
+</tr>
+<tr>
+<td style="text-align:center">32</td>
+<td style="text-align:center">public void updateBoolean(int col,boolean x)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">用指定的boolean值更新指定列，可重写为byte,Date,double,float,int,long，Object,short,String.Time</td>
+</tr>
+<tr>
+<td style="text-align:center">33</td>
+<td style="text-align:center">public void updateLong(String columnLabel,long x)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">用指定的long更新指定列</td>
+</tr>
+<tr>
+<td style="text-align:center">34</td>
+<td style="text-align:center">public void updateNull(int col)throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">用null值更新指定列</td>
+</tr>
+<tr>
+<td style="text-align:center">35</td>
+<td style="text-align:center">public void updateRow()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将当前行的内容更新到数据表中</td>
+</tr>
+<tr>
+<td style="text-align:center">36</td>
+<td style="text-align:center">public boolean wasNull()throws SQLException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">报告最后一个读取的列是否为NULL</td>
+</tr>
+</tbody>
+</table>
+<p>​		JDBC API中除了上面的类和接口之外，还含有多个其他的类和接口。开发人员可以直接使用这些类库来开发数据库应用程序，其他类和接口如下。</p>
+<ul>
+<li>CallableStatement 接口：用于执行 SQL 存储过程的接口。</li>
+<li>DatabaseMetaData 接口：此接口由驱动程序供应商实现，让用户了解 DBMS 在与驱动程序相结合时的能力，与 ResultSetMetaData 一同用于访问数据库的元信息。</li>
+<li>Driver 接口：是数据库驱动程序的接口，每个驱动程序都应该提供一个实现 Driver 接口的类。</li>
+<li>PreparedStatement 接口：表示预编译的 SQL 语句的对象。SQL 语句被预编译并存储在 PreparedStatement 对象中，然后可以使用此对象多次高效地执行该语句。</li>
+<li>Date 类：该类是 java.util.Date 的子类，为了与 SQL DATE 的定义一致，但日期不包括时间。</li>
+<li>Time 类：该类是 java.util.Date 的子类，用于表示时、分、秒。</li>
+<li>Timestamp 类：该类是 java.util.Date 的子类，扩展了 java.util.Date 类，用于表示 SQL 时间戳，还可以表示纳秒的时间域</li>
+<li>Types 类：定义用于标识一般 SQL 类型的常量的类。</li>
+<li>SQLException 类：该类是异常类，提供关于数据库访问错误或其他错误信息的异常。</li>
+<li>SQLWarning 类：该类是异常类，提供关于数据库访问警告信息的异常，这些警告直接链接到导致报告警告的方法所在的对象。</li>
+</ul>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://my.oschina.net/u/3038200/blog/3189221">详解JDBC的四种驱动类型 - ericxu1116的个人空间 - OSCHINA - 中文开源技术交流社区</a></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/07/java/%E6%B7%B1%E5%85%A5java/%E5%9B%BE%E6%96%87%E8%AF%A6%E8%A7%A3Java%E5%AF%B9%E8%B1%A1%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/" rel="prev" title="图文详解Java对象内存布局">
+      <i class="fa fa-chevron-left"></i> 图文详解Java对象内存布局
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/30/java/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E8%BF%9E%E6%8E%A5/" rel="next" title="连接数据库">
+      连接数据库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A4%E8%AF%86jdbc"><span class="nav-number">1.</span> <span class="nav-text"> 认识JDBC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jdbc%E5%B8%B8%E8%A7%81%E6%8E%A5%E5%8F%A3%E5%92%8C%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text"> JDBC常见接口和类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#dirvermanager%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text"> DirverManager类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#connection%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.</span> <span class="nav-text"> Connection接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#statement%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.3.</span> <span class="nav-text"> Statement接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#resultset%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.4.</span> <span class="nav-text"> ResultSet接口</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

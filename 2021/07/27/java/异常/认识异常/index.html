@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		尽管人人都希望事事顺利，但在现实生活中，总是会遇到各种异常情况，俗话说：“人生不如意事十有八九”。windows操作系统还经常蓝屏呢。在程序开发过程中，也经常会遇到这种情况，在编译时没有任何报错信息，但在程序运行时，产生了错误。这种错误对java来说是一种异常。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="认识异常">
+<meta property="og:url" content="https://silenthly.github.io/2021/07/27/java/%E5%BC%82%E5%B8%B8/%E8%AE%A4%E8%AF%86%E5%BC%82%E5%B8%B8/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		尽管人人都希望事事顺利，但在现实生活中，总是会遇到各种异常情况，俗话说：“人生不如意事十有八九”。windows操作系统还经常蓝屏呢。在程序开发过程中，也经常会遇到这种情况，在编译时没有任何报错信息，但在程序运行时，产生了错误。这种错误对java来说是一种异常。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E5%BC%82%E5%B8%B8.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E9%9D%9E%E6%A3%80%E6%9F%A5%E6%80%A7%E5%BC%82%E5%B8%B8.jpg">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E6%A3%80%E6%9F%A5%E6%80%A7%E5%BC%82%E5%B8%B8.jpg">
+<meta property="article:published_time" content="2021-07-27T08:34:42.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:47:43.373Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E5%BC%82%E5%B8%B8.png">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/07/27/java/%E5%BC%82%E5%B8%B8/%E8%AE%A4%E8%AF%86%E5%BC%82%E5%B8%B8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>认识异常 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/07/27/java/%E5%BC%82%E5%B8%B8/%E8%AE%A4%E8%AF%86%E5%BC%82%E5%B8%B8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          认识异常
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-27 16:34:42" itemprop="dateCreated datePublished" datetime="2021-07-27T16:34:42+08:00">2021-07-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:47:43" itemprop="dateModified" datetime="2021-10-27T12:47:43+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/07/27/java/%E5%BC%82%E5%B8%B8/%E8%AE%A4%E8%AF%86%E5%BC%82%E5%B8%B8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/07/27/java/%E5%BC%82%E5%B8%B8/%E8%AE%A4%E8%AF%86%E5%BC%82%E5%B8%B8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		尽管人人都希望事事顺利，但在现实生活中，总是会遇到各种异常情况，俗话说：“人生不如意事十有八九”。windows操作系统还经常蓝屏呢。在程序开发过程中，也经常会遇到这种情况，在编译时没有任何报错信息，但在程序运行时，产生了错误。这种错误对java来说是一种异常。</p>
+<span id="more"></span>
+<h3 id="异常是什么"><a class="markdownIt-Anchor" href="#异常是什么"></a> 异常是什么</h3>
+<p>​		在java语言中，异常是指在执行期间发生的事件，是导致程序中断运行的正常指令流。例如，在算术运算中除数为0、数组越界、空指向异常等，这些事件的发生都会阻止程序的正常运行。</p>
+<p>异常实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> x=<span class="number">10</span>;</span><br><span class="line">        <span class="keyword">int</span> y=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> m=x/y;							<span class="comment">//除数为0，产生异常</span></span><br><span class="line">        System.out.println(<span class="string">&quot;m=&quot;</span>+m);</span><br><span class="line">        <span class="keyword">int</span> n=x+y;							<span class="comment">//程序中断不执行</span></span><br><span class="line">        System.out.println(<span class="string">&quot;x+y=&quot;</span>+(x+y));	<span class="comment">//程序中断不执行</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> java.lang.ArithmeticException: / by zero</span><br><span class="line">        at Test.main(Test.java:<span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+<p>​	   上面的程序在编译时没有任何报错，但是在运行时就会产生异常中断执行，并立即退出运行，所以后面的语句都没有被执行。由此可见，出现异常时会改变正常的流程，导致一系列严重的后果。在程序开发中发生的错误可分为两类:</p>
+<ul>
+<li>编译时错误，就是在调用 javac命令编译时产生的报错。</li>
+<li>编译时错误，就是在调用java命令执行产生的报错。</li>
+</ul>
+<p>​       Java是一门优秀的编程语言，自然也提供了功能强大的异常处理机制。异常的本质是一个程序在执行期间发生的一个事件，该事件断了正常执行流程。<strong>在Java方法内部发生错误时，该方法会创建一个 Exception类型的象返回给JVM</strong>，该 Exception类型的对象包含异常的类型、发生异常的程序状态等异常信息，JVM会寻找一个适合的方法类处理这个异常。</p>
+<p>​        创建 Exception类型的对象返回给JVM这一程称为<strong>抛出异常</strong>。处理异常的方法就是一个异常处理程序，异常处理程序就是用来捕获被抛出的异常。<strong>JVM会从异常发生的地方开始查找异常处理程序，直到找到一个适合的异常处理程序</strong>。<strong>如果JVM找不到适合的异常处理程序，JVM将终止程序的运行</strong>。异常理机制是将控制权从发生异常的方法移交给处理该异常的异常处理程序。</p>
+<p>​        在程序中若没有任何进行异常处理的语句，就不是一个好程序。异常处理机制已经成为判断一门编程语言是否优秀的标准了，与C、C+等语言相比，Java的异常处理机制有如下优点：</p>
+<ul>
+<li>将错误代码从常规代码中分离出来，提高了程序的可读性，简化了程序的结构。</li>
+<li>允许对错误进行修正，可以对错误类型和错误差别进行分组，错误的处理变得规范。</li>
+<li>调用栈向上传送错误，方便定义错误和维护。</li>
+<li>可以使用 catch语句输出错误信息。</li>
+<li>防止程序自动中断程序。</li>
+</ul>
+<h3 id="java异常的类结构"><a class="markdownIt-Anchor" href="#java异常的类结构"></a> java异常的类结构</h3>
+<p>​        java的异常处理思想来源于C<ins>语言，但与C</ins>语言提供的异常处理机制有所不同。java中的异常完全是按照类的层次结构进组织的，java将异常看作为一个类，并且是按层次结构区别不同的异常。java中的所有常类都是继承自 Throwable类，就是说所有的异常类都是 Throwable类的子类。异常类的层次结构如图2-1所示</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E5%BC%82%E5%B8%B8.png" alt="" /></p>
+<center>图2-1</center>
+<p>​        因为所有的类都是类的子类，所以 Object类位于类层次结构的顶端，Throwable类也是Object类的子类。在所有的异常类中，Throwable类是所有异常类的父类所以Throwable类位于异常类层次结构的顶端。 Throwable类有两个子类Eror类和 Exception类，它们是异常的两个分支。</p>
+<h4 id="error类"><a class="markdownIt-Anchor" href="#error类"></a> Error类</h4>
+<p>​        Errorr往往是很严重的错误，是程序无法处理的异常，可以捕获但是最好不要捕获，因为捕获了也解决不了，这个不是由程序产出的，底层出现问题就让他它挂了吧，比如内存溢出、线程死亡等。这些异常发生时， JVM一般会选择线程终止。</p>
+<h4 id="exception类"><a class="markdownIt-Anchor" href="#exception类"></a> Exception类</h4>
+<p>​        在程序开发中，开发人主要关注的是 Exception类。 Exception 异常主要分为两类：</p>
+<ul>
+<li>一类是 IOException（I/O 输入输出异常），其中 IOException 及其子类异常又被称作「受查异常」</li>
+<li>另一类是 RuntimeException（运行时异常），RuntimeException 被称作「非受查异常」。</li>
+</ul>
+<p>​        **受查异常，也称检查性异常，指编译器在编译期间要求必须得到处理的那些异常，你必须在编译期处理了。**下面给出了常见的非检查性异常与检查性异常。</p>
+<h5 id="常见的非检查性异常"><a class="markdownIt-Anchor" href="#常见的非检查性异常"></a> 常见的非检查性异常</h5>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E9%9D%9E%E6%A3%80%E6%9F%A5%E6%80%A7%E5%BC%82%E5%B8%B8.jpg" alt="" /></p>
+<center>图2-2</center>
+<h5 id="常见的检查性异常"><a class="markdownIt-Anchor" href="#常见的检查性异常"></a> 常见的检查性异常</h5>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/%E6%A3%80%E6%9F%A5%E6%80%A7%E5%BC%82%E5%B8%B8.jpg" alt="" /></p>
+<center>图2-3</center>
+<p>更多异常类型可查看ApI文档：<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/api/index.html?java/lang/Exception.html">Exception (Java Platform SE 7 ) (oracle.com)</a></p>
+<p>下面来看一个范例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exception</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i[]=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line">        System.out.println(<span class="string">&quot;i[3]=&quot;</span>+i[<span class="number">3</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> java.lang.ArrayIndexOutOfBoundsException: <span class="number">3</span></span><br><span class="line">        at Test.exception(Test.java:<span class="number">6</span>)</span><br><span class="line">        at Test.main(Test.java:<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p>​		上面程序中，产生的是数组越界异常，但java运行时环境检查到数组越界时，它就会创建一个新的异常对象实例，然后引发该异常。在由合适的捕获异常处理程序的情况下，该异常应该会被捕获并立即处理。但是程序中并没有任何异常处理程序，所以该异常会被java运行时环境的默认异常处理程序捕获。只要不是被程序员捕获的异常，最终都是被默认异常处理程序处理。默认处理程序会打印出异常的类型和异常发生时所处在的堆栈，并且立即终止程序运行。</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/49d2c3975c56">java-异常体系 - 简书 (jianshu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jb51.net/article/128611.htm">JAVA异常体系结构详解_java_脚本之家 (jb51.net)</a></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/26/java/%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/%E5%86%85%E9%83%A8%E7%B1%BB/" rel="prev" title="内部类">
+      <i class="fa fa-chevron-left"></i> 内部类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/27/java/%E5%BC%82%E5%B8%B8/java%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/" rel="next" title="java的异常处理机制">
+      java的异常处理机制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text"> 异常是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java%E5%BC%82%E5%B8%B8%E7%9A%84%E7%B1%BB%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text"> java异常的类结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#error%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text"> Error类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exception%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text"> Exception类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E9%9D%9E%E6%A3%80%E6%9F%A5%E6%80%A7%E5%BC%82%E5%B8%B8"><span class="nav-number">2.2.1.</span> <span class="nav-text"> 常见的非检查性异常</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E6%A3%80%E6%9F%A5%E6%80%A7%E5%BC%82%E5%B8%B8"><span class="nav-number">2.2.2.</span> <span class="nav-text"> 常见的检查性异常</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

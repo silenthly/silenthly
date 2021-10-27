@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		java中所有的类都直接或间接地继承自Object类，即使没有显式地使用extends关键字指定Object为父类，系统也会自动继承该类。所以说，Object类是整个java语言继承树的唯一根。  注意：数组和枚举类也是Object类的子类。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Object类">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/07/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/Object%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		java中所有的类都直接或间接地继承自Object类，即使没有显式地使用extends关键字指定Object为父类，系统也会自动继承该类。所以说，Object类是整个java语言继承树的唯一根。  注意：数组和枚举类也是Object类的子类。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-07T12:52:54.000Z">
+<meta property="article:modified_time" content="2021-10-27T04:47:07.297Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/07/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/Object%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Object类 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/07/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/Object%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Object类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-07 20:52:54" itemprop="dateCreated datePublished" datetime="2021-08-07T20:52:54+08:00">2021-08-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 12:47:07" itemprop="dateModified" datetime="2021-10-27T12:47:07+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/07/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/Object%E7%B1%BB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/07/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/Object%E7%B1%BB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		java中所有的类都直接或间接地继承自Object类，即使没有显式地使用extends关键字指定Object为父类，系统也会自动继承该类。所以说，Object类是整个java语言继承树的唯一根。</p>
+<blockquote>
+<p>注意：数组和枚举类也是Object类的子类。</p>
+</blockquote>
+<span id="more"></span>
+<p>​		根据继承特性，任何java对象都可以调用Object类的方法。常用的Object类方法被人们熟知，本文主要介绍Object类中的clone()、equals()和toString()等方法，功能如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>protected native Object clone() throws CloneNotSupportedException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>创建并返回与该对象相同的新对象，即克隆该对象</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public boolean equals(Object obj)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>比较两个对象是否“相等”</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">protected void finalize() throws Thowable</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">当垃圾回收器确定不存在对该对象的更多引用时，由对象的垃圾回收器调用此方法</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public final Class&lt;? extends Object&gt;getClass()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回一个对象的运行时类</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:center"><strong>public int hashCode()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回该对象的哈希码值</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center"><strong>public String toString()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>放回该对象的字符串表示</strong></td>
+</tr>
+</tbody>
+</table>
+<h4 id="重写tostring方法"><a class="markdownIt-Anchor" href="#重写tostring方法"></a> 重写toString()方法</h4>
+<p>​		java中的大多数类都会重写该方法，通常的方式是将类名及类成员的状态信息转换为字符串后返回。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name,<span class="keyword">int</span> age)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span>	(<span class="string">&quot;姓名&quot;</span>+name+<span class="string">&quot;，年龄&quot;</span>+age);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Person p=<span class="keyword">new</span> Person(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>);</span><br><span class="line">        System.out.println(p.toString());</span><br><span class="line">        System.out.println(p);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">姓名小强，年龄<span class="number">18</span></span><br><span class="line">姓名小强，年龄<span class="number">18</span></span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，为了缩减代码量，没有写入setter和getter方法，但是在类中最好是写上。可以发现两次打印的结果都是相同的，这是因为System.out.println()在打印引用数据类型时，若不为空，则首先调用引用对象的toString()方法获取字符串，然后再打印字符串内容。如果没有重写toString()方法将大隐输出的是引用对象的内存地址。</p>
+<h4 id="equals比较"><a class="markdownIt-Anchor" href="#equals比较"></a> equals()比较</h4>
+<p>​		在比较两个字符串的内容是否相等时，我们就使用到了equals()方法。其实equals()方法源自Object类，而在Stirng类中对equals()方法进行类重写，以满足比较字符串的内容是否相等的要求。在Object类中equals()方法的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">this</span>==obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		可以看出，Object类中的equals()方法并没有比较两个对象是否相等的功能，只是判断两个引用是否指向同一个对象。在Object类中设计equals()方法就是让其子类来重写，以满足比较不同类的对象是否相等的要求。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name,<span class="keyword">int</span> age)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>==obj)			<span class="comment">//判断当前对象与指定对象是否相等</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>==<span class="keyword">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!(obj <span class="keyword">instanceof</span> Person))		<span class="comment">//判断指定对象是否为Person的示例</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Person per=(Person)obj;				<span class="comment">//将指定对象转化为Person对象</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.name.equals(per.name)&amp;&amp;<span class="keyword">this</span>.age==per.age)	<span class="comment">//比较对象的属性是否相等</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Person p1=<span class="keyword">new</span> Person(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>);</span><br><span class="line">        Person p2=<span class="keyword">new</span> Person(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>);</span><br><span class="line">        Person p3=<span class="keyword">new</span> Person(<span class="string">&quot;小明&quot;</span>,<span class="number">19</span>);</span><br><span class="line">        <span class="keyword">if</span>(p1.equals(p2))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;p1和p2相同&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	System.out.println(<span class="string">&quot;p1和p2不相同&quot;</span>);</span><br><span class="line">        	&#125;</span><br><span class="line">        <span class="keyword">if</span>(p1.equals(p3))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;p1和p3相同&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	System.out.println(<span class="string">&quot;p1和p3不相同&quot;</span>);</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p1和p2相同</span><br><span class="line">p1和p3不相同</span><br></pre></td></tr></table></figure>
+<p>​		从程序的运行结果可以看出，重写equals()方法后可以比较两个对象是否相等。在很多时候，如果需要重写equals()方法，则必须重写hashCode()方法。</p>
+<p>注意：equals()方法的形参必须是Object类型，不能是其他类型。</p>
+<h4 id="重写hashcode方法"><a class="markdownIt-Anchor" href="#重写hashcode方法"></a> 重写hashCode()方法</h4>
+<p>​		在java中对equals()方法和hashCode()方法有以下的约定：</p>
+<p>1、在程序的执行期间，如果一个对象的equals()方法做比较所用到的信息没有被修改，则该对象多次调用的hashCode()方法返回的结果值必然是同一个整数。</p>
+<p>2、如果两个对象根据equals()方法结果值是true，则调用这两个对象中任一对象的hashCode()方法必须返回同一个整数值。</p>
+<p>3、如果两个对象数据equals()方法结果值为false，则调用这两个对象中人任一个对象的hashCode()方法，不要求尝试不同的整数结果。但如果不同，则可以提高散列表的性能。就是说，这两个对象的hashCode()值相同，并不代表这两个对象相等。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name,<span class="keyword">int</span> age)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>==obj)			<span class="comment">//判断当前对象与指定对象是否相等</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>==<span class="keyword">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!(obj <span class="keyword">instanceof</span> Person))		<span class="comment">//判断指定对象是否为Person的示例</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Person per=(Person)obj;				<span class="comment">//将指定对象转化为Person对象</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.name.equals(per.name)&amp;&amp;<span class="keyword">this</span>.age==per.age)	<span class="comment">//比较对象的属性是否相等</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span>		<span class="comment">//重写hashCode()函数</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> prime=<span class="number">13</span>;</span><br><span class="line">        <span class="keyword">int</span> result=<span class="number">13</span>;</span><br><span class="line">        result=prime*result+((name==<span class="keyword">null</span>)?<span class="number">0</span>:name.hashCode());</span><br><span class="line">        result=prime*result+age;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Person p1=<span class="keyword">new</span> Person(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>);</span><br><span class="line">        Person p2=<span class="keyword">new</span> Person(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>);</span><br><span class="line">        Person p3=<span class="keyword">new</span> Person(<span class="string">&quot;小明&quot;</span>,<span class="number">19</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;p1的哈希码：&quot;</span>+p1.hashCode());</span><br><span class="line">        System.out.println(<span class="string">&quot;p2的哈希码：&quot;</span>+p2.hashCode());</span><br><span class="line">        System.out.println(<span class="string">&quot;p3的哈希码：&quot;</span>+p3.hashCode());</span><br><span class="line">        <span class="keyword">if</span>(p1.equals(p2))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;p1和p2相同&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	System.out.println(<span class="string">&quot;p1和p2不相同&quot;</span>);</span><br><span class="line">        	&#125;</span><br><span class="line">        <span class="keyword">if</span>(p1.equals(p3))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;p1和p3相同&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	System.out.println(<span class="string">&quot;p1和p3不相同&quot;</span>);</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">p1的哈希码：<span class="number">9816630</span></span><br><span class="line">p2的哈希码：<span class="number">9816630</span></span><br><span class="line">p3的哈希码：<span class="number">9839355</span></span><br><span class="line">p1和p2相同</span><br><span class="line">p1和p3不相同</span><br></pre></td></tr></table></figure>
+<p>​		从程序运行结果可以发现，p1和p2的哈希码值相同，而p1与p3的哈希码值不同。</p>
+<h4 id="克隆对象"><a class="markdownIt-Anchor" href="#克隆对象"></a> 克隆对象</h4>
+<p>​		java语言支持对象的克隆。可以通过Object类中的clone()方法，创建一个和该对象的内容完全一样的对象，新的对象也会拥有独立的内存空间。</p>
+<p>在Object类中clone()方法定义格式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">native</span> Object <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException</span></span><br></pre></td></tr></table></figure>
+<p>​		从格式可以看到，在Object类中的clone()是被protected修饰的，若要从系统中任意位置的类访问它，那么在重写clone()方法时，应该扩大访问权限为public。但具体的克隆方法还是在Object类中实现，所以只需在重写clone()方法中的调用Object类的clone()方法即可。需要注意的是，在对象所在的类要实现Cloneable接口，该接口只是一个标识接口，表示该对象可以被克隆。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name,<span class="keyword">int</span> age)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>==obj)			<span class="comment">//判断当前对象与指定对象是否相等</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>==<span class="keyword">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!(obj <span class="keyword">instanceof</span> Person))		<span class="comment">//判断指定对象是否为Person的示例</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Person per=(Person)obj;				<span class="comment">//将指定对象转化为Person对象</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.name.equals(per.name)&amp;&amp;<span class="keyword">this</span>.age==per.age)	<span class="comment">//比较对象的属性是否相等</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span>		<span class="comment">//重写hashCode()函数</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> prime=<span class="number">13</span>;</span><br><span class="line">        <span class="keyword">int</span> result=<span class="number">13</span>;</span><br><span class="line">        result=prime*result+((name==<span class="keyword">null</span>)?<span class="number">0</span>:name.hashCode());</span><br><span class="line">        result=prime*result+age;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException		<span class="comment">//重写clone()方法</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.clone();		<span class="comment">//调用Object类的clone()方法</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span>	(<span class="string">&quot;姓名&quot;</span>+name+<span class="string">&quot;，年龄&quot;</span>+age);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> CloneNotSupportedException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Person p1=<span class="keyword">new</span> Person(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>);</span><br><span class="line">        Person p2=(Person)p1.clone();</span><br><span class="line">        System.out.println(p1+<span class="string">&quot;p1的哈希码：&quot;</span>+p1.hashCode());</span><br><span class="line">        System.out.println(p2+<span class="string">&quot;p2的哈希码：&quot;</span>+p2.hashCode());</span><br><span class="line">        <span class="keyword">if</span>(p1.equals(p2))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;p1和p2相同&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        	&#123;</span><br><span class="line">            	System.out.println(<span class="string">&quot;p1和p2不相同&quot;</span>);</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">姓名小强，年龄18p1的哈希码：<span class="number">9816630</span></span><br><span class="line">姓名小强，年龄18p2的哈希码：<span class="number">9816630</span></span><br><span class="line">p1和p2相同</span><br></pre></td></tr></table></figure>
+<p>​		从程序的运行结果可以发现，通过clone()方法克隆出来的对象p1和p2的哈希码值相同，而且内容也完全相同。</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://www.nhooo.com/note/qa0n6p.html">重写clone方法时，为什么需要在Java中将它声明为public？ - 经验笔记 (nhooo.com)</a></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/07/java/%E7%BA%BF%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/" rel="prev" title="线程间的通信">
+      <i class="fa fa-chevron-left"></i> 线程间的通信
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/08/java/%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%BA%93/%E8%BF%90%E8%A1%8C%E6%97%B6%E6%93%8D%E4%BD%9C%E7%B1%BB%EF%BC%9ARuntime%E7%B1%BB/" rel="next" title="运行时操作类：Runtime类">
+      运行时操作类：Runtime类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%86%99tostring%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text"> 重写toString()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#equals%E6%AF%94%E8%BE%83"><span class="nav-number">2.</span> <span class="nav-text"> equals()比较</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%86%99hashcode%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text"> 重写hashCode()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%8B%E9%9A%86%E5%AF%B9%E8%B1%A1"><span class="nav-number">4.</span> <span class="nav-text"> 克隆对象</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
