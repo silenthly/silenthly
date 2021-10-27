@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		对象序列化是个非常复杂的问题，java API文档规范中有关于对象序列化的规范。本文不对此问题进行详细深入的介绍，只介绍对象流最简单的用法。我们只需要了解对象序列化的基本概念、对象输出流ObjectOutputStream及对象输入流ObjectInputStream即可。  对象序列化的简介 ​		对象序列化是将对象状态转换为可保存或传输的格式的过程。一般的格式是与平台无关的二进制流（字节">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对象序列化">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/03/%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		对象序列化是个非常复杂的问题，java API文档规范中有关于对象序列化的规范。本文不对此问题进行详细深入的介绍，只介绍对象流最简单的用法。我们只需要了解对象序列化的基本概念、对象输出流ObjectOutputStream及对象输入流ObjectInputStream即可。  对象序列化的简介 ​		对象序列化是将对象状态转换为可保存或传输的格式的过程。一般的格式是与平台无关的二进制流（字节">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-03T01:14:23.000Z">
+<meta property="article:modified_time" content="2021-09-04T10:16:30.249Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/03/%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>对象序列化 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/03/%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          对象序列化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-03 09:14:23" itemprop="dateCreated datePublished" datetime="2021-08-03T09:14:23+08:00">2021-08-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-04 18:16:30" itemprop="dateModified" datetime="2021-09-04T18:16:30+08:00">2021-09-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/03/%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/03/%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		对象序列化是个非常复杂的问题，java API文档规范中有关于对象序列化的规范。本文不对此问题进行详细深入的介绍，只介绍对象流最简单的用法。我们只需要了解对象序列化的基本概念、对象输出流ObjectOutputStream及对象输入流ObjectInputStream即可。</p>
+<h3 id="对象序列化的简介"><a class="markdownIt-Anchor" href="#对象序列化的简介"></a> 对象序列化的简介</h3>
+<p>​		对象序列化是将对象状态转换为可保存或传输的格式的过程。一般的格式是与平台无关的二进制流（字节序列），可以将这种二进制持久保存在磁盘上，也可以通过网络将这种二进制流传输到另一个网络结点，即将对象写入输入流。与对象序列化相对应的是对象反序列化，是指由输入流将这种二进制流读入，重新恢复成原来的对象。将对象反序列化和对象序列化这两个过程结合起来，可以轻松地存储和传输数据，使对象可以脱离程序的运行而独立存在。</p>
+<blockquote>
+<p>提示：对象序列化只是实现一种轻量级的对象持久性。之所以是轻量级，是因为这种对象持久性的实现手段实际上只适合于较小的对象。</p>
+</blockquote>
+<p>​		一般而言，对象序列化主要有以下几个作用。</p>
+<ul>
+<li>RMI（Remote Method Invocation，远程方法调用）机制，它是 java EE 技术的基础。 通过各个 Socket 作为对象之间的通信，从而实现程序组件在不同操作系统之间的通信。RMI 可以大大增强 java 开发分布式应用的能力。</li>
+<li>将对象转换成文件，可保存在硬盘上，以备将来继续使用对象。</li>
+<li>通过序列化在进程间传递对象。</li>
+</ul>
+<p>​		java的对象可以分为可序列化和不可序列化对象，若需要某个对象能支持序列化机制。必须让它实现Serialization接口。Serialization接口的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Serialization</span></span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		可以发现。Serialzation接口值是一个标记接口。实现接口无须实现任何方法，仅仅表明该类的对象是可序列化的。</p>
+<p>代码示例：(定义可序列化的类)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String school;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name,<span class="keyword">int</span> age,String school)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">        <span class="keyword">this</span>.scool=school;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tell</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;名字：&quot;</span>+name+<span class="string">&quot;\n年龄：&quot;</span>+age+<span class="string">&quot;\n学校：&quot;</span>+school);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		在以上的程序中，若不使用import关键字导入java.io.Seriablizable，则可以使用public class Student implements java.io.Serializable。由于Seriablizable接口并没有需要实现顶点方法，所以实现它的过程非常简单。</p>
+<blockquote>
+<p>提示：如果一个对象可以被序列，那么对象中的哪些成员参与了序列化呢？</p>
+<p>​		java对象被序列化时参与序列化的内容如下。</p>
+<ul>
+<li>属性：如基本数据类型、数组和其他对象的引用。</li>
+<li>类名。</li>
+</ul>
+<p>​		不能被序列化的内容有</p>
+<ul>
+<li>方法：类中的所有方法。</li>
+<li>static关键字和transient关键字修饰的属性。</li>
+</ul>
+</blockquote>
+<h3 id="对象输出流objectoutputstream"><a class="markdownIt-Anchor" href="#对象输出流objectoutputstream"></a> 对象输出流：ObjectOutputStream</h3>
+<p>​		java.io.ObjectOutputStream类用于对象的序列化，即将一个对象输出。此类的定义为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectOutputStream</span> <span class="keyword">extends</span> <span class="title">OutputStream</span> <span class="keyword">implements</span> <span class="title">ObejctOutput</span>,<span class="title">ObjectStreamConstants</span></span></span><br></pre></td></tr></table></figure>
+<p>​		可以发现ObjectOutputStreamWriter类实现了ObjectOutput接口，提供了基本的写入操作。ObjectOutputStream类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public ObjectOutputStream(OutputStream out)throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建写入指定OutputStream的ObjectOutputStream对象</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public void reset()throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">重置将丢弃已写入流中的所有对象的状态</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>public writeObject(Object obj)throws IOException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>将指定的对象写入ObjectOutputStream</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">public void writeUnshared(Object obj)throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将“未共享”对象写入ObjectOutputStream</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>提示：ObjectOutputStream类与其他的输出流一样，也包含write()、flush()和close()等方法，在此不再赘述。</p>
+</blockquote>
+<p>代码示例：(将对象保存在文件中)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String school;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name,<span class="keyword">int</span> age,String school)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">        <span class="keyword">this</span>.school=school;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tell</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;名字：&quot;</span>+name+<span class="string">&quot;\n年龄：&quot;</span>+age+<span class="string">&quot;\n学校：&quot;</span>+school);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Student stu1=<span class="keyword">new</span> Student(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>,<span class="string">&quot;CUMT&quot;</span>);</span><br><span class="line">        Student stu2=<span class="keyword">new</span> Student(<span class="string">&quot;小明&quot;</span>,<span class="number">19</span>,<span class="string">&quot;WHU&quot;</span>);</span><br><span class="line">        File file=<span class="keyword">new</span> File(<span class="string">&quot;Objectstudent.txt&quot;</span>);</span><br><span class="line">        FileOutputStream fout=<span class="keyword">null</span>;</span><br><span class="line">        ObjectOutputStream oos=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            fout=<span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">            oos=<span class="keyword">new</span> ObjectOutputStream(fout);</span><br><span class="line">            oos.writeObject(stu1);		<span class="comment">//序列化对象stu1</span></span><br><span class="line">            oos.writeObject(stu2);		<span class="comment">//序列化对象stu2</span></span><br><span class="line">            oos.close();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，Student类要与Test类在同一个文件夹中，否则需要使用import关键字进行导入Student类。程序可将对象的内容保存在文件中，但是保存的内容是二进制数据，所以不能在文件中直接修改数据，否则会破坏数据的结构。</p>
+<h3 id="对象输入流objectinputstream"><a class="markdownIt-Anchor" href="#对象输入流objectinputstream"></a> 对象输入流：ObjectInputStream</h3>
+<p>​		ObjectInputStream类用于对对象进行反序列化操作。ObjectInputStream类的定义如下;</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectInputStream</span> <span class="keyword">extends</span> <span class="title">InputStream</span> <span class="keyword">implements</span> <span class="title">ObjectInput</span>,<span class="title">ObjectStreamConstants</span></span>;</span><br></pre></td></tr></table></figure>
+<p>​		可以发现ObjectInputStream类实现了ObjectInput接口，提供了基本类型的输入方法。ObjectInputStream类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">puclic ObjectInputStream(InputStream in)throws IOException</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">创建从指定InputStream读取的ObjectInputStream对象</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public final readObject()throws IOException,ClassNotFoundException</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>从ObjectInputStream中读取对象</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public Object readUnshared()throws IOException</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">从ObjectInputStream读取&quot;非共享&quot;对象</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>提示：ObjectInputStream 类与其他输入流类一样，具有 available()、read()和 close()等方 法。详情可以查看 API 帮助文档。</p>
+</blockquote>
+<p>代码示例：(从文件中将对象反序列化)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String school;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name,<span class="keyword">int</span> age,String school)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">        <span class="keyword">this</span>.school=school;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tell</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;名字：&quot;</span>+name+<span class="string">&quot;\n年龄：&quot;</span>+age+<span class="string">&quot;\n学校：&quot;</span>+school);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File file=<span class="keyword">new</span> File(<span class="string">&quot;Objectstudent.txt&quot;</span>);</span><br><span class="line">        FileInputStream fis=<span class="keyword">null</span>;</span><br><span class="line">        ObjectInputStream ois=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            fis=<span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">            ois=<span class="keyword">new</span> ObjectInputStream(fis);</span><br><span class="line">            Student stu1=(Student)ois.readObject();		<span class="comment">//反序列化stu1对象</span></span><br><span class="line">            Student stu2=(Student)ois.readObject();		<span class="comment">//反序列化stu2对象</span></span><br><span class="line">            ois.close();		<span class="comment">//关闭输入流</span></span><br><span class="line">            stu1.tell();		<span class="comment">//调用tell()方法输出对象信息</span></span><br><span class="line">            stu2.tell();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">名字：小强</span><br><span class="line">年龄：<span class="number">18</span></span><br><span class="line">学校：CUMT</span><br><span class="line">名字：小明</span><br><span class="line">年龄：<span class="number">19</span></span><br><span class="line">学校：WHU</span><br></pre></td></tr></table></figure>
+<p>​		以上程序依次从文件读出了各个对象的数据。</p>
+<blockquote>
+<p>提示：前面使用对象的序列化和反序列化操作并不是最好的，仅在一些比较特殊的情况下使用，因为需要知道文件中对象的先后顺序，否则转换数据类型时将会出错。在更多的情况下会使用集合保存多个对象，然后再对集合中的对象进行序列化和反序列化操作。</p>
+</blockquote>
+<h3 id="externalizable接口"><a class="markdownIt-Anchor" href="#externalizable接口"></a> Externalizable接口</h3>
+<p>​		java 序列化有两种实现方法，一种是在类定义的时候实现 Serializable 接口，另一种是实现 Externalizable 接口。实现了这两种接口类的对象，均可以完成对象的序列化和反序列化。被 Serializable 接口声明的类对象的内容都将被序列化。而 Externalizable 接口声明的类的对象可以选择需要序列化的内容。</p>
+<p>​		但一般选择使用 Serializable 接口实现序列化，因为该接口不需要实现任何方法；而Externalizable 接口定义了 readExternal() 和 writeExternal() 方法，实现该接口的类必须要实现这两种方法。<strong>这两个方法会在序列化和反序列化还原的过程中被自动调用，以便执行一些特殊的操作。</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public void readExternal(ObjectInput in)</td>
+<td style="text-align:center">抽象</td>
+<td style="text-align:center">调用对象需要实现该方法，通过ObjectInput类的readObject方法来为对象、字符串、数组进行反序列化</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public void writeExternal(ObjectOutput out)</td>
+<td style="text-align:center">抽象</td>
+<td style="text-align:center">调用对象需要实现该方法，通过ObjectOutput类的writeObject方法来为对象、字符串、数组进行序列化</td>
+</tr>
+</tbody>
+</table>
+<p>代码示例：(实现Externalizable接口)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Externalizable;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInput;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutput;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Externalizable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String school;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name,<span class="keyword">int</span> age,String school)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">        <span class="keyword">this</span>.school=school;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tell</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;名字：&quot;</span>+name+<span class="string">&quot;\n年龄：&quot;</span>+age+<span class="string">&quot;\n学校：&quot;</span>+school);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeExternal</span><span class="params">(ObjectOutput out)</span><span class="keyword">throws</span> IOException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        out.writeObject(<span class="keyword">this</span>.name);			<span class="comment">//序列化指定成员属性</span></span><br><span class="line">        out.writeObject(<span class="keyword">this</span>.school);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readExternal</span><span class="params">(ObjectInput in)</span><span class="keyword">throws</span> IOException,ClassNotFountException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=(String)in.readObject();		<span class="comment">//反序列化指定成员属性</span></span><br><span class="line">        <span class="keyword">this</span>.school=(String)in.readObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​		以上程序中，因为 Externalizable 接口含有 writeExternal()和 readExternal()方法，所以可以选择对象具体的属性进行序列化。例如，以上程序只对 name 属性和 school 属性序列化，而不对 age 属性序列化。<strong>但在程序设计中，一般为了程序的完整性和统一性，都会将属性全部保存起来。</strong></p>
+<p>代码示例：(序列化与反序列化)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.Externalizable;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Externalizable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String school;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name,<span class="keyword">int</span> age,String school)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">        <span class="keyword">this</span>.school=school;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tell</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;名字：&quot;</span>+name+<span class="string">&quot;\n年龄：&quot;</span>+age+<span class="string">&quot;\n学校：&quot;</span>+school);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeExternal</span><span class="params">(ObjectOutput out)</span><span class="keyword">throws</span> IOException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        out.writeObject(<span class="keyword">this</span>.name);			<span class="comment">//序列化指定成员属性</span></span><br><span class="line">        out.writeObject(<span class="keyword">this</span>.school);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readExternal</span><span class="params">(ObjectInput in)</span><span class="keyword">throws</span> IOException,ClassNotFountException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=(String)in.readObject();		<span class="comment">//反序列化指定成员属性</span></span><br><span class="line">        <span class="keyword">this</span>.school=(String)in.readObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(File file)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Student stu1=<span class="keyword">new</span> Student(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>,<span class="string">&quot;CUMT&quot;</span>);</span><br><span class="line">        Student stu2=<span class="keyword">new</span> Student(<span class="string">&quot;小明&quot;</span>,<span class="number">19</span>,<span class="string">&quot;WHU&quot;</span>);</span><br><span class="line">        FileOutputStream fout=<span class="keyword">null</span>;</span><br><span class="line">        ObjectOutputStream oos=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            fout=<span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">            oos=<span class="keyword">new</span> ObjectOutputStream(fout);</span><br><span class="line">            oos.writeObject(stu1);		<span class="comment">//序列化对象stu1</span></span><br><span class="line">            oos.writeObject(stu2);		<span class="comment">//序列化对象stu2</span></span><br><span class="line">            oos.close();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">deserialization</span><span class="params">(File file)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        FileInputStream fis=<span class="keyword">null</span>;</span><br><span class="line">        ObjectInputStream ois=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            fis=<span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">            ois=<span class="keyword">new</span> ObjectInputStream(fis);</span><br><span class="line">            Student stu1=(Student)ois.readObject();		<span class="comment">//反序列化stu1对象</span></span><br><span class="line">            Student stu2=(Student)ois.readObject();		<span class="comment">//反序列化stu2对象</span></span><br><span class="line">            ois.close();		<span class="comment">//关闭输入流</span></span><br><span class="line">            stu1.tell();		<span class="comment">//调用tell()方法输出对象信息</span></span><br><span class="line">            stu2.tell();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File file=<span class="keyword">new</span> File(<span class="string">&quot;Es.txt&quot;</span>);</span><br><span class="line">        serialize(file);		<span class="comment">//对象序列化</span></span><br><span class="line">        deserialization(file);		<span class="comment">//对象反序列化</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">名字：小强</span><br><span class="line">年龄：<span class="number">0</span></span><br><span class="line">学校：CUMT</span><br><span class="line">名字：小明</span><br><span class="line">年龄：<span class="number">0</span></span><br><span class="line">学校：WHU</span><br></pre></td></tr></table></figure>
+<p>​		从程序运行结果可以发现，age 属性没有被序列化。</p>
+<h3 id="transient-关键字"><a class="markdownIt-Anchor" href="#transient-关键字"></a> transient 关键字</h3>
+<p>​		虽然 Externalizable 接口可以选择需要的属性序列化，但是其实现序列化的过程明显比使用 Serializable 接口复杂。为此 java 语言为我们提供了 transient 关键字，当使用 Serializable 接口实现序列化操作时，若不需要对某个对象的属性序列化，可以使用 transient 关键字进行声明。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String school;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name,<span class="keyword">int</span> age,String school)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.age=age;</span><br><span class="line">        <span class="keyword">this</span>.school=school;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tell</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;名字：&quot;</span>+name+<span class="string">&quot;\n年龄：&quot;</span>+age+<span class="string">&quot;\n学校：&quot;</span>+school);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(File file)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Student stu1=<span class="keyword">new</span> Student(<span class="string">&quot;小强&quot;</span>,<span class="number">18</span>,<span class="string">&quot;CUMT&quot;</span>);</span><br><span class="line">        Student stu2=<span class="keyword">new</span> Student(<span class="string">&quot;小明&quot;</span>,<span class="number">19</span>,<span class="string">&quot;WHU&quot;</span>);</span><br><span class="line">        FileOutputStream fout=<span class="keyword">null</span>;</span><br><span class="line">        ObjectOutputStream oos=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            fout=<span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">            oos=<span class="keyword">new</span> ObjectOutputStream(fout);</span><br><span class="line">            oos.writeObject(stu1);		<span class="comment">//序列化对象stu1</span></span><br><span class="line">            oos.writeObject(stu2);		<span class="comment">//序列化对象stu2</span></span><br><span class="line">            oos.close();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">deserialization</span><span class="params">(File file)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        FileInputStream fis=<span class="keyword">null</span>;</span><br><span class="line">        ObjectInputStream ois=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            fis=<span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">            ois=<span class="keyword">new</span> ObjectInputStream(fis);</span><br><span class="line">            Student stu1=(Student)ois.readObject();		<span class="comment">//反序列化stu1对象</span></span><br><span class="line">            Student stu2=(Student)ois.readObject();		<span class="comment">//反序列化stu2对象</span></span><br><span class="line">            ois.close();		<span class="comment">//关闭输入流</span></span><br><span class="line">            stu1.tell();		<span class="comment">//调用tell()方法输出对象信息</span></span><br><span class="line">            stu2.tell();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        File file=<span class="keyword">new</span> File(<span class="string">&quot;st.txt&quot;</span>);</span><br><span class="line">        serialize(file);		<span class="comment">//对象序列化</span></span><br><span class="line">        deserialization(file);		<span class="comment">//对象反序列化</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">名字：小强</span><br><span class="line">年龄：<span class="number">0</span></span><br><span class="line">学校：CUMT</span><br><span class="line">名字：小明</span><br><span class="line">年龄：<span class="number">0</span></span><br><span class="line">学校：WHU</span><br></pre></td></tr></table></figure>
+<p>​		从程序运行结果可以发现，age 属性为0，说明 age 属性没有被序列化保存下来。</p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/02/%E5%8E%8B%E7%BC%A9%E6%B5%81/" rel="prev" title="压缩流">
+      <i class="fa fa-chevron-left"></i> 压缩流
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/04/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" rel="next" title="多线程的基本概念">
+      多线程的基本概念 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text"> 对象序列化的简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E8%BE%93%E5%87%BA%E6%B5%81objectoutputstream"><span class="nav-number">2.</span> <span class="nav-text"> 对象输出流：ObjectOutputStream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E8%BE%93%E5%85%A5%E6%B5%81objectinputstream"><span class="nav-number">3.</span> <span class="nav-text"> 对象输入流：ObjectInputStream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#externalizable%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.</span> <span class="nav-text"> Externalizable接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transient-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">5.</span> <span class="nav-text"> transient 关键字</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

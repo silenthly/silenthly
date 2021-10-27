@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		List接口是一个有序集合，其元素以线性方式存储。集合中允许存放重复的元素。本文将介绍List接口的两个主要的实现类，ArrayList和LinkedList。  认识List接口 ​		List是有序的Collection，使用List接口可以精确地控制每个元素插入的位置，也可以通过索引来访问List中的元素，类似于数组。List接口的定义如下： 1public interface Lis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="List接口">
+<meta property="og:url" content="https://silenthly.github.io/2021/08/15/List%E6%8E%A5%E5%8F%A3/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		List接口是一个有序集合，其元素以线性方式存储。集合中允许存放重复的元素。本文将介绍List接口的两个主要的实现类，ArrayList和LinkedList。  认识List接口 ​		List是有序的Collection，使用List接口可以精确地控制每个元素插入的位置，也可以通过索引来访问List中的元素，类似于数组。List接口的定义如下： 1public interface Lis">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-14T23:09:15.000Z">
+<meta property="article:modified_time" content="2021-10-03T11:13:21.324Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/08/15/List%E6%8E%A5%E5%8F%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>List接口 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/08/15/List%E6%8E%A5%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          List接口
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-15 07:09:15" itemprop="dateCreated datePublished" datetime="2021-08-15T07:09:15+08:00">2021-08-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-03 19:13:21" itemprop="dateModified" datetime="2021-10-03T19:13:21+08:00">2021-10-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/15/List%E6%8E%A5%E5%8F%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/15/List%E6%8E%A5%E5%8F%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		List接口是一个有序集合，其元素以线性方式存储。集合中允许存放重复的元素。本文将介绍List接口的两个主要的实现类，ArrayList和LinkedList。</p>
+<h3 id="认识list接口"><a class="markdownIt-Anchor" href="#认识list接口"></a> 认识List接口</h3>
+<p>​		List是有序的Collection，使用List接口可以精确地控制每个元素插入的位置，也可以通过索引来访问List中的元素，类似于数组。List接口的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">Collection</span>&lt;<span class="title">E</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​		List不但继承了Collection接口，还进行了扩展增加了更多方法，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public void add(int index,E element)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>在集合的指定位置插入一个元素</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public boolean addAll(int index,Collection&lt;? extends E&gt; c)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>在集合的指定位置插入集合c的所有元素</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>public E get(int index)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>返回此集合中指定位置的元素</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>4</strong></td>
+<td style="text-align:center"><strong>public int indexOf(Object o)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>返回此集合中首次出现指定元素的索引，如果集合不包含此元素，则返回-1</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:center"><strong>public int lastIndexOf(Object o)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>返回此集合中最后出现指定元素的索引，如果集合不包含此元素，则返回-1</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public ListIterator&lt;E&gt; listInterator()</td>
+<td style="text-align:center">抽象</td>
+<td style="text-align:center">为ListInterator接口实例化，用于遍历集合中的元素</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public ListIterator&lt;E&gt; listInterator(int index)</td>
+<td style="text-align:center">抽象</td>
+<td style="text-align:center">为ListInterator接口实例化，用于遍历集合中的元素，并从集合的指定位置开始遍历</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public E remove(int index)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>删除集合中指定位置的元素</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>9</strong></td>
+<td style="text-align:center"><strong>public E set(int index,E element)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>替换指定位置的元素</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>10</strong></td>
+<td style="text-align:center"><strong>public List&lt;E&gt; subList(int fromIndex,int toIndex)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>返回一个新的元素新的集合中的包含fromIndex(包括)到toIndex(不包括)索引之间的所有元素。</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意：List允许存在相同的元素</strong></p>
+<h3 id="数组列表类arraylist类"><a class="markdownIt-Anchor" href="#数组列表类arraylist类"></a> 数组列表类：ArrayList类</h3>
+<p>​		在java中，ArrayList类的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstactList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;,<span class="title">RandomAccess</span>,<span class="title">Cloneable</span>,<span class="title">Seriablizable</span></span></span><br></pre></td></tr></table></figure>
+<p>​		可以发现，<strong>ArrayList类实现List接口，可以通过ArrayList为List接口实例化</strong>。ArrayList类是数组列表类，实现了可变长度的数组，允许对集合中的元素进行快速的访问，但向ArrayList集合中插入或删除速度较慢（类似顺序表删除元素）。</p>
+<p>​		ArrayList集合允许所有的元素，包括null。每一个ArrayList实例都有一个默认的容量，即存储元素的个数，这个容量可以随着元素的增大而自动变大。ArrayList实例的容量算法没有定义。在添加大量元素前，可以使用ensureCapacity()操作来增加ArrayList实例的容量，这可以减少递增式再分配的数量。ArrayList类实现了List接口，这意味着它实现了List接口中的所有方法，但也增加了一些常用的方法，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public void ensureCapacity(int minCapacity)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将ArrayList实例的容量扩大指定的容量</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">public void removeRange(int fromIndex,int toIndex)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">删除集合中索引在fromIndex(包括)和toIndex(不包括)之间所有元素</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">public void trimToSize()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将此ArrayList实例的容量调整为集合的当前大小</td>
+</tr>
+</tbody>
+</table>
+<h4 id="向集合添加元素"><a class="markdownIt-Anchor" href="#向集合添加元素"></a> 向集合添加元素</h4>
+<p>​		在Collection接口中就已定义了向集合添加元素的两个方法，add()和addAll()，在List接口增加可以向指定位置添加元素的add()和addAll()方法</p>
+<p>代码示例1：(向集合添加元素)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Collection&lt;String&gt; collect=<span class="keyword">new</span> ArrayList&lt;String&gt;();		<span class="comment">//通过ArrayList实例化Collection</span></span><br><span class="line">        List&lt;String&gt; list=<span class="keyword">new</span> ArrayList&lt;String&gt;();		<span class="comment">//通过ArrayList实例化List</span></span><br><span class="line">        collect.add(<span class="string">&quot;1&quot;</span>);				<span class="comment">//向集合插入元素</span></span><br><span class="line">        collect.add(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">        collect.add(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;collect集合：&quot;</span>+collect);		<span class="comment">//打印集合中的元素</span></span><br><span class="line">        list.add(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;C&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;List集合：&quot;</span>+list);		<span class="comment">//打印集合中的元素</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">collect集合：[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">List集合：[A, B, C]</span><br></pre></td></tr></table></figure>
+<p>​		从程序的运行结果可以发现，add(E o)只是在集合最后进行内容的追加，而add(int Index,E element)可以指定添加位置。虽然System.out.println可以打印输出集合中所有的元素，但这不是标准的输出集合的方式。</p>
+<h4 id="删除集合中的元素"><a class="markdownIt-Anchor" href="#删除集合中的元素"></a> 删除集合中的元素</h4>
+<p>​		ArrayList集合提供了专门用于删除元素的方法，Collection接口提供了remove()和removeAll()方法。在List接口中还提供了可以删除指定位置元素的方法remove(itn index)。</p>
+<p>代码示例2：(删除元素)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Collection&lt;String&gt; collect=<span class="keyword">new</span> ArrayList&lt;String&gt;();		<span class="comment">//通过ArrayList实例化Collection</span></span><br><span class="line">        List&lt;String&gt; list=<span class="keyword">new</span> ArrayList&lt;String&gt;();		<span class="comment">//通过ArrayList实例化List</span></span><br><span class="line">        collect.add(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">        collect.add(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">        collect.add(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;collect集合：&quot;</span>+collect);		<span class="comment">//打印集合中的元素</span></span><br><span class="line">        list.add(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;C&quot;</span>);</span><br><span class="line">        list.add(<span class="number">1</span>,<span class="string">&quot;B&quot;</span>);			<span class="comment">//向指定位置添加元素</span></span><br><span class="line">        list.addAll(<span class="number">0</span>,collect);		<span class="comment">//向指定位置添加一个集合的所有元素</span></span><br><span class="line">        System.out.println(<span class="string">&quot;List集合删除前：&quot;</span>+list);		<span class="comment">//打印集合中的元素</span></span><br><span class="line">        list.remove(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        list.remove(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">        list.removeAll(collect);			<span class="comment">//删除list集合中所有collect集合中含有的元素</span></span><br><span class="line">        System.out.println(<span class="string">&quot;List集合删除后：&quot;</span>+list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">collect集合：[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">List集合删除前：[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, A, B, C]</span><br><span class="line">List集合删除后：[A, C]</span><br></pre></td></tr></table></figure>
+<h4 id="集合的其他操作"><a class="markdownIt-Anchor" href="#集合的其他操作"></a> 集合的其他操作</h4>
+<p>​		在ArrayList集合中处理前面常用的添加元素和删除元素之外，还可以对集合进行其他的操作，如截取子集合、判断某个元素是否存在和将元素变为指定类型顶的数组等。</p>
+<p>代码示例2：(集合的其他操作)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Collection&lt;String&gt; collect=<span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        List&lt;String&gt; list=<span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        collect.add(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">        collect.add(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">        collect.add(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;collect集合：&quot;</span>+collect);</span><br><span class="line">        list.add(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;C&quot;</span>);</span><br><span class="line">        list.add(<span class="number">1</span>,<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        list.addAll(<span class="number">0</span>,collect);</span><br><span class="line">        System.out.println(<span class="string">&quot;List集合：&quot;</span>+list);		<span class="comment">//打印集合中的元素</span></span><br><span class="line">        List&lt;String&gt; sub=list.subList(<span class="number">1</span>,<span class="number">5</span>);				<span class="comment">//截取集合</span></span><br><span class="line">        System.out.println(<span class="string">&quot;sub集合：&quot;</span>+sub); </span><br><span class="line">        System.out.println(<span class="string">&quot;设置list集合元素前：&quot;</span>+list.get(<span class="number">3</span>));</span><br><span class="line">        list.set(<span class="number">3</span>,<span class="string">&quot;Set&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;设置list集合元素后：&quot;</span>+list.get(<span class="number">3</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;list集合中，元素3的位置：&quot;</span>+ </span><br><span class="line"> list.indexOf(<span class="string">&quot;3&quot;</span>)+<span class="string">&quot;，元素D的位置：&quot;</span>+list.indexOf(<span class="string">&quot;D&quot;</span>)); </span><br><span class="line">        String arrString[]=list.toArray(<span class="keyword">new</span> String[]&#123;&#125;); 		<span class="comment">//将集合转为字符串数组</span></span><br><span class="line">        <span class="keyword">for</span>(String str:arrString)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.print(str+<span class="string">&quot; &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;\nlist集合是否为空：&quot;</span>+list.isEmpty());</span><br><span class="line">        list.clear();			<span class="comment">//清除集合中的所有元素</span></span><br><span class="line">        System.out.println(<span class="string">&quot;集合是否为空：&quot;</span>+list.isEmpty());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">collect集合：[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">List集合：[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, A, B, C]</span><br><span class="line">sub集合：[<span class="number">2</span>, <span class="number">3</span>, A, B]</span><br><span class="line">设置list集合元素前：A</span><br><span class="line">设置list集合元素后：Set</span><br><span class="line">list集合中，元素<span class="number">3</span>的位置：<span class="number">2</span>，元素D的位置：-<span class="number">1</span></span><br><span class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span> Set B C</span><br><span class="line">list集合是否为空：<span class="keyword">false</span></span><br><span class="line">集合是否为空：<span class="keyword">true</span></span><br></pre></td></tr></table></figure>
+<p>​		在以上程序中，list.toArray(new String[]{})指定的是new String[]{}，而不是new String[]。若截取的子集合元素个数超出原集合的范围，如List subList=list.subList(1,7)，编译虽然可以通过，但是在运行时将产生 IndexOutOfBoundsException异常。</p>
+<h3 id="链表类linkedlist类"><a class="markdownIt-Anchor" href="#链表类linkedlist类"></a> 链表类：LinkedLIst类</h3>
+<p>​		LinkedLIst是链表类，采用链表结果保存元素。链表结构的优点是便于向集合插入和删除元素。因为在插入或删除元素，不需要移动任何元素。在程序中，若经常需要向集合中插入或删除元素时，使用LinkedLIst实例化List接口是较好的选择。但若需要随机访问集合中的元素时，LinkedLIst集合就显得相对较慢了。</p>
+<p>LinkedLIst类的定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedLIst</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractSequentialList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;,<span class="title">Deque</span>&lt;<span class="title">E</span>&gt;,<span class="title">Queue</span>&lt;<span class="title">E</span>&gt;,<span class="title">Cloneable</span>,<span class="title">Serializable</span></span></span><br></pre></td></tr></table></figure>
+<p>​		从以上格式可以发现，LinkedLIst继承自了Queue接口、List接口和Deque接口，包含这三个接口的所有方法。List接口上面已经介绍过，下面分别介绍Queue接口和Deque接口。</p>
+<h4 id="队列queue接口"><a class="markdownIt-Anchor" href="#队列queue接口"></a> 队列：Queue接口</h4>
+<p>​		Queue接口是java中实现队列的接口，它总共只有6个方法，我们·一般只用其中3个就可以了。Queue的实现类有LinkedList和PriorityQueue。Queue接口除了基本的Collection操作外，还提供的特有的插入、提取和检查操作。**每个方法都存在两种形式：一种抛出异常（操作失败时），另一种返回一个特殊值（null或false，具体取决于操作）。**插入操作后一种形式是用于专门为有容量的Queue实现设计的，在大多数实现中，插入操作不会失败。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:center"><strong>public boolean add(E o)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>若有足够的空间，则将指定的元素插入此队列，成功返回true ，否则抛出异常</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:center"><strong>public boolean offer(E o)</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>若有足够的空间，则将指定的元素插入此队列，成功返回true，否则返回false</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>public E remove()</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>删除并返回队列头部的元素，若队列为空，则抛出异常</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>4</strong></td>
+<td style="text-align:center"><strong>public E poll()</strong></td>
+<td style="text-align:center"><strong>抽象</strong></td>
+<td style="text-align:center"><strong>删除并返回队列头部的元素，若队列为空，则返回null</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">public E element()</td>
+<td style="text-align:center">抽象</td>
+<td style="text-align:center">返回队列头部的元素，但不删除，若队列为空，则抛出异常</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public E peek()</td>
+<td style="text-align:center">抽象</td>
+<td style="text-align:center">返回队列头部的元素，但不删除，若队列为空，则返回null</td>
+</tr>
+</tbody>
+</table>
+<p>​		队列通常（但并非一定）以 FIFO（先进先出）的方式排序各个元素。在FIFO队列中，所有的新元素都插入队列的末尾，调用 remove() 或 poll() 所移除的元素都是队列的头部。</p>
+<p>​		如果可能，offer()方法可插入一个元素，否则返回 false。这与 Collection.add 方法不同，该方法只能通过抛出未经检查的异常使添加元素失败。offer 方法设计用于正常的失败情况，而不是出现异常的情况，例如在容量固定（有界）的队列中。</p>
+<p>代码示例：(比较使用remobe()与poll())</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Queue;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Queue&lt;String&gt; q=<span class="keyword">new</span> LinkedList&lt;String&gt;();</span><br><span class="line">        String str=q.poll();</span><br><span class="line">        System.out.println(str);</span><br><span class="line">        q.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">null</span></span><br><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> java.util.NoSuchElementException</span><br><span class="line">        at java.util.LinkedList.removeFirst(Unknown Source)</span><br><span class="line">        at java.util.LinkedList.remove(Unknown Source)</span><br><span class="line">        at Test.main(Test.java:<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p>​		以上程序，使用LinkedLIst类实例化一个Queue类型的空队列，由于队列为空，调用poll()方法返回null，而调用remove则抛出了NoSuchElementException异常。</p>
+<h4 id="双端队列deque接口"><a class="markdownIt-Anchor" href="#双端队列deque接口"></a> 双端队列：Deque接口</h4>
+<p>​		Deque是一个双端队列接口，继承自Queue接口，Deque的实现类是LinkedList、ArrayDeque、LinkedBlockingDeque，其中LinkedList是最常用的。</p>
+<p><strong>Deque有三种用途：</strong></p>
+<ul>
+<li>普通队列（一端另一端出）：</li>
+</ul>
+<p><code>Queue queue = new LinkedList()</code>或<code>Deque deque = new LinkedList()</code></p>
+<ul>
+<li>双端队列（两端都可以进出）：</li>
+</ul>
+<p><code>Deque deque = new LinkedList()</code></p>
+<ul>
+<li>堆栈（进出在同一端）</li>
+</ul>
+<p><code>Deque deque = new LinkedList()</code></p>
+<blockquote>
+<p>注意：Java堆栈Stack类已经过时，Java官方推荐使用Deque替代Stack使用。Deque堆栈操作方法：push()、pop()、peek()。</p>
+</blockquote>
+<p>​		Deque是一个线性collection，支持在两端插入和移除元素。名称 deque 是“double ended queue（双端队列）”的缩写。大多数 Deque 实现对于它们能够包含的元素数没有固定限制，但此接口既支持有容量限制的双端队列，也支持没有固定大小限制的双端队列。</p>
+<p>​		此接口定义在双端队列访问元素的方法。提供插入、移除和检查元素的方法。每种方法都存在两种形式：一种形式在操作失败时抛出异常，另一种形式返回一个特殊值（null 或 false，具体取决于操作）。插入操作的后一种形式是专为使用有容量限制的 Deque 实现设计的，在大多数实现中，插入操作不能失败。</p>
+<table>
+    <tr>
+        <td><center>操作/对象</center></td>
+        <td colspan="2"><center>第一个元素(头部)</center></td>
+        <td colspan="2"><center>最后一个元素(尾部)</center></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><center>抛出异常</center></td>
+        <td><center>特殊值</center></td>
+        <td><center>抛出异常</center></td>
+        <td><center>特殊值</center></td>
+    </tr>
+    <tr>
+        <td><center>插入</center></td>
+        <td><center>addFirst(e)</center></td>
+        <td><center>offerFirst(e)</center></td>
+        <td><center>addLast(e)</center></td>
+        <td><center>offerLast(e)</center></td>
+    </tr>
+    <tr>
+        <td><center>删除</center></td>
+        <td><center>removeFirst()</center></td>
+        <td><center>pollFirst()</center></td>
+        <td><center>removeLast()</center></td>
+        <td><center>pollLast()</center></td>
+    </tr>
+    <tr>
+        <td><center>检查</center></td>
+        <td><center>getFirst()</center></td>
+        <td><center>peekFirst()</center></td>
+        <td><center>getLast()</center></td>
+        <td><center>peekLast()</center></td>
+    </tr>
+</table>
+<p>​		Deque接口扩展(继承)了Queue接口。在将双端队列用作队列时，Deque接口部分方法等效于Queue接口方法。如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Queue方法</th>
+<th style="text-align:center">等效Deque方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">add(e)</td>
+<td style="text-align:center">addLast(e)</td>
+</tr>
+<tr>
+<td style="text-align:center">offer(e)</td>
+<td style="text-align:center">offerLast(e)</td>
+</tr>
+<tr>
+<td style="text-align:center">remove()</td>
+<td style="text-align:center">removeFirst()</td>
+</tr>
+<tr>
+<td style="text-align:center">poll()</td>
+<td style="text-align:center">pollFirst()</td>
+</tr>
+<tr>
+<td style="text-align:center">element()</td>
+<td style="text-align:center">getFirst()</td>
+</tr>
+<tr>
+<td style="text-align:center">peek()</td>
+<td style="text-align:center">peekFirst()</td>
+</tr>
+</tbody>
+</table>
+<p>​		双端队列也可用作LIFO(先进先出)堆栈。应优先使用此接口而不是遗留Stack类。在将双端队列用作堆栈时，元素被推入双端队列的开头并从双端队列的开头弹出。Deque接口部分方法等效于Stack类方法。如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">堆栈方法</th>
+<th style="text-align:center">等效Deque方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">push(e)</td>
+<td style="text-align:center">addFirst(e)</td>
+</tr>
+<tr>
+<td style="text-align:center">pop()</td>
+<td style="text-align:center">removeFirst()</td>
+</tr>
+<tr>
+<td style="text-align:center">peek()</td>
+<td style="text-align:center">peekFirst()</td>
+</tr>
+</tbody>
+</table>
+<h4 id="linkedlist类新增方法"><a class="markdownIt-Anchor" href="#linkedlist类新增方法"></a> LinkedList类新增方法</h4>
+<p>​		LinkedList类是List接口、Queue接口与Deque接口的实现类，所以LinkedList类方法包含了这三个接口的所有方法，包括以上tack类的三个方法。所以可以通过LinkedList类实现堆栈、队列和双端队列。除此之外，LinkedList类还有一些新增方法，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">public Iterator&lt;E&gt; descendingIterator()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">为listIterator接口实例化，用于遍历链表中的元素，顺序为从尾部到头部</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">public boolean remove(Object o)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">删除此链表中首次出现的指定元素</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">public boolean removeFirstOccurrence(Object o)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">从此链表中删除第一次出现的指定元素</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public boolean removeLastOccurrence(Object o)</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>从此链表中删除最后一次出现的指定元素</strong></td>
+</tr>
+</tbody>
+</table>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        LinkedList&lt;String&gt; link=<span class="keyword">new</span> LinkedList&lt;String&gt;();</span><br><span class="line">        link.add(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        link.add(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        link.offer(<span class="string">&quot;C&quot;</span>);</span><br><span class="line">        link.offer(<span class="string">&quot;D&quot;</span>);</span><br><span class="line">        link.offer(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;链表中包含的元素：&quot;</span>+link);</span><br><span class="line">        System.out.println(<span class="string">&quot;链表中下标为2的元素为：&quot;</span>+link.get(<span class="number">2</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;首次出现元素B的下标为：&quot;</span>+link.indexOf(<span class="string">&quot;B&quot;</span>));</span><br><span class="line">        System.out.println(<span class="string">&quot;最后一次出现元素B的下标为：&quot;</span>+link.lastIndexOf(<span class="string">&quot;B&quot;</span>));</span><br><span class="line">        link.remove(<span class="number">3</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;删除下标3的元素后：&quot;</span>+link);</span><br><span class="line">        link.removeLastOccurrence(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;删除最后一次出现元素B：&quot;</span>+link);</span><br><span class="line">        link.set(<span class="number">0</span>,<span class="string">&quot;H&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;将下标为0的元素替换为“H“：&quot;</span>+link);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">链表中包含的元素：[A, B, C, D, B]</span><br><span class="line">链表中下标为<span class="number">2</span>的元素为：C</span><br><span class="line">首次出现元素B的下标为：<span class="number">1</span></span><br><span class="line">最后一次出现元素B的下标为：<span class="number">4</span></span><br><span class="line">删除下标<span class="number">3</span>的元素后：[A, B, C, B]</span><br><span class="line">删除最后一次出现元素B：[A, B, C]</span><br><span class="line">将下标为<span class="number">0</span>的元素替换为“H“：[H, B, C]</span><br></pre></td></tr></table></figure>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/devnn/article/details/82591349">【Java】Java队列Queue使用详解_devnn的专栏-CSDN博客_java队列queue使用场景</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/devnn/article/details/82716447">【Java】Java双端队列Deque使用详解_devnn的专栏-CSDN博客</a></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/12/%E8%AE%A4%E8%AF%86%E9%9B%86%E5%90%88/" rel="prev" title="认识集合">
+      <i class="fa fa-chevron-left"></i> 认识集合
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/16/Set%E6%8E%A5%E5%8F%A3/" rel="next" title="Set接口">
+      Set接口 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A4%E8%AF%86list%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text"> 认识List接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%88%97%E8%A1%A8%E7%B1%BBarraylist%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text"> 数组列表类：ArrayList类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%91%E9%9B%86%E5%90%88%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0"><span class="nav-number">2.1.</span> <span class="nav-text"> 向集合添加元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E9%9B%86%E5%90%88%E4%B8%AD%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.2.</span> <span class="nav-text"> 删除集合中的元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E7%9A%84%E5%85%B6%E4%BB%96%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text"> 集合的其他操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%B1%BBlinkedlist%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text"> 链表类：LinkedLIst类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%9F%E5%88%97queue%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.1.</span> <span class="nav-text"> 队列：Queue接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97deque%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.2.</span> <span class="nav-text"> 双端队列：Deque接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#linkedlist%E7%B1%BB%E6%96%B0%E5%A2%9E%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text"> LinkedList类新增方法</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

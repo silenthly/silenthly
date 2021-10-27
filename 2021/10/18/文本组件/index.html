@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"silenthly.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​		文本组件用于显示和编辑文本。Swing 支持大多数编辑软件常见的一些编辑功能，如光标的各种移动方式，文本字符、文本行或文本块的选择、插入、删除、拷贝、粘贴等。本文将介绍 JTextField 单行文本组件、JPasswordField 密码框组件和 JTextArea 文本区域组件。  单行文本组件：JTextField ​		JTextField 单行文本组件允许用户输入一行字符，将需要的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文本组件">
+<meta property="og:url" content="https://silenthly.github.io/2021/10/18/%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/index.html">
+<meta property="og:site_name" content="Buyan-Blog">
+<meta property="og:description" content="​		文本组件用于显示和编辑文本。Swing 支持大多数编辑软件常见的一些编辑功能，如光标的各种移动方式，文本字符、文本行或文本块的选择、插入、删除、拷贝、粘贴等。本文将介绍 JTextField 单行文本组件、JPasswordField 密码框组件和 JTextArea 文本区域组件。  单行文本组件：JTextField ​		JTextField 单行文本组件允许用户输入一行字符，将需要的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx11.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx8.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx9.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx10.png">
+<meta property="og:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx7.png">
+<meta property="article:published_time" content="2021-10-18T14:14:23.000Z">
+<meta property="article:modified_time" content="2021-10-27T00:05:21.010Z">
+<meta property="article:author" content="buyan">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx11.png">
+
+<link rel="canonical" href="https://silenthly.github.io/2021/10/18/%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>文本组件 | Buyan-Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Buyan-Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Buyan-Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://silenthly.github.io/2021/10/18/%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="buyan">
+      <meta itemprop="description" content="我见过真正难过的人，但他一滴泪也没流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buyan-Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          文本组件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-18 22:14:23" itemprop="dateCreated datePublished" datetime="2021-10-18T22:14:23+08:00">2021-10-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 08:05:21" itemprop="dateModified" datetime="2021-10-27T08:05:21+08:00">2021-10-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/10/18/%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/10/18/%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​		文本组件用于显示和编辑文本。Swing 支持大多数编辑软件常见的一些编辑功能，如光标的各种移动方式，文本字符、文本行或文本块的选择、插入、删除、拷贝、粘贴等。本文将介绍 JTextField 单行文本组件、JPasswordField 密码框组件和 JTextArea 文本区域组件。</p>
+<h3 id="单行文本组件jtextfield"><a class="markdownIt-Anchor" href="#单行文本组件jtextfield"></a> 单行文本组件：JTextField</h3>
+<p>​		<strong>JTextField 单行文本组件允许用户输入一行字符，将需要的字符添加到文本框中</strong>。JTextField 类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">JTextField()</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个新的TextField</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">JTextField(Document doc,String text,int columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个指定文本存储模型，设定初始化字符串并给定列数的JTextField</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center"><strong>JTextField(int columns)</strong></td>
+<td style="text-align:center"><strong>构造</strong></td>
+<td style="text-align:center"><strong>构造一个具有指定列数的新的空TextField</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">JTextField(String text)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个用指定文本初始化的新TextField</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">JTextField(String text,int columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个指定文本和列初始化的新TextField</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">int getColumns()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回TextField中的列数</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">void setColumns(Document doc)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置此TextField中的列数</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>public String getText()</strong></td>
+<td style="text-align:center"><strong>普通</strong></td>
+<td style="text-align:center"><strong>返回此TextComponent中包含的文本</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">public void setText(String t)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将此TextComponent文本设置为指定文本</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">public void setEditable(boolean b)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置文本框是否可编辑</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">void setFont(Font t)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置当前字体</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">void setDocument(Document doc)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将编辑器与一个文本文档关联</td>
+</tr>
+</tbody>
+</table>
+<p>​		JTextField常用的事件有以下几个。</p>
+<ul>
+<li>TextEvent：当文本内容发生改变时触发</li>
+<li>ActionEvent：用户按下回车后触发</li>
+<li>KeyEvent：在输入框中按下按键时触发</li>
+</ul>
+<h3 id="密码框组件jpasswordfield"><a class="markdownIt-Anchor" href="#密码框组件jpasswordfield"></a> 密码框组件：JPasswordField</h3>
+<p>​		JPasswordField 密码框主要用于输入密码，不同于 JTextField，JPasswordField 将输入的字符回显为其他字符。JPasswordField 类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">JPasswordField()</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个空的JPasswordField</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">JPasswordField(Document doc,String txt,int columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个指定文本存储模型，设定初始化字符串并给定列数的JPasswordField</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">JPasswordField(int columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个具有指定列数的JPasswordField</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">JPasswordField(String txt)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个利用指定文本初始化的JPasswordField</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">JPasswordField(String text,int  columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个利用指定文本和列初始化的JPasswordField</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">char getEchoChar()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回用于回显的字符，默认字符为&quot;*&quot;</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">char[] getPassword()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此TextComponent中所包含的文本</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">protected String paramString()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此JPasswordField的字符串表示形式</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">void setEcho(char c)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置此JPasswordField的回显字符</td>
+</tr>
+</tbody>
+</table>
+<p>​		下面使用 JTextField 组件和 JPasswordField 组件完成一个简单的登录界面。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.sql.Connection;</span><br><span class="line"><span class="keyword">import</span> java.sql.DriverManager;</span><br><span class="line"><span class="keyword">import</span> java.sql.PreparedStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"><span class="keyword">import</span> java.awt.Color;</span><br><span class="line"><span class="keyword">import</span> java.awt.Font;</span><br><span class="line"><span class="keyword">import</span> java.awt.GridLayout;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JPanel;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JButton;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JLabel;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JFrame;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.ActionListener;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.ActionEvent;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JTextField;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JPasswordField;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">连接到数据库</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DatabaseCheck</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DBDRIVER=<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DBURL=<span class="string">&quot;jdbc:mysql://localhost:3306/javaTest&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DBPASSWORD=<span class="string">&quot;123456&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DBUSER=<span class="string">&quot;root&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String passwd;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DatabaseCheck</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DatabaseCheck</span><span class="params">(String name,String passwd)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">        <span class="keyword">this</span>.passwd=passwd;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Connection <span class="title">connDatabase</span><span class="params">()</span>		<span class="comment">//连接数据库</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Connection conn=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            Class.forName(DBDRIVER);</span><br><span class="line">            conn=DriverManager.getConnection(DBURL,DBUSER,DBPASSWORD);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;MySQL数据库连接失败！！！&quot;</span>);</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> conn;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    用户登录</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">prepared</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Connection conn=<span class="keyword">null</span>;</span><br><span class="line">        PreparedStatement perstat=<span class="keyword">null</span>;</span><br><span class="line">        ResultSet rs=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            conn=connDatabase();</span><br><span class="line">            String sql=<span class="string">&quot;SELECT name,password FROM StudentUser WHERE name=? and password=?&quot;</span>;</span><br><span class="line">            perstat=conn.prepareStatement(sql);		<span class="comment">//执行sql语句</span></span><br><span class="line">            perstat.setString(<span class="number">1</span>,name);</span><br><span class="line">            perstat.setString(<span class="number">2</span>,passwd);</span><br><span class="line">            rs=perstat.executeQuery();</span><br><span class="line">            <span class="keyword">if</span>(rs.next())</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                conn.close();</span><br><span class="line">            &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">	注册用户</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">register</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Connection conn=<span class="keyword">null</span>;</span><br><span class="line">        PreparedStatement perstat=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> rs;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            conn=connDatabase();</span><br><span class="line">            String sql=<span class="string">&quot;INSERT INTO StudentUser (name,password) VALUES (?,?)&quot;</span>;</span><br><span class="line">            perstat=conn.prepareStatement(sql);		<span class="comment">//执行sql语句</span></span><br><span class="line">            perstat.setString(<span class="number">1</span>,name);</span><br><span class="line">            perstat.setString(<span class="number">2</span>,passwd);</span><br><span class="line">            rs=perstat.executeUpdate();</span><br><span class="line">            <span class="keyword">if</span>(rs!=<span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                conn.close();</span><br><span class="line">            &#125;<span class="keyword">catch</span>(Exception e)</span><br><span class="line">        	&#123;</span><br><span class="line">            	e.printStackTrace();</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">登录界面</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> JLabel userlab=<span class="keyword">new</span> JLabel(<span class="string">&quot;用户名：&quot;</span>,JLabel.CENTER);</span><br><span class="line">    <span class="keyword">private</span> JTextField userText=<span class="keyword">new</span> JTextField(<span class="number">25</span>);</span><br><span class="line">    <span class="keyword">private</span> JLabel passwdlab=<span class="keyword">new</span> JLabel(<span class="string">&quot;密 码： &quot;</span>,JLabel.CENTER);</span><br><span class="line">    <span class="keyword">private</span> JPasswordField passwdText=<span class="keyword">new</span> JPasswordField(<span class="number">25</span>);</span><br><span class="line">    <span class="keyword">private</span> JLabel loginlab=<span class="keyword">new</span> JLabel(<span class="string">&quot;登录状态&quot;</span>,JLabel.CENTER);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        JFrame jf=<span class="keyword">new</span> JFrame(<span class="string">&quot;登录界面&quot;</span>);</span><br><span class="line">        JPanel userPanel=<span class="keyword">new</span> JPanel();</span><br><span class="line">        JPanel passwdPanel=<span class="keyword">new</span> JPanel();</span><br><span class="line">        JPanel buttonPanel=<span class="keyword">new</span> JPanel();</span><br><span class="line">        JPanel labelPanel=<span class="keyword">new</span> JPanel();</span><br><span class="line">        userPanel.add(userlab);</span><br><span class="line">        userPanel.add(userText);</span><br><span class="line">        passwdPanel.add(passwdlab);</span><br><span class="line">        passwdPanel.add(passwdText);</span><br><span class="line">        JButton submit=<span class="keyword">new</span> JButton(<span class="string">&quot;登录&quot;</span>);</span><br><span class="line">        JButton reset=<span class="keyword">new</span> JButton(<span class="string">&quot;注册&quot;</span>);</span><br><span class="line">        buttonPanel.add(submit);</span><br><span class="line">        buttonPanel.add(reset);</span><br><span class="line">        Font font=<span class="keyword">new</span> Font(<span class="string">&quot;楷体&quot;</span>,Font.BOLD+Font.PLAIN,<span class="number">35</span>);</span><br><span class="line">        loginlab.setFont(font);</span><br><span class="line">        loginlab.setForeground(Color.blue);</span><br><span class="line">        labelPanel.add(loginlab);</span><br><span class="line">        submit.addActionListener(<span class="keyword">new</span> ActionListener()&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span></span></span><br><span class="line"><span class="function">            </span>&#123;</span><br><span class="line">                String user=userText.getText();</span><br><span class="line">                String passwd=<span class="keyword">new</span> String(passwdText.getPassword());</span><br><span class="line">                DatabaseCheck date=<span class="keyword">new</span> DatabaseCheck(user,passwd);</span><br><span class="line">                <span class="keyword">boolean</span> flag=date.prepared();</span><br><span class="line">                <span class="keyword">if</span>(flag)</span><br><span class="line">                &#123;</span><br><span class="line">                    loginlab.setForeground(Color.green);</span><br><span class="line">                    loginlab.setText(<span class="string">&quot;登录成功！！！&quot;</span>);</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    loginlab.setForeground(Color.red);</span><br><span class="line">                    loginlab.setText(<span class="string">&quot;登录失败！！！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                passwdText.setText(<span class="string">&quot;&quot;</span>); </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        reset.addActionListener(<span class="keyword">new</span> ActionListener()&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span></span></span><br><span class="line"><span class="function">            </span>&#123;</span><br><span class="line">                String user=userText.getText();</span><br><span class="line">                String passwd=<span class="keyword">new</span> String(passwdText.getPassword());</span><br><span class="line">                DatabaseCheck date=<span class="keyword">new</span> DatabaseCheck(user,passwd);</span><br><span class="line">                <span class="keyword">boolean</span> flag=date.register();</span><br><span class="line">                <span class="keyword">if</span>(flag)</span><br><span class="line">                &#123;</span><br><span class="line">                    loginlab.setForeground(Color.green);</span><br><span class="line">                    loginlab.setText(<span class="string">&quot;注册成功！！！&quot;</span>);</span><br><span class="line">                &#125;<span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    loginlab.setForeground(Color.red);</span><br><span class="line">                    loginlab.setText(<span class="string">&quot;注册失败！！！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                passwdText.setText(<span class="keyword">null</span>); </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        jf.setLayout(<span class="keyword">new</span> GridLayout(<span class="number">4</span>,<span class="number">1</span>));</span><br><span class="line">        jf.add(userPanel);</span><br><span class="line">        jf.add(passwdPanel);</span><br><span class="line">        jf.add(buttonPanel);</span><br><span class="line">        jf.add(labelPanel);</span><br><span class="line">        jf.setSize(<span class="number">400</span>,<span class="number">200</span>);</span><br><span class="line">        jf.setLocation(<span class="number">250</span>,<span class="number">300</span>);</span><br><span class="line">        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); </span><br><span class="line">        jf.setVisible(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Test();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx11.png" alt="" /></p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx8.png" alt="" /></p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx9.png" alt="" /></p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx10.png" alt="" /></p>
+<p>​		在以上程序中，只要输入 StudentUser 数据表中存在的用户，即可登录成功。窗体上的文本框和密码框分别接收用户名和密码，当单击“登录”按钮时，触发 ActionEvent 事件， 从文本框和密码框读取内容并通过 DatabaseCheck 类进行验证，并且将密码框的内容清空。当单击“登录”按钮时，触发 ActionEvent 事件，从文本框和密码框读取内容并通过 DatabaseCheck 类对数据库输入数据进行注册，并且将密码框的内容清空。</p>
+<h3 id="文本区域组件jtextarea"><a class="markdownIt-Anchor" href="#文本区域组件jtextarea"></a> 文本区域组件：JTextArea</h3>
+<p>​		JTextField 文本框只允许用户输入一行信息，JTextArea 文本区域组件可以允许用户输入多行信息。JTextArea 类的常用方法如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">JTextArea()</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造新的JTextArea</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">JTextArea(Document doc)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个指定的文件存储模式的JTextArea</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">JTextArea(Document doc,String txt,int rows,int columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造一个指定的文件存储模式，设置其初始文本并具有指定行数和列数的JTextArea</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">JTextArea(int rows,int columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造具有指定行数和列数的JTextArea</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">JTextArea(String txt)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造显示指定文本的TextArea</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">JTextArea(String txt,int rows,int columns)</td>
+<td style="text-align:center">构造</td>
+<td style="text-align:center">构造具有指定文本、行数和列数的新的JTextArea</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">void append(String str)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将给定文本追加到文档结尾</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">void setColumns()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置此 TextArea 中的列数</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">int getColumns()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此 TextArea 中的列数</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">void setRows()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置此 TextArea 中的行数</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">int getRows()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此 TextArea 中的行数</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">void setFont(Font f)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置当前字体</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">int getLineCount()</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">返回此文本区中所包含的行数</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">void insert(String str,int pos)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">将指定文本插入指定位置</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">void replaceRange(String str,int start,int end)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">用给定的新文本替换从指示的起始位置到结尾位置的文本</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">void setLineWrap(boolean wrap)</td>
+<td style="text-align:center">普通</td>
+<td style="text-align:center">设置文本区中是否自动换行，若wrap为true，则自动换行，否则不自动换行，默认为false</td>
+</tr>
+</tbody>
+</table>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.swing.JTextArea;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JFrame;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JScrollPane;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        JFrame jf=<span class="keyword">new</span> JFrame(<span class="string">&quot;JTextArea组件&quot;</span>);</span><br><span class="line">        JTextArea text=<span class="keyword">new</span> JTextArea(<span class="number">8</span>,<span class="number">25</span>);</span><br><span class="line">        text.setLineWrap(<span class="keyword">true</span>);</span><br><span class="line">        JScrollPane scroll=<span class="keyword">new</span> JScrollPane(text);</span><br><span class="line">        jf.add(scroll);</span><br><span class="line">        jf.pack();</span><br><span class="line">        jf.setLocation(<span class="number">400</span>,<span class="number">400</span>);</span><br><span class="line">        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span><br><span class="line">        jf.setVisible(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="https://silenthty.gitee.io/photo/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/GUIx7.png" alt="" /></p>
+<p>参考书目：</p>
+<p><a target="_blank" rel="noopener" href="http://product.dangdang.com/23248198.html?ref=book-35530-3032_5-231497-4">《Java编程手记——从实践中学习Java（配光盘）》(欧二强　等编著)【简介_书评_在线阅读】 - 当当图书 (dangdang.com)</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>坚持技术分享，您的支持将鼓励我继续创作!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="buyan 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="buyan 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"> <i class="fa fa-tag"></i> 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/17/%E5%B8%83%E5%B1%80%E7%AE%A1%E7%90%86%E5%99%A8/" rel="prev" title="布局管理器">
+      <i class="fa fa-chevron-left"></i> 布局管理器
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E8%A1%8C%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6jtextfield"><span class="nav-number">1.</span> <span class="nav-text"> 单行文本组件：JTextField</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E6%A1%86%E7%BB%84%E4%BB%B6jpasswordfield"><span class="nav-number">2.</span> <span class="nav-text"> 密码框组件：JPasswordField</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E5%8C%BA%E5%9F%9F%E7%BB%84%E4%BB%B6jtextarea"><span class="nav-number">3.</span> <span class="nav-text"> 文本区域组件：JTextArea</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="buyan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">buyan</p>
+  <div class="site-description" itemprop="description">我见过真正难过的人，但他一滴泪也没流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/silenthly/silenthly.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;silenthly&#x2F;silenthly.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/silenthty/silenthty" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;silenthty&#x2F;silenthty" rel="noopener" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=22829933&auto=0&height=66"></iframe>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不言</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'svTDHGGetnbuzqV1kUczzXeM-gzGzoHsz',
+      appKey     : 'lihxfavVgrdWrQwN6xB7C0OS',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
